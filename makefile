@@ -5,17 +5,17 @@ HTML_VALIDATE=node_modules/html-validate/bin/html-validate.js
 PRETTIER=node_modules/prettier/bin-prettier.js
 
 node_modules:
-	npm install clang-format css-validator html-validate eslint eslint-config-google
+	npm install prettier clang-format css-validator html-validate eslint eslint-config-google
 
 pretty: node_modules
-	$(PRETTIER) capstone/src/main/webapp/*.css --write
-	find capstone/src/main/java -iname *.java | xargs $(CLANG_FORMAT) -i
-	find capstone/src/main/webapp -iname *.js | xargs $(CLANG_FORMAT) -i
+	$(PRETTIER) src/main/webapp/*.css --write
+	find src/main/java -iname *.java | xargs $(CLANG_FORMAT) -i
+	find src/main/webapp -iname *.js | xargs $(CLANG_FORMAT) -i
 
 validate: node_modules
-	$(HTML_VALIDATE) capstone/src/main/webapp/*.html
-	$(CSS_VALIDATOR) capstone/src/main/webapp/*.css
-	$(ESLINT) capstone/src/main/webapp/*.js
+	$(HTML_VALIDATE) src/main/webapp/*.html
+	$(CSS_VALIDATOR) src/main/webapp/*.css
+	$(ESLINT) src/main/webapp/*.js
 
 package:
 	mvn package
