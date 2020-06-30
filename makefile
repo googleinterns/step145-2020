@@ -7,6 +7,9 @@ PRETTIER=node_modules/prettier/bin-prettier.js
 node_modules:
 	npm install prettier clang-format css-validator html-validate eslint eslint-config-google
 
+devprep: 
+	cp src/main/webapp/vendor/startbootstrap/index.html src/main/webapp/index.html
+
 pretty: node_modules
 	$(PRETTIER) src/main/webapp/*.css --write
 	find src/main/java -iname *.java | xargs $(CLANG_FORMAT) -i
