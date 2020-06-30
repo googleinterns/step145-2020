@@ -27,7 +27,7 @@ import java.util.Scanner;
 import org.json.simple.JSONObject;
 
 
-/** Servlet that returns some example content.*/
+/** Servlet that returns list of courses.*/
 @WebServlet("/courselist")
 public class CourseListServlet extends HttpServlet {
 
