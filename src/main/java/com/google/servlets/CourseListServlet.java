@@ -14,14 +14,13 @@
 
 package com.google.sps.servlets;
 
-
+import com.google.gson.Gson;
 import java.io.File; 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Scanner;
 import org.json.simple.JSONObject;
@@ -34,19 +33,18 @@ public class CourseListServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     // TODO: Store and retrieve from Datastore
-    String[] courseList = new String[]{"CMSC101", "CMSC106", "CMSC122", "CMSC131",
+    String[] courseIdList = new String[] {"CMSC101", "CMSC106", "CMSC122", "CMSC131",
         "CMSC132","CMSC133","CMSC216","CMSC250","CMSC298A","CMSC320","CMSC330","CMSC351",
         "CMSC388J","CMSC389A","CMSC389B","CMSC389E","CMSC389N","CMSC390O"};
-    
     response.setContentType("text/html;");
-    response.getWriter().println(convertToJson(courseList));
+    response.getWriter().println(convertToJson(courseIdList));
   }
 
   /**
    * Converts a ServerStats instance into a JSON string using the Gson library. Note: We first added
    * the Gson library dependency to pom.xml.
    */
-  private String convertToJson(String [] courses) {
+  private String convertToJson(String[] courses) {
     return new Gson().toJson(courses);
   }
 }
