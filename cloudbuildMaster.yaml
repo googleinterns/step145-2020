@@ -1,7 +1,11 @@
 steps:
- - name: maven:3-jdk-8
-   entrypoint: make
+ - name: 'gcr.io/cloud-builders/docker'
+   args: ['build', '-t', 'gcr.io/step-team-145/make', '.']
+ - name: 'gcr.io/step-team-145/make'
    args: ['devprep']
  - name: maven:3-jdk-8
    entrypoint: mvn
    args: ['package', 'appengine:deploy']
+
+images:
+ - 'gcr.io/step-team-145/make'
