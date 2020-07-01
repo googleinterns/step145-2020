@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 /** Servlet that returns list of courses.*/
-@WebServlet("/courselist")
+@WebServlet("/courses")
 public class CourseListServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,13 +34,12 @@ public class CourseListServlet extends HttpServlet {
     String[] courseIdList = new String[] {"CMSC101", "CMSC106", "CMSC122", "CMSC131", "CMSC132",
         "CMSC133", "CMSC216", "CMSC250", "CMSC298A", "CMSC320", "CMSC330", "CMSC351", "CMSC388J",
         "CMSC389A", "CMSC389B", "CMSC389E", "CMSC389N", "CMSC390O"};
-    response.setContentType("text/html;");
+    response.setContentType("applications/json;");
     response.getWriter().println(convertToJson(courseIdList));
   }
 
   /**
-   * Converts a ServerStats instance into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
+   * Converts a String[] instance into a JSON string using the Gson library.
    */
   private String convertToJson(String[] courses) {
     return new Gson().toJson(courses);

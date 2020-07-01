@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,20 +13,20 @@
 // limitations under the License.
 getOptions();
 
-let selected = [];
-let courses = [];
+let selected = [];  // Courses selected by the user
+let courses = [];   // List with all courses
 
 /**
  * Gets courses from /courselist servlet to populate dropdown list
  */
 async function getOptions() {
-  const response = await fetch('/courselist');
+  const response = await fetch('/courses');
   courses = await response.json();
   const courseContainer = document.getElementById('courses');
   courseContainer.innerHTML = '';
-  createOption('Select a Course', 'courses', /*setValue=*/ false);
+  addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
   courses.forEach(
-      course => createOption(course, 'courses', /*setValue=*/ true));
+      course => addOption(course, courseContainer, /*shouldSetValue=*/ true));
 }
 
 /**
@@ -34,33 +34,32 @@ async function getOptions() {
  * @param {string} course The name of the course to add to the dropdown
  * @param {string} container The id name of the container you want to add
  *     options to
- * @param {boolean} setValue Whether to set the value of the option to the
+ * @param {boolean} shouldSetValue Whether to set the value of the option to the
  *     string
  */
-function createOption(course, container, setValue) {
-  const courseContainer = document.getElementById(container);
-  const opt = document.createElement('option');
-  opt.innerText = course;
-  if (setValue) {
-    opt.value = course;
+function addOption(course, courseContainer, shouldSetValue) {
+  const option = document.createElement('option');
+  option.innerText = course;
+  if (shouldSetValue) {
+    option.value = course;
   } else {
-    opt.selected = true;
-    opt.hidden = true;
+    option.selected = true;
+    option.hidden = true;
   }
-  courseContainer.appendChild(opt);
+  courseContainer.appendChild(option);
 }
 
 /**
  * Adds a course to the list of selected courses
  */
 function addToSelected() {
-  const courseContainer = document.getElementById('selectedClasses');
+  const courseContainer = document.getElementById('selected-classes');
   const courseSelection = document.getElementById('courses');
   const selectedCourse =
       courseSelection.options[courseSelection.selectedIndex].value;
   if (!selected.includes(selectedCourse) && courses.includes(selectedCourse)) {
     selected.push(selectedCourse);
-    courseContainer.appendChild(createListElement(selectedCourse));
+    courseContainer.appendChild(createCourseListElement(selectedCourse));
   }
 }
 
@@ -69,12 +68,12 @@ function addToSelected() {
  * @param {string} course The name of the course to add to the list of selected
  *     courses
  */
-function createListElement(course) {
+function createCourseListElement(course) {
   const liElement = document.createElement('li');
   liElement.setAttribute('class', 'list-group-item');
 
   const courseName = document.createElement('b');
-  courseName.innerText = `${course}`;
+  courseName.innerText = course;
   liElement.append(courseName);
 
   const deleteButtonElement = document.createElement('button');
@@ -85,9 +84,7 @@ function createListElement(course) {
       'class', 'float-right rounded-circle border-0');
   deleteButtonElement.addEventListener('click', () => {
     liElement.remove();
-    selected = selected.filter(function(value) {
-      return value != course;
-    });
+    selected = selected.filter(value => value != course);
   });
   liElement.appendChild(deleteButtonElement);
   return liElement;
