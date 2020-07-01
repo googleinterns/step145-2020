@@ -15,27 +15,25 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
-import java.io.File; 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Scanner;
 import org.json.simple.JSONObject;
-
 
 /** Servlet that returns list of courses.*/
 @WebServlet("/courselist")
 public class CourseListServlet extends HttpServlet {
-
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Store and retrieve from Datastore
-    String[] courseIdList = new String[] {"CMSC101", "CMSC106", "CMSC122", "CMSC131",
-        "CMSC132","CMSC133","CMSC216","CMSC250","CMSC298A","CMSC320","CMSC330","CMSC351",
-        "CMSC388J","CMSC389A","CMSC389B","CMSC389E","CMSC389N","CMSC390O"};
+    String[] courseIdList = new String[] {"CMSC101", "CMSC106", "CMSC122", "CMSC131", "CMSC132",
+        "CMSC133", "CMSC216", "CMSC250", "CMSC298A", "CMSC320", "CMSC330", "CMSC351", "CMSC388J",
+        "CMSC389A", "CMSC389B", "CMSC389E", "CMSC389N", "CMSC390O"};
     response.setContentType("text/html;");
     response.getWriter().println(convertToJson(courseIdList));
   }
