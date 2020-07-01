@@ -34,7 +34,7 @@ public class CourseListServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     // TODO: Store and retrieve from Datastore
-    String [] courseList = new String[]{"CMSC101", "CMSC106", "CMSC122", "CMSC131",
+    String[] courseList = new String[]{"CMSC101", "CMSC106", "CMSC122", "CMSC131",
         "CMSC132","CMSC133","CMSC216","CMSC250","CMSC298A","CMSC320","CMSC330","CMSC351",
         "CMSC388J","CMSC389A","CMSC389B","CMSC389E","CMSC389N","CMSC390O"};
     
@@ -47,8 +47,6 @@ public class CourseListServlet extends HttpServlet {
    * the Gson library dependency to pom.xml.
    */
   private String convertToJson(String [] courses) {
-    Gson gson = new Gson();
-    String json = gson.toJson(courses);
-    return json;
+    return new Gson().toJson(courses);
   }
 }
