@@ -1,8 +1,5 @@
 steps:
  - name: 'gcr.io/cloud-builders/docker'
-   args: ['build', '-t', 'gcr.io/step-team-145/make', '.']
- - name: 'gcr.io/step-team-145/make'
+   args: ['build', '-t', 'gcr.io/step-team-145/image', '.']
+ - name: 'gcr.io/step-team-145/image'
    args: ['deploy']
-
-images:
- - 'gcr.io/step-team-145/make'
