@@ -29,7 +29,7 @@ window.addEventListener('load', () => {
     const courseContainer = document.getElementById('courses');
     courseContainer.innerHTML = '';
     addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
-    coursesDetailed = JSON.parse(courseList.courses_detailed);
+    coursesDetailed = courseList.courses_detailed;
     coursesDetailed.forEach(
         course =>
             addOption(course.name, courseContainer, /*shouldSetValue=*/ true));

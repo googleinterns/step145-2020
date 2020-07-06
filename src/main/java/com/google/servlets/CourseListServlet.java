@@ -46,7 +46,7 @@ public class CourseListServlet extends HttpServlet {
     }
 
     JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses_detailed", convertToJson(courses));
+    schoolCourseInfo.put("courses_detailed", courses);
 
     response.setContentType("applications/json;");
     response.getWriter().println(schoolCourseInfo);
