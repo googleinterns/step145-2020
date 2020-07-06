@@ -28,6 +28,9 @@ import org.json.simple.JSONObject;
 /** Servlet that returns list of courses.*/
 @WebServlet("/courses")
 public class CourseListServlet extends HttpServlet {
+  /**
+   * Reads from Datastore and returns response with course details
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Store and retrieve from Datastore
