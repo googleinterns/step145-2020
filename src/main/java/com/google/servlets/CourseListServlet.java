@@ -14,7 +14,6 @@
 
 package com.google.servlets;
 
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,12 +49,5 @@ public class CourseListServlet extends HttpServlet {
 
     response.setContentType("applications/json;");
     response.getWriter().println(schoolCourseInfo);
-  }
-
-  /**
-   * Converts a String[] instance into a JSON string using the Gson library.
-   */
-  private String convertToJson(ArrayList<JSONObject> courses) {
-    return new Gson().toJson(courses);
   }
 }
