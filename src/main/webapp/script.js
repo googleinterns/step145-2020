@@ -26,7 +26,9 @@ async function getOptions() {
   const courseContainer = document.getElementById('courses');
   courseContainer.innerHTML = '';
   addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
-  courseList.forEach(
+  coursesDetailed = JSON.parse(courseList.courses_detailed);
+  console.log(coursesDetailed);
+  coursesDetailed.forEach(
       course =>
           addOption(course.name, courseContainer, /*shouldSetValue=*/ true));
 }
