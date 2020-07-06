@@ -13,6 +13,7 @@ devprep:
 pretty: node_modules
 	$(PRETTIER) src/main/webapp/*.css --write
 	find src/main/java -iname **.java | xargs $(CLANG_FORMAT) -i
+	find src/test/java -iname **.java | xargs $(CLANG_FORMAT) -i
 	find src/main/webapp -iname **.js | xargs $(CLANG_FORMAT) -i
 
 validate: node_modules
