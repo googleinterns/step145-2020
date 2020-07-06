@@ -16,9 +16,7 @@ window.addEventListener('load', () => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
 
-  getOptions();
-
-  document.getElementById('add-selected').addEventListener('click', function() {
+  document.getElementById('add-selected').addEventListener('click', () => {
     addToSelected();
   });
 
@@ -99,4 +97,7 @@ window.addEventListener('load', () => {
     liElement.appendChild(deleteButtonElement);
     return liElement;
   }
+
+  getOptions();
+
 });
