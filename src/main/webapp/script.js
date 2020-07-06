@@ -21,12 +21,14 @@ let courses = [];   // List with all courses
  */
 async function getOptions() {
   const response = await fetch('/courses');
-  courses = await response.json();
+  courseList = await response.json();
+  courses = [];
   const courseContainer = document.getElementById('courses');
   courseContainer.innerHTML = '';
   addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
-  courses.forEach(
-      course => addOption(course, courseContainer, /*shouldSetValue=*/ true));
+  courseList.forEach(
+      course =>
+          addOption(course.name, courseContainer, /*shouldSetValue=*/ true));
 }
 
 /**
@@ -41,6 +43,7 @@ function addOption(course, courseContainer, shouldSetValue) {
   const option = document.createElement('option');
   option.innerText = course;
   if (shouldSetValue) {
+    courses.push(course);
     option.value = course;
   } else {
     option.selected = true;

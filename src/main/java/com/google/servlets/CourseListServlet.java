@@ -34,14 +34,22 @@ public class CourseListServlet extends HttpServlet {
     String[] courseIdList = new String[] {"CMSC101", "CMSC106", "CMSC122", "CMSC131", "CMSC132",
         "CMSC133", "CMSC216", "CMSC250", "CMSC298A", "CMSC320", "CMSC330", "CMSC351", "CMSC388J",
         "CMSC389A", "CMSC389B", "CMSC389E", "CMSC389N", "CMSC390O"};
+
+    ArrayList<JSONObject> courses = new ArrayList<>();
+    for (String course : courseIdList) {
+      JSONObject newCourse = new JSONObject();
+      newCourse.put("name", course);
+      courses.add(newCourse);
+    }
+
     response.setContentType("applications/json;");
-    response.getWriter().println(convertToJson(courseIdList));
+    response.getWriter().println(convertToJson(courses));
   }
 
   /**
    * Converts a String[] instance into a JSON string using the Gson library.
    */
-  private String convertToJson(String[] courses) {
+  private String convertToJson(ArrayList<JSONObject> courses) {
     return new Gson().toJson(courses);
   }
 }
