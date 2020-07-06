@@ -11,8 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-getOptions();
-
+window.addEventListener('load', () => {
+  getOptions();
+});
 let selected = [];  // Courses selected by the user
 let courses = [];   // List with all courses
 
@@ -22,12 +23,10 @@ let courses = [];   // List with all courses
 async function getOptions() {
   const response = await fetch('/courses');
   courseList = await response.json();
-  courses = [];
   const courseContainer = document.getElementById('courses');
   courseContainer.innerHTML = '';
   addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
   coursesDetailed = JSON.parse(courseList.courses_detailed);
-  console.log(coursesDetailed);
   coursesDetailed.forEach(
       course =>
           addOption(course.name, courseContainer, /*shouldSetValue=*/ true));
