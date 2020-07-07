@@ -17,10 +17,6 @@
 
   <!-- Custom styles for this template-->
   <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/css/sb-admin-2.min.css" rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
-  <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
-  <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css">
 </head>
 
 <body id="page-top">
@@ -152,6 +148,17 @@
                   </form>
                 </div>
               </div>
+              <!-- list Area -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Proposed Plan:</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body" id="order-area">
+                    Your plan will appear here.
+                </div>
+              </div>
             </div>
              <!-- Pie Chart -->
             <div class="col-xl-4 col-lg-5">
@@ -163,28 +170,19 @@
                 <!-- Card Body -->
                 <div class="card-body">
                   <form>
+                    <b>Number of Remaining Semesters:</b>
+                    <input type="number" id="semesters" min="1" max="12" required>
+                    <br>
+                    <b>Selected Courses:</b>
                     <ul class="list-group" id="selected-classes"></ul>
                     <br>
                     <a href="#" class="btn btn-primary btn-icon-split">
                       <span class="icon text-white-50">
                         <i class="fas fa-arrow-right"></i>
                       </span>
-                      <span class="text">Get Schedule</span>
+                      <span class="text">Get Plan</span>
                     </a>
                   </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Calendar -->
-          <div class="row">
-            <div class="container-fluid">
-              <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Calendar:</h6>
-                </div>
-                <div class="card-body">
-                  <div id="calendar"></div>
                 </div>
               </div>
             </div>
@@ -243,19 +241,9 @@
   <!-- Custom scripts for all pages-->
   <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/js/sb-admin-2.min.js"></script>
 
-  <!-- Toast UI scripts -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js"></script>
-  <script src="https://uicdn.toast.com/tui.time-picker/v2.0.3/tui-time-picker.min.js"></script>
-  <script src="https://uicdn.toast.com/tui.date-picker/v4.0.3/tui-date-picker.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
-  <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
-
   <!-- Our scripts -->
   <script src="selectScript.js"></script>
-  <script src="calendarScript.js"></script>
+  <script src="plannerScript.js"></script>
 </body>
 
 </html>

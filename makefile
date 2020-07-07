@@ -9,6 +9,7 @@ node_modules:
 
 devprep: 
 	cp src/main/webapp/vendor/startbootstrap/index.html src/main/webapp/index.html
+	cp src/main/webapp/vendor/startbootstrap/planner.html src/main/webapp/planner.html
 
 devserver: devprep
 	mvn package appengine:run
