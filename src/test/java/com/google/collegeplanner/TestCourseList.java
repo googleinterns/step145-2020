@@ -1,12 +1,15 @@
-package com.google;
+package com.google.collegeplanner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.google.servlets.CourseListServlet;
-import java.io.*;
+import com.google.collegeplanner.servlets.CourseListServlet;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Assert;
@@ -30,7 +33,14 @@ public final class TestCourseList {
       writer.flush();
       JSONParser parser = new JSONParser();
       JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
-      Assert.assertNotNull(responseObj.get("courses_detailed"));
+      JSONArray coursesDetailed = (JSONArray) responseObj.get("courses_detailed");
+      // Tests that courses_detailed exists
+      Assert.assertNotNull(coursesDetailed);
+      // Checks that the correct number of JSON Objects are contained
+      Assert.assertEquals(coursesDetailed.size(), 18);
+      // Checks whether the first one is CMSC101
+      JSONObject firstCourse = (JSONObject) coursesDetailed.get(0);
+      Assert.assertEquals(firstCourse.get("name"), "CMSC101");
     } catch (Exception e) {
       Assert.fail("Course retreival failed");
     }
