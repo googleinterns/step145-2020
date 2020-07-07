@@ -22,27 +22,23 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class TestCourseList {
   @Test
-  public void servletResponseHasCourses() {
+  public void servletResponseHasCourses() throws Exception {
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    try {
-      when(mockedResponse.getWriter()).thenReturn(writer);
-      CourseListServlet servlet = new CourseListServlet();
-      servlet.doGet(null, mockedResponse);
-      writer.flush();
-      JSONParser parser = new JSONParser();
-      JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
-      JSONArray coursesDetailed = (JSONArray) responseObj.get("courses_detailed");
-      // Tests that courses_detailed exists
-      Assert.assertNotNull(coursesDetailed);
-      // Checks that the correct number of JSON Objects are contained
-      Assert.assertEquals(coursesDetailed.size(), 18);
-      // Checks whether the first one is CMSC101
-      JSONObject firstCourse = (JSONObject) coursesDetailed.get(0);
-      Assert.assertEquals(firstCourse.get("name"), "CMSC101");
-    } catch (Exception e) {
-      Assert.fail("Course retreival failed");
-    }
+    when(mockedResponse.getWriter()).thenReturn(writer);
+    CourseListServlet servlet = new CourseListServlet();
+    servlet.doGet(null, mockedResponse);
+    writer.flush();
+    JSONParser parser = new JSONParser();
+    JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
+    JSONArray coursesDetailed = (JSONArray) responseObj.get("courses_detailed");
+    // Tests that courses_detailed exists
+    Assert.assertNotNull(coursesDetailed);
+    // Checks that the correct number of JSON Objects are contained
+    Assert.assertEquals(coursesDetailed.size(), 18);
+    // Checks whether the first one is CMSC101
+    String firstCourse = coursesDetailed.get(0).toString();
+    Assert.assertEquals(firstCourse, "{\"name\":\"CMSC101\"}");
   }
 }
