@@ -9,5 +9,6 @@ target/
 # Ignore editor config
 .idea
 
-# Ignore generated index.html
+# Ignore generated index and planner html files
 src/main/webapp/index.html
+src/main/webapp/planner.html
