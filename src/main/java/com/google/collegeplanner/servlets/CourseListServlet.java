@@ -18,10 +18,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-<<<<<<< HEAD
-=======
-import java.util.ArrayList;
->>>>>>> Remove unused imports.
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -66,14 +62,7 @@ public class CourseListServlet extends HttpServlet {
       return;
     }
 
-    JSONArray jsonArray = apiUtil.getJsonArray(uri);
-    if (jsonArray == null) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
-    }
-
-    JSONArray jsonArray = new APIUtil().requestAPIAndGetJsonArray(builder);
+    JSONArray jsonArray = new ApiUtil().getJsonArray(uri);
     if (jsonArray == null) {
       respondWithError(
           "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
