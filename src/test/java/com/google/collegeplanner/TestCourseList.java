@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 public final class TestCourseList {
   @Test
   public void servletResponseHasCourses() throws Exception {
-HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
+    HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(mockedResponse.getWriter()).thenReturn(writer);
@@ -46,41 +46,41 @@ HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
     Assert.assertEquals(coursesDetailed.size(), 30);
     // Checks whether the first one is CMSC101
     String firstCourse = coursesDetailed.get(0).toString();
-    String expectedJson = "{"+
-      "\"course_id\":\"AASP100\"," +
-      "\"core\":[\"SH\",\"D\"]," +
-      "\"relationships\":{" +
-        "\"coreqs\":null," +
-        "\"additional_info\":null," +
-        "\"restrictions\":null," +
-        "\"credit_granted_for\":null," +
-        "\"also_offered_as\":null," +
-        "\"formerly\":null," +
-        "\"prereqs\":null" +
-      "}," +
-      "\"credits\":\"3\"," +
-      "\"name\":\"Introduction to African American Studies\"," +
-      "\"description\":\"Significant aspects of the history of African Americans " +
-        "with particular emphasis on the evolution and development of black communities " +
-        "from slavery to the present. Interdisciplinary introduction to social, " +
-        "political, legal and economic roots of contemporary problems faced by blacks " +
-        "in the United States with applications to the lives of other racial and ethnic " +
-        "minorities in the Americas and in other societies.\"," +
-      "\"semester\":\"202008\"," +
-      "\"gen_ed\":[[\"DSHS\",\"DVUP\"]]," +
-      "\"dept_id\":\"AASP\"," +
-      "\"department\":\"African American Studies\"," +
-      "\"grading_method\":[\"Regular\",\"Pass-Fail\",\"Audit\"]," +
-      "\"sections\":[" +
-        "\"AASP100-0101\"," +
-        "\"AASP100-0201\"," +
-        "\"AASP100-0301\"," +
-        "\"AASP100-0401\"," +
-        "\"AASP100-0501\"," +
-        "\"AASP100-0601\"," +
-        "\"AASP100-0701\"" +
-      "]"+
-    "}";
+    String expectedJson = "{"
+        + "\"course_id\":\"AASP100\","
+        + "\"core\":[\"SH\",\"D\"],"
+        + "\"relationships\":{"
+        + "\"coreqs\":null,"
+        + "\"additional_info\":null,"
+        + "\"restrictions\":null,"
+        + "\"credit_granted_for\":null,"
+        + "\"also_offered_as\":null,"
+        + "\"formerly\":null,"
+        + "\"prereqs\":null"
+        + "},"
+        + "\"credits\":\"3\","
+        + "\"name\":\"Introduction to African American Studies\","
+        + "\"description\":\"Significant aspects of the history of African Americans "
+        + "with particular emphasis on the evolution and development of black communities "
+        + "from slavery to the present. Interdisciplinary introduction to social, "
+        + "political, legal and economic roots of contemporary problems faced by blacks "
+        + "in the United States with applications to the lives of other racial and ethnic "
+        + "minorities in the Americas and in other societies.\","
+        + "\"semester\":\"202008\","
+        + "\"gen_ed\":[[\"DSHS\",\"DVUP\"]],"
+        + "\"dept_id\":\"AASP\","
+        + "\"department\":\"African American Studies\","
+        + "\"grading_method\":[\"Regular\",\"Pass-Fail\",\"Audit\"],"
+        + "\"sections\":["
+        + "\"AASP100-0101\","
+        + "\"AASP100-0201\","
+        + "\"AASP100-0301\","
+        + "\"AASP100-0401\","
+        + "\"AASP100-0501\","
+        + "\"AASP100-0601\","
+        + "\"AASP100-0701\""
+        + "]"
+        + "}";
     Assert.assertEquals(firstCourse, expectedJson);
   }
 }
