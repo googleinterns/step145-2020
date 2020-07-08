@@ -95,7 +95,7 @@ public class APIUtil {
 
   /**
    * Makes a GET request and returns the reponse json.
-
+   *
    * @param apiRequest The HttpGet object that will be executed
    */
   private String requestAPI(HttpGet apiRequest) {
