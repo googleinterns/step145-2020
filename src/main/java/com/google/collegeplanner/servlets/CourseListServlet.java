@@ -16,8 +16,8 @@ package com.google.collegeplanner.servlets;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,18 +36,19 @@ public class CourseListServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Store and retrieve from Datastore
 
-    // Specify the parameters for the API endpoint.
-    URIBuilder builder;
+    // Create the URI and specify the parameters.
+    URI uri;
     try {
-      builder = new URIBuilder("https://api.umd.io/v1/courses");
+      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
       builder.setParameter("semester", "202008");
+      uri = builder.build();
     } catch (URISyntaxException e) {
       respondWithError(
           "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
-    JSONArray jsonArray = new APIUtil().requestAPIAndGetJsonArray(builder);
+    JSONArray jsonArray = new ApiUtil().getJsonArray(uri);
     if (jsonArray == null) {
       respondWithError(
           "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);

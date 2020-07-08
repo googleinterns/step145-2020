@@ -15,6 +15,7 @@
 package com.google.collegeplanner.servlets;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -36,25 +37,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /** Provides an interface for making outside API calls. */
-public class APIUtil {
+public class ApiUtil {
   /**
-   * Returns a json object given a URIBuilder.
+   * Returns a json object given a URI.
    *
    * @param builder The endpoint that will be requested
    */
-  public JSONArray requestAPIAndGetJsonArray(URIBuilder builder) {
-    if (builder == null) {
-      return null;
-    }
-
-    HttpGet apiRequest;
-    try {
-      apiRequest = new HttpGet(builder.build());
-    } catch (URISyntaxException e) {
-      return null;
-    }
-
-    String json = requestAPI(apiRequest);
+  public JSONArray getJsonArray(URI uri) {
+    String json = requestApi(uri);
     JSONParser parser = new JSONParser();
     JSONArray jsonArray;
     try {
@@ -67,22 +57,11 @@ public class APIUtil {
 
   /**
    * Returns a json object given a URIBuilder.
-   *
+   *`
    * @param builder The endpoint that will be requested
    */
-  public JSONObject requestAPIAndGetJsonObject(URIBuilder builder) {
-    if (builder == null) {
-      return null;
-    }
-
-    HttpGet apiRequest;
-    try {
-      apiRequest = new HttpGet(builder.build());
-    } catch (URISyntaxException e) {
-      return null;
-    }
-
-    String json = requestAPI(apiRequest);
+  public JSONObject getJsonObject(URI uri) {
+    String json = requestApi(uri);
     JSONParser parser = new JSONParser();
     JSONObject jsonObject;
     try {
@@ -98,8 +77,16 @@ public class APIUtil {
    *
    * @param apiRequest The HttpGet object that will be executed
    */
-  private String requestAPI(HttpGet apiRequest) {
+  private String requestApi(URI uri) {
+    if (uri == null) {
+      return "";
+    }
+
+    HttpGet apiRequest = new HttpGet(uri);
+
     // Ignore any SSL certificate validations.
+    // Reason: The UMD API currently does not have a valid SSL certificate. We can change
+    // this code if/when the UMD API refreshes their certificate.
     String json;
     try (CloseableHttpClient httpClient =
              HttpClients.custom()
@@ -111,14 +98,13 @@ public class APIUtil {
          CloseableHttpResponse apiResponse = httpClient.execute(apiRequest)) {
       HttpEntity entity = apiResponse.getEntity();
       json = EntityUtils.toString(entity);
-      if (entity == null
-          || apiResponse.getStatusLine().getStatusCode() != HttpServletResponse.SC_OK) {
-        return "";
+      if (entity != null
+          || apiResponse.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
+        return json;
       }
     } catch (
         NoSuchAlgorithmException | KeyManagementException | KeyStoreException | IOException e) {
-      return "";
     }
-    return json;
+    return "";
   }
 }
