@@ -62,14 +62,7 @@ public class CourseListServlet extends HttpServlet {
       return;
     }
 
-    JSONArray jsonArray = apiUtil.getJsonArray(uri);
-    if (jsonArray == null) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
-    }
-
-    JSONArray jsonArray = new APIUtil().requestAPIAndGetJsonArray(builder);
+    JSONArray jsonArray = new ApiUtil().getJsonArray(uri);
     if (jsonArray == null) {
       respondWithError(
           "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);

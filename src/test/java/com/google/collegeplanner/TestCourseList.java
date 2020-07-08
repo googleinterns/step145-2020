@@ -17,6 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /** Tests CourseListServlet */
 @RunWith(JUnit4.class)
@@ -37,19 +39,18 @@ public final class TestCourseList {
     Assert.assertNotNull(coursesDetailed);
     // Checks that the correct number of JSON Objects are contained
     Assert.assertEquals(coursesDetailed.size(), 30);
-    // Checks whether the first one is CMSC101
-    String firstCourse = coursesDetailed.get(0).toString();
+    // Checks whether the first one is CMSC10
     String expectedJson = "{"
         + "\"course_id\":\"AASP100\","
         + "\"core\":[\"SH\",\"D\"],"
         + "\"relationships\":{"
-        + "\"coreqs\":null,"
-        + "\"additional_info\":null,"
-        + "\"restrictions\":null,"
-        + "\"credit_granted_for\":null,"
-        + "\"also_offered_as\":null,"
-        + "\"formerly\":null,"
-        + "\"prereqs\":null"
+        + "  \"coreqs\":null,"
+        + "  \"additional_info\":null,"
+        + "  \"restrictions\":null,"
+        + "  \"credit_granted_for\":null,"
+        + "  \"also_offered_as\":null,"
+        + "  \"formerly\":null,"
+        + "  \"prereqs\":null"
         + "},"
         + "\"credits\":\"3\","
         + "\"name\":\"Introduction to African American Studies\","
@@ -65,15 +66,15 @@ public final class TestCourseList {
         + "\"department\":\"African American Studies\","
         + "\"grading_method\":[\"Regular\",\"Pass-Fail\",\"Audit\"],"
         + "\"sections\":["
-        + "\"AASP100-0101\","
-        + "\"AASP100-0201\","
-        + "\"AASP100-0301\","
-        + "\"AASP100-0401\","
-        + "\"AASP100-0501\","
-        + "\"AASP100-0601\","
-        + "\"AASP100-0701\""
+        + "  \"AASP100-0101\","
+        + "  \"AASP100-0201\","
+        + "  \"AASP100-0301\","
+        + "  \"AASP100-0401\","
+        + "  \"AASP100-0501\","
+        + "  \"AASP100-0601\","
+        + "  \"AASP100-0701\""
         + "]"
         + "}";
-    Assert.assertEquals(firstCourse, expectedJson);
+    JSONAssert.assertEquals(coursesDetailed.get(0).toString(), expectedJson, JSONCompareMode.STRICT);
   }
 }
