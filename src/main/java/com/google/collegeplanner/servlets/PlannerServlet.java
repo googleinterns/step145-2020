@@ -29,7 +29,7 @@ public class PlannerServlet extends HttpServlet {
    * Organizes courses into the given number of semesters
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Implement algorithm to split into the number of semesters
     String strClasses = request.getParameter("selectedClasses");
     // Returns the courses in a single semester
