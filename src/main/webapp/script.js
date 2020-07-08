@@ -158,7 +158,9 @@ window.addEventListener('load', () => {
         tableData.forEach(function(rowData) {
           const row = document.createElement('tr');
           const cell = document.createElement('td');
-          cell.appendChild(document.createTextNode(`Semester ${i}:`));
+          const semesterLabel = document.createElement('b');
+          semesterLabel.innerText = `Semester ${i}:`;
+          cell.appendChild(semesterLabel);
           row.appendChild(cell);
 
           rowData.forEach(function(cellData) {
