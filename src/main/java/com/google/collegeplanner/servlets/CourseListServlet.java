@@ -14,13 +14,34 @@
 
 package com.google.collegeplanner.servlets;
 
+import com.google.gson.Gson;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /** Servlet that returns list of courses.*/
 @WebServlet("/courses")
@@ -31,21 +52,37 @@ public class CourseListServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Store and retrieve from Datastore
-    String[] courseIdList = new String[] {"CMSC101", "CMSC106", "CMSC122", "CMSC131", "CMSC132",
-        "CMSC133", "CMSC216", "CMSC250", "CMSC298A", "CMSC320", "CMSC330", "CMSC351", "CMSC388J",
-        "CMSC389A", "CMSC389B", "CMSC389E", "CMSC389N", "CMSC390O"};
-
-    ArrayList<JSONObject> courses = new ArrayList<>();
-    for (String course : courseIdList) {
-      JSONObject newCourse = new JSONObject();
-      newCourse.put("name", course);
-      courses.add(newCourse);
+    
+    // Specify the parameters for the API endpoint.
+    URIBuilder builder;
+    try {
+      builder = new URIBuilder("https://api.umd.io/v1/courses");
+      builder.setParameter("semester", "202008");
+    } catch (URISyntaxException e) {
+      respondWithError(
+          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      return;
     }
 
+    JSONArray jsonArray = new APIUtil().requestAPIAndGetJsonArray(builder);
+    if (jsonArray == null) {
+      respondWithError(
+          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+    } 
+    
     JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses_detailed", courses);
+    schoolCourseInfo.put("courses_detailed", jsonArray);
 
     response.setContentType("applications/json;");
     response.getWriter().println(schoolCourseInfo);
+  }
+
+  private void respondWithError(String message, int errorType, HttpServletResponse response)
+      throws IOException {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("message", message);
+    jsonObject.put("status", "error");
+    response.setStatus(errorType);
+    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
