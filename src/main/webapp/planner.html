@@ -155,7 +155,10 @@
                   <h6 class="m-0 font-weight-bold text-primary">Proposed Plan:</h6>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body" id="order-area">
+                <div class="card-body"> 
+                    <center id="order-area">
+                      Your plan will appear here.
+                    </center>
                 </div>
               </div>
             </div>
@@ -168,19 +171,19 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <form>
+                  <form id="submit-plan" onsubmit="return false">
                     <b>Number of Remaining Semesters:</b>
                     <input type="number" id="semesters" min="1" max="12" required>
                     <br>
                     <b>Selected Courses:</b>
                     <ul class="list-group" id="selected-classes"></ul>
                     <br>
-                    <a href="#" class="btn btn-primary btn-icon-split">
+                    <button type = "submit" href="#" class="btn btn-primary btn-icon-split">
                       <span class="icon text-white-50">
                         <i class="fas fa-arrow-right"></i>
                       </span>
                       <span class="text">Get Plan</span>
-                    </a>
+                    </button>
                   </form>
                 </div>
               </div>
@@ -241,7 +244,6 @@
   <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/js/sb-admin-2.min.js"></script>
 
   <!-- Our scripts -->
-  <script src="selectScript.js"></script>
   <script src="plannerScript.js"></script>
 </body>
 
