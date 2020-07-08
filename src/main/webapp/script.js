@@ -100,63 +100,82 @@ window.addEventListener('load', () => {
 
   getOptions();
 
-  document.getElementById('submit-plan').addEventListener('submit', () => {
-    /**
-     * Gets results from /planner servlet to results
-     */
-    async function getPlan() {
-      const courseContainer = document.getElementById('order-area');
-      createSpinner(courseContainer);
-      const response = await fetch(
-          `/planner?selectedClasses=${selected.toString()}&semesters=${
-              document.getElementById('semesters').value}`);
-      courseList = await response.json();
-      createTable(courseList, courseContainer);
+  if (document.head.id == 'scheduler') {
+    function initCalendar() {
+      new tui.Calendar('#calendar', {
+        defaultView: 'week',
+        useCreationPopup: true,
+        useDetailPopup: true,
+        disableDblClick: true,
+        disableClick: true,
+        isReadOnly: true,
+        scheduleView: ['time'],
+        taskView: false,
+        week: {
+          workweek: true,
+        },
+      });
     }
 
-    /**
-     * Creates table from a 2D array
-     * @param {Object} courseContainer container for course list
-     */
-    function createSpinner(courseContainer){
-      const spinner = document.createElement('i');
-      spinner.setAttribute('class', 'fas fa-sync fa-spin');
-      courseContainer.innerText = '';
-      courseContainer.appendChild(spinner);
-    }
+    initCalendar();
+  } else {
+    document.getElementById('submit-plan').addEventListener('submit', () => {
+      /**
+       * Gets results from /planner servlet to results
+       */
+      async function getPlan() {
+        const courseContainer = document.getElementById('order-area');
+        createSpinner(courseContainer);
+        const response = await fetch(
+            `/planner?selectedClasses=${selected.toString()}&semesters=${
+                document.getElementById('semesters').value}`);
+        courseList = await response.json();
+        createTable(courseList, courseContainer);
+      }
 
-    /**
-     * Creates table from a 2D array
-     * @param {Object} tableData 2D array with separation of courses
-     * @param {Object} courseContainer container for course list
-     */
-    function createTable(tableData, courseContainer) {
-      courseContainer.innerText = '';
-      const table = document.createElement('table');
-      const tableBody = document.createElement('tbody');
-      table.setAttribute('class', 'table table-hover mb-0;');
-      let i = 1;
-      tableData.forEach(function(rowData) {
-        const row = document.createElement('tr');
-        const cell = document.createElement('td');
-        cell.appendChild(document.createTextNode(`Semester ${i}:`));
-        row.appendChild(cell);
+      /**
+       * Creates table from a 2D array
+       * @param {Object} courseContainer container for course list
+       */
+      function createSpinner(courseContainer) {
+        const spinner = document.createElement('i');
+        spinner.setAttribute('class', 'fas fa-sync fa-spin');
+        courseContainer.innerText = '';
+        courseContainer.appendChild(spinner);
+      }
 
-        rowData.forEach(function(cellData) {
+      /**
+       * Creates table from a 2D array
+       * @param {Object} tableData 2D array with separation of courses
+       * @param {Object} courseContainer container for course list
+       */
+      function createTable(tableData, courseContainer) {
+        courseContainer.innerText = '';
+        const table = document.createElement('table');
+        const tableBody = document.createElement('tbody');
+        table.setAttribute('class', 'table table-hover mb-0;');
+        let i = 1;
+        tableData.forEach(function(rowData) {
+          const row = document.createElement('tr');
           const cell = document.createElement('td');
-          cell.appendChild(document.createTextNode(cellData));
+          cell.appendChild(document.createTextNode(`Semester ${i}:`));
           row.appendChild(cell);
+
+          rowData.forEach(function(cellData) {
+            const cell = document.createElement('td');
+            cell.appendChild(document.createTextNode(cellData));
+            row.appendChild(cell);
+          });
+
+          tableBody.appendChild(row);
+          i += 1;
         });
 
-        tableBody.appendChild(row);
-        i += 1;
-      });
+        table.appendChild(tableBody);
+        courseContainer.appendChild(table);
+      }
 
-      table.appendChild(tableBody);
-      courseContainer.appendChild(table);
-    }
-
-    getPlan();
-
-  });
+      getPlan();
+    });
+  }
 });
