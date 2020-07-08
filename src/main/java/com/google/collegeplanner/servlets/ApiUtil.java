@@ -87,7 +87,6 @@ public class ApiUtil {
     // Ignore any SSL certificate validations.
     // Reason: The UMD API currently does not have a valid SSL certificate. We can change
     // this code if/when the UMD API refreshes their certificate.
-    String json;
     try (CloseableHttpClient httpClient =
              HttpClients.custom()
                  .setSSLContext(new SSLContextBuilder()
@@ -97,7 +96,7 @@ public class ApiUtil {
                  .build();
          CloseableHttpResponse apiResponse = httpClient.execute(apiRequest)) {
       HttpEntity entity = apiResponse.getEntity();
-      json = EntityUtils.toString(entity);
+      String json = EntityUtils.toString(entity);
       if (entity != null
           || apiResponse.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
         return json;
