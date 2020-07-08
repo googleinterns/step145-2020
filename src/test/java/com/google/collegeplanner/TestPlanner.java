@@ -9,11 +9,7 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -34,7 +30,6 @@ public final class TestPlanner {
     servlet.doGet(mockedRequest, mockedResponse);
     writer.flush();
     // Check whether the string output is correct
-    System.out.println(stringWriter.toString());
     Assert.assertEquals(stringWriter.toString().trim(), "[[\"CMSC101\",\"CMSC106\",\"CMSC122\",\"CMSC131\"]]");
   }
 }

@@ -134,7 +134,7 @@ window.addEventListener('load', () => {
       }
 
       /**
-       * Creates table from a 2D array
+       * Creates spinner to signify loading
        * @param {Object} courseContainer container for course list
        */
       function createSpinner(courseContainer) {
