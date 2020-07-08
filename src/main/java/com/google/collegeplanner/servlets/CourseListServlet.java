@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /** Servlet that returns list of courses.*/
 @WebServlet("/api/courses")
@@ -69,6 +71,12 @@ public class CourseListServlet extends HttpServlet {
       return;
     }
 
+    JSONArray jsonArray = new APIUtil().requestAPIAndGetJsonArray(builder);
+    if (jsonArray == null) {
+      respondWithError(
+          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+    } 
+    
     JSONObject schoolCourseInfo = new JSONObject();
     schoolCourseInfo.put("courses", jsonArray);
 
