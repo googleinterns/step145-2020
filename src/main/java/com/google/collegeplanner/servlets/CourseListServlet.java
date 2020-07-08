@@ -15,7 +15,6 @@
 package com.google.collegeplanner.servlets;
 
 import com.google.gson.Gson;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
