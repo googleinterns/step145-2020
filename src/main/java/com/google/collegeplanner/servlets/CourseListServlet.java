@@ -29,6 +29,16 @@ import org.json.simple.JSONObject;
 /** Servlet that returns list of courses.*/
 @WebServlet("/api/courses")
 public class CourseListServlet extends HttpServlet {
+  ApiUtil apiUtil;
+
+  public CourseListServlet() {
+    this.apiUtil = new ApiUtil();
+  }
+
+  public CourseListServlet(ApiUtil apiUtil) {
+    this.apiUtil = apiUtil;
+  }
+
   /**
    * Reads from Datastore and returns response with course details
    */
@@ -48,7 +58,7 @@ public class CourseListServlet extends HttpServlet {
       return;
     }
 
-    JSONArray jsonArray = new ApiUtil().getJsonArray(uri);
+    JSONArray jsonArray = apiUtil.getJsonArray(uri);
     if (jsonArray == null) {
       respondWithError(
           "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
