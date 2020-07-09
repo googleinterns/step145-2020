@@ -10,5 +10,5 @@ target/
 .idea
 
 # Ignore generated index and planner html files
-src/main/webapp/index.html
-src/main/webapp/planner.html
+src/main/webapp/index.jsp
+src/main/webapp/planner.jsp
