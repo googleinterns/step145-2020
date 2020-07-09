@@ -24,6 +24,9 @@ import org.junit.runners.JUnit4;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import org.apache.http.client.utils.URIBuilder;
+import java.net.URISyntaxException;
+
 /** Tests CourseListServlet */
 @RunWith(JUnit4.class)
 public final class TestCourseList {
@@ -95,7 +98,7 @@ public final class TestCourseList {
         + "]"
         + "}";
     JSONAssert.assertEquals(
-        coursesDetailed.get(0).toString(), expectedJson, JSONCompareMode.STRICT);
+        expectedJson, coursesDetailed.get(0).toString(), JSONCompareMode.STRICT);
   }
 
   @Test
@@ -108,6 +111,6 @@ public final class TestCourseList {
     JSONParser parser = new JSONParser();
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Internal server error.\",\"status\":\"error\"}";
-    JSONAssert.assertEquals(responseJson.toString(), expectedJson, JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
   }
 }
