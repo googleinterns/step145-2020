@@ -25,7 +25,7 @@ window.addEventListener('load', () => {
    */
   async function getOptions() {
     const response = await fetch('/courses');
-    courseList = await response.json();
+    const courseList = await response.json();
     const courseContainer = document.getElementById('courses');
     courseContainer.innerHTML = '';
     addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
@@ -125,7 +125,7 @@ window.addEventListener('load', () => {
        */
       async function getPlan() {
         const courseContainer = document.getElementById('order-area');
-        createSpinner(courseContainer);
+        attachNewSpinner(courseContainer);
         data = {
           selectedClasses: selected.join(','),
           semesters: document.getElementById('semesters').value
@@ -135,15 +135,15 @@ window.addEventListener('load', () => {
           body: JSON.stringify(data),
         });
 
-        courseList = await response.json();
+        const courseList = await response.json();
         createTable(courseList, courseContainer);
       }
 
       /**
-       * Creates spinner to signify loading
+       * Creates spinner to signify loading and adds to the courseContainer
        * @param {Object} courseContainer container for course list
        */
-      function createSpinner(courseContainer) {
+      function attachNewSpinner(courseContainer) {
         const spinner = document.createElement('i');
         spinner.setAttribute('class', 'fas fa-sync fa-spin');
         courseContainer.innerText = '';
@@ -160,16 +160,15 @@ window.addEventListener('load', () => {
         const table = document.createElement('table');
         const tableBody = document.createElement('tbody');
         table.setAttribute('class', 'table table-hover mb-0;');
-        let i = 1;
-        tableData.forEach(function(rowData) {
+        tableData.forEach((rowData, i) => {
           const row = document.createElement('tr');
           const cell = document.createElement('td');
           const semesterLabel = document.createElement('b');
-          semesterLabel.innerText = `Semester ${i}:`;
+          semesterLabel.innerText = `Semester ${i + 1}:`;
           cell.appendChild(semesterLabel);
           row.appendChild(cell);
 
-          rowData.forEach(function(cellData) {
+          rowData.forEach((cellData) => {
             const cell = document.createElement('td');
             cell.appendChild(document.createTextNode(cellData));
             row.appendChild(cell);
