@@ -24,9 +24,6 @@ import org.junit.runners.JUnit4;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import org.apache.http.client.utils.URIBuilder;
-import java.net.URISyntaxException;
-
 /** Tests CourseListServlet */
 @RunWith(JUnit4.class)
 public final class TestCourseList {
