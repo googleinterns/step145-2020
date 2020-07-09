@@ -126,16 +126,14 @@ window.addEventListener('load', () => {
       async function getPlan() {
         const courseContainer = document.getElementById('order-area');
         createSpinner(courseContainer);
-        const response = await fetch(
-            `/planner?selectedClasses=${selected.toString()}&semesters=${
-                document.getElementById('semesters').value}`,
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              method: 'POST',
-            });
+        data = {
+          selectedClasses: selected.join(','),
+          semesters: document.getElementById('semesters').value
+        };
+        const response = await fetch('/planner', {
+          method: 'POST',
+          body: JSON.stringify(data),
+        });
 
         courseList = await response.json();
         createTable(courseList, courseContainer);
