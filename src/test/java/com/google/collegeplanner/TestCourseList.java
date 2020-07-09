@@ -39,7 +39,7 @@ public final class TestCourseList {
     Assert.assertNotNull(coursesDetailed);
     // Checks that the correct number of JSON Objects are contained
     Assert.assertEquals(coursesDetailed.size(), 30);
-    // Checks whether the first one is CMSC10
+    // Checks whether the first one is correct
     String expectedJson = "{"
         + "\"course_id\":\"AASP100\","
         + "\"core\":[\"SH\",\"D\"],"
