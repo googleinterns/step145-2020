@@ -66,6 +66,7 @@ public class CourseListServlet extends HttpServlet {
     if (jsonArray == null) {
       respondWithError(
           "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      return;
     }
 
     JSONObject schoolCourseInfo = new JSONObject();
