@@ -20,7 +20,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests CourseListServlet */
 @RunWith(JUnit4.class)
-public final class TestPlanner {
+public final class PlannerTest {
   @Test
   public void servletResponseIsCorrect() throws Exception {
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);

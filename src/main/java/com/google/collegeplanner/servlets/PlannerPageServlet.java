@@ -15,12 +15,12 @@
 package com.google.collegeplanner.servlets;
 
 import java.io.IOException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 
 /** Servlet that renders the /planner page.*/
 @WebServlet("/planner")
@@ -29,8 +29,9 @@ public class PlannerPageServlet extends HttpServlet {
    * Renders planner.jsp
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    RequestDispatcher view = request.getRequestDispatcher("vendor/startbootstrap/planner.jsp");      
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    RequestDispatcher view = request.getRequestDispatcher("planner.jsp");
     view.forward(request, response);
   }
 }

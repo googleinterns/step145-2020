@@ -13,22 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-window.addEventListener('load', () => {
-  function initCalendar() {
-    new tui.Calendar('#calendar', {
-      defaultView: 'week',
-      useCreationPopup: true,
-      useDetailPopup: true,
-      disableDblClick: true,
-      disableClick: true,
-      isReadOnly: true,
-      scheduleView: ['time'],
-      taskView: false,
-      week: {
-        workweek: true,
-      },
-    });
-  }
+function initCalendar() {
+  new tui.Calendar('#calendar', {
+    defaultView: 'week',
+    useCreationPopup: true,
+    useDetailPopup: true,
+    disableDblClick: true,
+    disableClick: true,
+    isReadOnly: true,
+    scheduleView: ['time'],
+    taskView: false,
+    week: {
+      workweek: true,
+    },
+  });
+}
 
+window.addEventListener('load', () => {
   initCalendar();
 });

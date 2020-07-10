@@ -34,7 +34,7 @@ public class PlannerServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Implement algorithm to split into the number of semesters
+    // TODO(ramyabuva): Implement algorithm to split into the number of semesters
     JSONObject body;
     try {
       body = getBody(request);
@@ -52,10 +52,9 @@ public class PlannerServlet extends HttpServlet {
 
   private static JSONObject getBody(HttpServletRequest request)
       throws IOException, ParseException, NullPointerException {
-    String strBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+    String strBody =
+        request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     JSONParser parser = new JSONParser();
-    JSONObject bodyJson = (JSONObject) parser.parse(strBody);
-
-    return bodyJson;
+    return (JSONObject) parser.parse(strBody);
   }
 }

@@ -14,7 +14,7 @@
 export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
-  let courseIdNameMap = {};
+  let courseIdNameMap = {};  // JSON mapping of course ID {string} to course name {string}
 
   /**
    * Gets courses from /courselist servlet to populate dropdown list
@@ -32,14 +32,13 @@ export const CollegePlanner = (() => {
     courseContainer.appendChild(option);
     // Add each course to course list
     const coursesDetailed = courseList.courses_detailed;
-    coursesDetailed.forEach(
-        course =>
-            addOption(course, courseContainer));
+    coursesDetailed.forEach(course => addOption(course, courseContainer));
   }
 
   /**
    * Creates options in select list
-   * @param {JSON Object} course The JSON Object for the course to add to the dropdown
+   * @param {Object} course The JSON Object for the course to add to the
+   *     dropdown
    * @param {string} container The id name of the container you want to add
    *     options to
    */
@@ -106,5 +105,4 @@ export const CollegePlanner = (() => {
     selected: selected,
     courses: courses,
   };
-
 })();
