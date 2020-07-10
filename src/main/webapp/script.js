@@ -13,6 +13,93 @@
 // limitations under the License.
 
 window.addEventListener('load', () => {
+  let selected = [];  // Courses selected by the user
+  let courses = [];   // List with all courses
+
+  document.getElementById('add-selected').addEventListener('click', () => {
+    addToSelected();
+  });
+
+  /**
+   * Gets courses from /courselist servlet to populate dropdown list
+   */
+  async function getOptions() {
+    const response = await fetch('/api/courses');
+    courseList = await response.json();
+    const courseContainer = document.getElementById('courses');
+    courseContainer.innerHTML = '';
+    addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
+    coursesDetailed = courseList.courses_detailed;
+    coursesDetailed.forEach(
+        course =>
+            addOption(course.name, courseContainer, /*shouldSetValue=*/ true));
+  }
+
+  /**
+   * Creates options in select list
+   * @param {string} course The name of the course to add to the dropdown
+   * @param {string} container The id name of the container you want to add
+   *     options to
+   * @param {boolean} shouldSetValue Whether to set the value of the option to
+   *     the string
+   */
+  function addOption(course, courseContainer, shouldSetValue) {
+    const option = document.createElement('option');
+    option.innerText = course;
+    if (shouldSetValue) {
+      courses.push(course);
+      option.value = course;
+    } else {
+      option.selected = true;
+      option.hidden = true;
+    }
+    courseContainer.appendChild(option);
+  }
+
+  /**
+   * Adds a course to the list of selected courses
+   */
+  function addToSelected() {
+    const courseContainer = document.getElementById('selected-classes');
+    const courseSelection = document.getElementById('courses');
+    const selectedCourse =
+        courseSelection.options[courseSelection.selectedIndex].value;
+    if (!selected.includes(selectedCourse) &&
+        courses.includes(selectedCourse)) {
+      selected.push(selectedCourse);
+      courseContainer.appendChild(createCourseListElement(selectedCourse));
+    }
+  }
+
+  /**
+   * Creates a list element for a course
+   * @param {string} course The name of the course to add to the list of
+   *     selected courses
+   */
+  function createCourseListElement(course) {
+    const liElement = document.createElement('li');
+    liElement.setAttribute('class', 'list-group-item');
+
+    const courseName = document.createElement('b');
+    courseName.innerText = course;
+    liElement.append(courseName);
+
+    const deleteButtonElement = document.createElement('button');
+    const buttonImage = document.createElement('i');
+    buttonImage.setAttribute('class', 'fas fa-trash-alt');
+    deleteButtonElement.appendChild(buttonImage);
+    deleteButtonElement.setAttribute(
+        'class', 'float-right rounded-circle border-0');
+    deleteButtonElement.addEventListener('click', () => {
+      liElement.remove();
+      selected = selected.filter(value => value != course);
+    });
+    liElement.appendChild(deleteButtonElement);
+    return liElement;
+  }
+
+  getOptions();
+
   function initCalendar() {
     new tui.Calendar('#calendar', {
       defaultView: 'week',
