@@ -14,20 +14,13 @@
 
 package com.google.collegeplanner.servlets;
 
-import com.google.gson.Gson;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /** Servlet that renders the /planner page.*/
 @WebServlet("/planner")
