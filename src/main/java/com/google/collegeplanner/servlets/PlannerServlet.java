@@ -15,9 +15,8 @@
 package com.google.collegeplanner.servlets;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -51,18 +50,11 @@ public class PlannerServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(courses));
   }
 
-  public static JSONObject getBody(HttpServletRequest request)
+  private static JSONObject getBody(HttpServletRequest request)
       throws IOException, ParseException, NullPointerException {
-    BufferedReader body = request.getReader();
-    String strBody = "";
-    String toAdd;
-    while ((toAdd = body.readLine()) != null) {
-      strBody += toAdd;
-    }
-    body.close();
-    JSONObject bodyJson;
+    String strBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     JSONParser parser = new JSONParser();
-    bodyJson = (JSONObject) parser.parse(strBody);
+    JSONObject bodyJson = (JSONObject) parser.parse(strBody);
 
     return bodyJson;
   }
