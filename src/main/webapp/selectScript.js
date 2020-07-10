@@ -11,14 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-window.addEventListener('load', () => {
+export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
-
-  document.getElementById('add-selected').addEventListener('click', () => {
-    addToSelected();
-  });
 
   /**
    * Gets courses from /courselist servlet to populate dropdown list
@@ -29,7 +24,7 @@ window.addEventListener('load', () => {
     const courseContainer = document.getElementById('courses');
     courseContainer.innerHTML = '';
     addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
-    coursesDetailed = courseList.courses_detailed;
+    const coursesDetailed = courseList.courses_detailed;
     coursesDetailed.forEach(
         course =>
             addOption(course.name, courseContainer, /*shouldSetValue=*/ true));
@@ -97,24 +92,17 @@ window.addEventListener('load', () => {
     liElement.appendChild(deleteButtonElement);
     return liElement;
   }
+  window.addEventListener('load', () => {
+    getOptions();
+  });
+  document.getElementById('add-selected').addEventListener('click', () => {
+    addToSelected();
+  });
 
-  getOptions();
 
-  function initCalendar() {
-    new tui.Calendar('#calendar', {
-      defaultView: 'week',
-      useCreationPopup: true,
-      useDetailPopup: true,
-      disableDblClick: true,
-      disableClick: true,
-      isReadOnly: true,
-      scheduleView: ['time'],
-      taskView: false,
-      week: {
-        workweek: true,
-      },
-    });
-  }
+  return {
+    selected: selected,
+    courses: courses,
+  };
 
-  initCalendar();
-});
+})();
