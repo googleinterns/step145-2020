@@ -10,4 +10,4 @@ target/
 .idea
 
 # Ignore generated index.html
-src/main/webapp/index.html
+src/main/webapp/index.jsp

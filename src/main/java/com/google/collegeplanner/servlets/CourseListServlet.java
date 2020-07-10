@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 /** Servlet that returns list of courses.*/
-@WebServlet("/courses")
+@WebServlet("/api/courses")
 public class CourseListServlet extends HttpServlet {
   /**
    * Reads from Datastore and returns response with course details

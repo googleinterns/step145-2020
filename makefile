@@ -8,7 +8,7 @@ node_modules:
 	npm install prettier clang-format css-validator html-validate eslint eslint-config-google
 
 devprep: 
-	cp src/main/webapp/vendor/startbootstrap/index.html src/main/webapp/index.html
+	cp src/main/webapp/vendor/startbootstrap/index.jsp src/main/webapp/index.jsp
 
 devserver: devprep
 	mvn package appengine:run

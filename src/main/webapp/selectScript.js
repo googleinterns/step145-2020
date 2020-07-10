@@ -19,7 +19,7 @@ export const CollegePlanner = (() => {
    * Gets courses from /courselist servlet to populate dropdown list
    */
   async function getOptions() {
-    const response = await fetch('/courses');
+    const response = await fetch('/api/courses');
     const courseList = await response.json();
     const courseContainer = document.getElementById('courses');
     courseContainer.innerHTML = '';
