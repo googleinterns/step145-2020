@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-export const CollegePlanner = (function() {
+export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
 
@@ -100,9 +100,9 @@ export const CollegePlanner = (function() {
   });
 
 
-  const CollegePlanner = {
+  return {
     selected: selected,
     courses: courses,
   };
-  return CollegePlanner;
+
 })();
