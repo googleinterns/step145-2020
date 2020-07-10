@@ -14,38 +14,70 @@
 
 package com.google.collegeplanner.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.client.utils.URIBuilder;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /** Servlet that returns list of courses.*/
-@WebServlet("/courses")
+@WebServlet("/api/courses")
 public class CourseListServlet extends HttpServlet {
+  ApiUtil apiUtil;
+
+  public CourseListServlet() {
+    this.apiUtil = new ApiUtil();
+  }
+
+  public CourseListServlet(ApiUtil apiUtil) {
+    this.apiUtil = apiUtil;
+  }
+
   /**
    * Reads from Datastore and returns response with course details
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Store and retrieve from Datastore
-    String[] courseIdList = new String[] {"CMSC101", "CMSC106", "CMSC122", "CMSC131", "CMSC132",
-        "CMSC133", "CMSC216", "CMSC250", "CMSC298A", "CMSC320", "CMSC330", "CMSC351", "CMSC388J",
-        "CMSC389A", "CMSC389B", "CMSC389E", "CMSC389N", "CMSC390O"};
 
-    ArrayList<JSONObject> courses = new ArrayList<>();
-    for (String course : courseIdList) {
-      JSONObject newCourse = new JSONObject();
-      newCourse.put("name", course);
-      courses.add(newCourse);
+    // Create the URI and specify the parameters.
+    URI uri;
+    try {
+      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
+      builder.setParameter("semester", "202008");
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      respondWithError(
+          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      return;
+    }
+
+    JSONArray jsonArray = apiUtil.getJsonArray(uri);
+    if (jsonArray == null) {
+      respondWithError(
+          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      return;
     }
 
     JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses_detailed", courses);
+    schoolCourseInfo.put("courses_detailed", jsonArray);
 
     response.setContentType("applications/json;");
     response.getWriter().println(schoolCourseInfo);
+  }
+
+  private void respondWithError(String message, int errorType, HttpServletResponse response)
+      throws IOException {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("message", message);
+    jsonObject.put("status", "error");
+    response.setStatus(errorType);
+    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
