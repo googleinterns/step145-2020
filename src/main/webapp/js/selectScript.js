@@ -14,7 +14,10 @@
 export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
-  let courseIdNameMap = {};  // JSON mapping of course ID {string} to course name {string}
+  /**
+   * @type {{courseId: string}, {courseName: string}}
+   */
+  const courseNames = {};
 
   /**
    * Gets courses from /courselist servlet to populate dropdown list
@@ -23,7 +26,8 @@ export const CollegePlanner = (() => {
     const response = await fetch('/api/courses');
     const courseList = await response.json();
     const courseContainer = document.getElementById('courses');
-    courseContainer.innerHTML = '';
+    courseContainer.innerHTML =
+        '';  // Clearing courseContainer to get rid of previous options
     // Add default option to course list
     const option = document.createElement('option');
     option.innerText = 'Select a Course';
@@ -43,7 +47,7 @@ export const CollegePlanner = (() => {
    *     options to
    */
   function addOption(course, courseContainer) {
-    courseIdNameMap[`${course.course_id}`] = course.name;
+    courseNames[course.course_id] = course.name;
     const option = document.createElement('option');
     option.innerText = course.course_id;
     courses.push(course.course_id);
@@ -78,7 +82,7 @@ export const CollegePlanner = (() => {
     const courseId = document.createElement('b');
     courseId.innerText = `${course}: `;
     liElement.append(courseId);
-    liElement.append(document.createTextNode(courseIdNameMap[course]))
+    liElement.append(document.createTextNode(courseNames[course]))
 
     const deleteButtonElement = document.createElement('button');
     const buttonImage = document.createElement('i');
