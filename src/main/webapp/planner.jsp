@@ -15,5 +15,5 @@ limitations under the License.
 --%>
 <jsp:include page="vendor/startbootstrap/template.jsp">
   <jsp:param name="content" value="planner-content"/>
-  <jsp:param name="scriptFile" value="plannerScript"/>
+  <jsp:param name="scriptFile" value="planner"/>
 </jsp:include>

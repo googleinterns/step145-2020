@@ -188,7 +188,7 @@
     <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
 
     <!-- Our scripts -->
-    <script type="module" src="js/selectScript.js"></script>
+    <script type="module" src="js/courseSelector.js"></script>
     <script type="module" src="js/${param.scriptFile}.js"></script>
   </body>
 
