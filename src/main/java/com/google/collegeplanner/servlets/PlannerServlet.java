@@ -39,9 +39,9 @@ public class PlannerServlet extends HttpServlet {
     try {
       body = getBody(request);
     } catch (ParseException | NullPointerException e) {
-      body = new JSONObject();
-      body.put("error", "invalid body for POST request");
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      respondWithError(
+          "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
+      return;
     }
     String strClasses = (String) body.get("selectedClasses");
     // Returns the courses in a single semester
@@ -56,5 +56,14 @@ public class PlannerServlet extends HttpServlet {
         request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     JSONParser parser = new JSONParser();
     return (JSONObject) parser.parse(strBody);
+  }
+
+  private void respondWithError(String message, int errorType, HttpServletResponse response)
+      throws IOException {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("message", message);
+    jsonObject.put("status", "error");
+    response.setStatus(errorType);
+    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
