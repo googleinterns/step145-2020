@@ -41,6 +41,6 @@ public final class PlannerPageTest {
     when(mockedRequest.getRequestDispatcher("planner.jsp")).thenReturn(mockRequestDispatcher);
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
     PlannerPageServlet servlet = new PlannerPageServlet();
-    servlet.doGet(mockedRequest, null);
+    servlet.doGet(mockedRequest, mockedResponse);
   }
 }
