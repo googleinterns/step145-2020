@@ -14,7 +14,9 @@ public final class TestClass {
   "202008", 4, "CMSC", "Introductory class to Computer Science", GRADING_SYSTEM, 
   null, null, null, null, null);
 
-  // This method tests the getSemesterSeason() method of the Class class
+  /* 
+   * This method tests the getSemesterSeason() method of the Class class
+   */
   @Test
   public void getSemesterSeasonTest() {
     String actual = CMSC101.getSemesterSeason();
@@ -22,7 +24,9 @@ public final class TestClass {
     Assert.assertEquals(expected, actual);
   }
 
-  // This method tests the getSemesterYear() method of the Class class
+  /* 
+   * This method tests the getSemesterYear() method of the Class class
+   */
   @Test
   public void getSemesterYearTest() {
     int actual = CMSC101.getSemesterYear();

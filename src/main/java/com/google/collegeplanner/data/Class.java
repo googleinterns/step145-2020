@@ -30,11 +30,15 @@ public class Class {
     this.creditGrantedFor = creditGrantedFor; 
   }
 
-  // Returns the season of the semester
-  // The format of the semester String is the four digit year followed by
-  // the two digit start month.
+  /* 
+   * Returns the season of the semester
+   * The format of the semester String is the four digit year followed by
+   * the two digit start month.
+   */
   public String getSemesterSeason() {
-    // startMonth stores the last two digits of the semester String as an int
+    /*
+     * startMonth stores the last two digits of the semester String as an int
+     */
     int startMonth = Integer.parseInt(semester) % 100;
 
     if(startMonth == 1 || startMonth == 2) {
@@ -50,8 +54,10 @@ public class Class {
     return "Winter";
   }
 
-  // Returns the year of the semester, which is the first four digits of the
-  // semester String as an int
+  /*
+   * Returns the year of the semester, which is the first four digits of the
+   * semester String as an int
+   */
   public int getSemesterYear() {
     return Integer.parseInt(semester.substring(0,4));
   }
