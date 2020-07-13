@@ -15,9 +15,9 @@ export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
   /**
-   * @type {{courseId: string}, {courseName: string}}
+   * @type {{courseId: string}, {course: Object}}
    */
-  const courseNames = {};
+  const courseInfo = {};
 
   /**
    * Gets departments from /api/departments servlet to populate dropdown list
@@ -76,7 +76,6 @@ export const CollegePlanner = (() => {
     coursesDetailed.forEach(course => addCourseOption(course, courseContainer));
   }
 
-
   /**
    * Creates options in select courses list
    * @param {Object} course The JSON Object for the course to add to the
@@ -85,7 +84,7 @@ export const CollegePlanner = (() => {
    *     options to
    */
   function addCourseOption(course, courseContainer) {
-    courseNames[course.course_id] = course.name;
+    courseInfo[course.course_id] = course;
     const option = document.createElement('option');
     option.innerText = course.course_id;
     courses.push(course.course_id);
@@ -120,7 +119,7 @@ export const CollegePlanner = (() => {
     const courseId = document.createElement('b');
     courseId.innerText = `${course}: `;
     liElement.append(courseId);
-    liElement.append(document.createTextNode(courseNames[course]))
+    liElement.append(document.createTextNode(courseInfo[course].name))
 
     const deleteButtonElement = document.createElement('button');
     const buttonImage = document.createElement('i');
@@ -145,9 +144,21 @@ export const CollegePlanner = (() => {
     getCourseOptions();
   });
 
+  function getSelected(){
+      return selected;
+  }
+
+  function getCourses(){
+      return courses;
+  }
+
+  function getCourseInfo(){
+      return courseInfo;
+  }
 
   return {
-    selected: selected,
-    courses: courses,
+    getSelected: getSelected,
+    getCourses, getCourses,
+    getCourseInfo, getCourseInfo
   };
 })();
