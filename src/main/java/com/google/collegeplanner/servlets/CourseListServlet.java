@@ -48,8 +48,9 @@ public class CourseListServlet extends HttpServlet {
     String department = request.getParameter("department");
     URI uri;
     try {
-      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses?dept_id=" + department);
+      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
       builder.setParameter("semester", "202008");
+      builder.setParameter("dept_id", department);
       uri = builder.build();
     } catch (URISyntaxException e) {
       respondWithError(
