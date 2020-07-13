@@ -26,29 +26,28 @@ import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns list of courses.*/
-@WebServlet("/api/courses")
-public class CourseListServlet extends HttpServlet {
+/** Servlet that returns list of departments.*/
+@WebServlet("/api/departments")
+public class DepartmentServlet extends HttpServlet {
   ApiUtil apiUtil;
 
-  public CourseListServlet() {
+  public DepartmentServlet() {
     this.apiUtil = new ApiUtil();
   }
 
-  public CourseListServlet(ApiUtil apiUtil) {
+  public DepartmentServlet(ApiUtil apiUtil) {
     this.apiUtil = apiUtil;
   }
 
   /**
-   * Reads from Datastore and returns response with course details
+   * Reads from Datastore and returns response with department details
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Create the URI and specify the parameters.
-    String department = request.getParameter("department");
     URI uri;
     try {
-      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses?dept_id=" + department);
+      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses/departments");
       builder.setParameter("semester", "202008");
       uri = builder.build();
     } catch (URISyntaxException e) {
@@ -64,11 +63,11 @@ public class CourseListServlet extends HttpServlet {
       return;
     }
 
-    JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses_detailed", jsonArray);
+    JSONObject schoolDeptInfo = new JSONObject();
+    schoolDeptInfo.put("department_details", jsonArray);
 
     response.setContentType("applications/json;");
-    response.getWriter().println(schoolCourseInfo);
+    response.getWriter().println(schoolDeptInfo);
   }
 
   private void respondWithError(String message, int errorType, HttpServletResponse response)

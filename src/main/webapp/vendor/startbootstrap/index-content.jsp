@@ -20,10 +20,16 @@
         <div class="card-body">
           <form onsubmit="return false">
             <div class="form-row">
-              <div class="form-group col-md-10">
+              <div class="form-group col-md-2">
+                <label for="semesters"><b>Department:</b></label>
+                <select id="departments" class="form-control"></select>
+              </div>
+              <div class="form-group col-md-8">
+                <label for="semesters"><b>Course:</b></label>
                 <select id="courses" class="form-control"></select>
               </div>
               <div class="form-group col-md-2 text-center">
+                <br>
                 <button
                   class="rounded-circle border-0 btn-lg"
                   id="add-selected"
