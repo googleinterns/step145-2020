@@ -46,6 +46,11 @@ public class CourseListServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Create the URI and specify the parameters.
     String department = request.getParameter("department");
+    if (department == null || department == "") {
+      respondWithError(
+          "Invalid query parameters.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      return;
+    }
     URI uri;
     try {
       URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
