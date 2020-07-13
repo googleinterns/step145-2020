@@ -35,7 +35,7 @@ export const CollegePlanner = (() => {
     option.hidden = true;
     departmentContainer.appendChild(option);
     // Add each course to course list
-    const departmentsDetailed = departmentList.department_details;
+    const departmentsDetailed = departmentList.departments_detailed;
     departmentsDetailed.forEach(department => addDepartmentOption(department, departmentContainer));
   }
 

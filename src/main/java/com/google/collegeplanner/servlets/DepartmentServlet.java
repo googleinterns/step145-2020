@@ -40,7 +40,7 @@ public class DepartmentServlet extends HttpServlet {
   }
 
   /**
-   * Reads from Datastore and returns response with department details
+   * Calls API and returns response with department details
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -64,7 +64,7 @@ public class DepartmentServlet extends HttpServlet {
     }
 
     JSONObject schoolDeptInfo = new JSONObject();
-    schoolDeptInfo.put("department_details", jsonArray);
+    schoolDeptInfo.put("departments_detailed", jsonArray);
 
     response.setContentType("applications/json;");
     response.getWriter().println(schoolDeptInfo);

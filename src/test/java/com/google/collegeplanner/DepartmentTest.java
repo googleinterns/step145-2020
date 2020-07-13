@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.collegeplanner.servlets.ApiUtil;
-import com.google.collegeplanner.servlets.CourseListServlet;
+import com.google.collegeplanner.servlets.DepartmentServlet;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
@@ -37,10 +37,9 @@ import org.junit.runners.JUnit4;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-/** Tests CourseListServlet */
+/** Tests DepartmentServlet */
 @RunWith(JUnit4.class)
-public final class CourseListTest {
-  HttpServletRequest mockedRequest;
+public final class DepartmentTest {
   HttpServletResponse mockedResponse;
   StringWriter stringWriter;
   PrintWriter writer;
@@ -53,9 +52,6 @@ public final class CourseListTest {
     writer = new PrintWriter(stringWriter);
     parser = new JSONParser();
     when(mockedResponse.getWriter()).thenReturn(writer);
-
-    mockedRequest = mock(HttpServletRequest.class);
-    when(mockedRequest.getParameter("department")).thenReturn("AASP");
   }
 
   @After
@@ -64,68 +60,33 @@ public final class CourseListTest {
   }
 
   @Test
-  public void servletResponseHasCourses() throws Exception {
-    CourseListServlet servlet = new CourseListServlet();
-    servlet.doGet(mockedRequest, mockedResponse);
+  public void servletResponseHasDepartments() throws Exception {
+    DepartmentServlet servlet = new DepartmentServlet();
+    servlet.doGet(null, mockedResponse);
 
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
-    JSONArray coursesDetailed = (JSONArray) responseObj.get("courses_detailed");
+    JSONArray departmentsDetailed = (JSONArray) responseObj.get("departments_detailed");
 
-    // Tests that courses_detailed exists
-    Assert.assertNotNull(coursesDetailed);
+    // Tests that departments_detailed exists
+    Assert.assertNotNull(departmentsDetailed);
     // Checks that the correct number of JSON Objects are contained
-    Assert.assertEquals(coursesDetailed.size(), 29);
+    Assert.assertEquals(departmentsDetailed.size(), 199);
     // Checks whether the first one is correct
-    String expectedJson = "{"
-        + "\"course_id\":\"AASP100\","
-        + "\"core\":[\"SH\",\"D\"],"
-        + "\"relationships\":{"
-        + "  \"coreqs\":null,"
-        + "  \"additional_info\":null,"
-        + "  \"restrictions\":null,"
-        + "  \"credit_granted_for\":null,"
-        + "  \"also_offered_as\":null,"
-        + "  \"formerly\":null,"
-        + "  \"prereqs\":null"
-        + "},"
-        + "\"credits\":\"3\","
-        + "\"name\":\"Introduction to African American Studies\","
-        + "\"description\":\"Significant aspects of the history of African Americans "
-        + "with particular emphasis on the evolution and development of black communities "
-        + "from slavery to the present. Interdisciplinary introduction to social, "
-        + "political, legal and economic roots of contemporary problems faced by blacks "
-        + "in the United States with applications to the lives of other racial and ethnic "
-        + "minorities in the Americas and in other societies.\","
-        + "\"semester\":\"202008\","
-        + "\"gen_ed\":[[\"DSHS\",\"DVUP\"]],"
-        + "\"dept_id\":\"AASP\","
-        + "\"department\":\"African American Studies\","
-        + "\"grading_method\":[\"Regular\",\"Pass-Fail\",\"Audit\"],"
-        + "\"sections\":["
-        + "  \"AASP100-0101\","
-        + "  \"AASP100-0201\","
-        + "  \"AASP100-0301\","
-        + "  \"AASP100-0401\","
-        + "  \"AASP100-0501\","
-        + "  \"AASP100-0601\","
-        + "  \"AASP100-0701\""
-        + "]"
-        + "}";
+    String expectedJson = "{\"dept_id\":\"AAPS\",\"department\":\"Academic Achievement Programs\"}";
     JSONAssert.assertEquals(
-        expectedJson, coursesDetailed.get(0).toString(), JSONCompareMode.STRICT);
+        expectedJson, departmentsDetailed.get(0).toString(), JSONCompareMode.STRICT);
   }
 
   @Test
   public void returnsErrorJson() throws Exception {
     ApiUtil apiUtil = mock(ApiUtil.class);
     when(apiUtil.getJsonArray(any(URI.class))).thenReturn(null);
-    CourseListServlet servlet = new CourseListServlet(apiUtil);
-    servlet.doGet(mockedRequest, mockedResponse);
+    DepartmentServlet servlet = new DepartmentServlet(apiUtil);
+    servlet.doGet(null, mockedResponse);
 
     JSONParser parser = new JSONParser();
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Internal server error.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
   }
-
 }
