@@ -14,40 +14,44 @@
 export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
+  /**
+   * @type {{courseId: string}, {courseName: string}}
+   */
+  const courseNames = {};
 
   /**
    * Gets courses from /courselist servlet to populate dropdown list
    */
   async function getOptions() {
     const response = await fetch('/api/courses');
-    courseList = await response.json();
+    const courseList = await response.json();
     const courseContainer = document.getElementById('courses');
-    courseContainer.innerHTML = '';
-    addOption('Select a Course', courseContainer, /*shouldSetValue=*/ false);
+    courseContainer.innerHTML =
+        '';  // Clearing courseContainer to get rid of previous options
+    // Add default option to course list
+    const option = document.createElement('option');
+    option.innerText = 'Select a Course';
+    option.selected = true;
+    option.hidden = true;
+    courseContainer.appendChild(option);
+    // Add each course to course list
     const coursesDetailed = courseList.courses_detailed;
-    coursesDetailed.forEach(
-        course =>
-            addOption(course.name, courseContainer, /*shouldSetValue=*/ true));
+    coursesDetailed.forEach(course => addOption(course, courseContainer));
   }
 
   /**
    * Creates options in select list
-   * @param {string} course The name of the course to add to the dropdown
+   * @param {Object} course The JSON Object for the course to add to the
+   *     dropdown
    * @param {string} container The id name of the container you want to add
    *     options to
-   * @param {boolean} shouldSetValue Whether to set the value of the option to
-   *     the string
    */
-  function addOption(course, courseContainer, shouldSetValue) {
+  function addOption(course, courseContainer) {
+    courseNames[course.course_id] = course.name;
     const option = document.createElement('option');
-    option.innerText = course;
-    if (shouldSetValue) {
-      courses.push(course);
-      option.value = course;
-    } else {
-      option.selected = true;
-      option.hidden = true;
-    }
+    option.innerText = course.course_id;
+    courses.push(course.course_id);
+    option.value = course.course_id;
     courseContainer.appendChild(option);
   }
 
@@ -75,9 +79,10 @@ export const CollegePlanner = (() => {
     const liElement = document.createElement('li');
     liElement.setAttribute('class', 'list-group-item');
 
-    const courseName = document.createElement('b');
-    courseName.innerText = course;
-    liElement.append(courseName);
+    const courseId = document.createElement('b');
+    courseId.innerText = `${course}: `;
+    liElement.append(courseId);
+    liElement.append(document.createTextNode(courseNames[course]))
 
     const deleteButtonElement = document.createElement('button');
     const buttonImage = document.createElement('i');
@@ -104,5 +109,4 @@ export const CollegePlanner = (() => {
     selected: selected,
     courses: courses,
   };
-
 })();

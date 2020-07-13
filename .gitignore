@@ -8,6 +8,3 @@ target/
 
 # Ignore editor config
 .idea
-
-# Ignore generated index.html
-src/main/webapp/index.html
