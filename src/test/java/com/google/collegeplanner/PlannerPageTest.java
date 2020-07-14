@@ -20,16 +20,15 @@ import com.google.collegeplanner.servlets.PlannerPageServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 
 /** Tests PlannerPageServlet */
 @RunWith(JUnit4.class)

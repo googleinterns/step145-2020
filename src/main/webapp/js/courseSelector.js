@@ -15,39 +15,78 @@ export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
   /**
-   * @type {{courseId: string}, {courseName: string}}
+   * @type {{courseId: string}, {course: Object}}
    */
-  const courseNames = {};
+  const courseInfo = {};
 
   /**
-   * Gets courses from /courselist servlet to populate dropdown list
+   * Gets departments from /api/departments servlet to populate dropdown list
    */
-  async function getOptions() {
-    const response = await fetch('/api/courses');
+  async function getDepartmentOptions() {
+    const response = await fetch('/api/departments');
+    const departmentList = await response.json();
+    const departmentContainer = document.getElementById('departments');
+    departmentContainer.innerHTML =
+        '';  // Clearing departmentContainer to get rid of previous options
+    // Add instruction to courseList dropdown
+    const option = document.createElement('option');
+    option.innerText = 'Select a Department';
+    option.selected = true;
+    option.hidden = true;
+    departmentContainer.appendChild(option);
+    // Add each course to course list
+    const departmentsDetailed = departmentList.departments;
+    departmentsDetailed.forEach(
+        department => addDepartmentOption(department, departmentContainer));
+  }
+
+  /**
+   * Creates options in departments select list
+   * @param {Object} department The JSON Object for the course to add to the
+   *     dropdown
+   * @param {Object} departmentContainer The element of the container you want
+   *     to add options to
+   */
+  function addDepartmentOption(department, departmentContainer) {
+    const option = document.createElement('option');
+    option.innerText = department.dept_id;
+    option.value = department.dept_id;
+    departmentContainer.appendChild(option);
+  }
+
+  /**
+   * Gets courses from /api/courses servlet to populate dropdown list
+   */
+  async function getCourseOptions() {
+    const departmentSelection = document.getElementById('departments');
+    const selectedDepartment =
+        departmentSelection.options[departmentSelection.selectedIndex].value;
+    const response = await fetch(
+        `/api/courses?department=${encodeURIComponent(selectedDepartment)}`);
     const courseList = await response.json();
     const courseContainer = document.getElementById('courses');
     courseContainer.innerHTML =
         '';  // Clearing courseContainer to get rid of previous options
-    // Add default option to course list
+    // Add default option to courses dropdown
     const option = document.createElement('option');
     option.innerText = 'Select a Course';
     option.selected = true;
     option.hidden = true;
     courseContainer.appendChild(option);
     // Add each course to course list
-    const coursesDetailed = courseList.courses_detailed;
-    coursesDetailed.forEach(course => addOption(course, courseContainer));
+    const coursesDetailed = courseList.courses;
+    coursesDetailed.forEach(course => addCourseOption(course, courseContainer));
   }
 
   /**
-   * Creates options in select list
+   * Creates options in select courses list
    * @param {Object} course The JSON Object for the course to add to the
    *     dropdown
-   * @param {string} container The id name of the container you want to add
-   *     options to
+   * @param {Object} courseContainer The element of the container you want to
+   *     add options to
    */
-  function addOption(course, courseContainer) {
-    courseNames[course.course_id] = course.name;
+  function addCourseOption(course, courseContainer) {
+    courseInfo[course.course_id] = course;
     const option = document.createElement('option');
     option.innerText = course.course_id;
     courses.push(course.course_id);
@@ -82,7 +121,7 @@ export const CollegePlanner = (() => {
     const courseId = document.createElement('b');
     courseId.innerText = `${course}: `;
     liElement.append(courseId);
-    liElement.append(document.createTextNode(courseNames[course]))
+    liElement.append(document.createTextNode(courseInfo[course].name))
 
     const deleteButtonElement = document.createElement('button');
     const buttonImage = document.createElement('i');
@@ -98,15 +137,30 @@ export const CollegePlanner = (() => {
     return liElement;
   }
   window.addEventListener('load', () => {
-    getOptions();
+    getDepartmentOptions();
   });
   document.getElementById('add-selected').addEventListener('click', () => {
     addToSelected();
   });
+  document.getElementById('departments').addEventListener('change', () => {
+    getCourseOptions();
+  });
 
+  function getSelected() {
+    return selected;
+  }
+
+  function getCourses() {
+    return courses;
+  }
+
+  function getCourseInfo() {
+    return courseInfo;
+  }
 
   return {
-    selected: selected,
-    courses: courses,
+    getSelected: getSelected,
+    getCourses: getCourses,
+    getCourseInfo: getCourseInfo
   };
 })();

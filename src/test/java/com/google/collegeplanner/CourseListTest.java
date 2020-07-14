@@ -13,8 +13,13 @@
 // limitations under the License.
 package com.google.collegeplanner;
 
+import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.collegeplanner.servlets.ApiUtil;
@@ -40,6 +45,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 /** Tests CourseListServlet */
 @RunWith(JUnit4.class)
 public final class CourseListTest {
+  HttpServletRequest mockedRequest;
   HttpServletResponse mockedResponse;
   StringWriter stringWriter;
   PrintWriter writer;
@@ -52,6 +58,9 @@ public final class CourseListTest {
     writer = new PrintWriter(stringWriter);
     parser = new JSONParser();
     when(mockedResponse.getWriter()).thenReturn(writer);
+
+    mockedRequest = mock(HttpServletRequest.class);
+    when(mockedRequest.getParameter("department")).thenReturn("AASP");
   }
 
   @After
@@ -61,18 +70,7 @@ public final class CourseListTest {
 
   @Test
   public void servletResponseHasCourses() throws Exception {
-    CourseListServlet servlet = new CourseListServlet();
-    servlet.doGet(null, mockedResponse);
-
-    JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
-    JSONArray coursesDetailed = (JSONArray) responseObj.get("courses_detailed");
-
-    // Tests that courses_detailed exists
-    Assert.assertNotNull(coursesDetailed);
-    // Checks that the correct number of JSON Objects are contained
-    Assert.assertEquals(coursesDetailed.size(), 30);
-    // Checks whether the first one is correct
-    String expectedJson = "{"
+    String expectedJson = "[{"
         + "\"course_id\":\"AASP100\","
         + "\"core\":[\"SH\",\"D\"],"
         + "\"relationships\":{"
@@ -106,9 +104,50 @@ public final class CourseListTest {
         + "  \"AASP100-0601\","
         + "  \"AASP100-0701\""
         + "]"
-        + "}";
-    JSONAssert.assertEquals(
-        expectedJson, coursesDetailed.get(0).toString(), JSONCompareMode.STRICT);
+        + "},{"
+        + "\"course_id\":\"AASP100H\","
+        + "\"core\":[\"SH\",\"D\"],"
+        + "\"relationships\":{"
+        + "  \"coreqs\":null,"
+        + "  \"additional_info\":null,"
+        + "  \"restrictions\":null,"
+        + "  \"credit_granted_for\":null,"
+        + "  \"also_offered_as\":null,"
+        + "  \"formerly\":null,"
+        + "  \"prereqs\":null"
+        + "},"
+        + "\"credits\":\"3\","
+        + "\"name\":\"Introduction to African American Studies\","
+        + "\"description\":\"Significant aspects of the history of African Americans "
+        + "with particular emphasis on the evolution and development of black communities "
+        + "from slavery to the present. Interdisciplinary introduction to social, "
+        + "political, legal and economic roots of contemporary problems faced by blacks "
+        + "in the United States with applications to the lives of other racial and ethnic "
+        + "minorities in the Americas and in other societies.\","
+        + "\"semester\":\"202008\","
+        + "\"gen_ed\":[[\"DSHS\",\"DVUP\"]],"
+        + "\"dept_id\":\"AASP\","
+        + "\"department\":\"African American Studies\","
+        + "\"grading_method\":[\"Regular\",\"Pass-Fail\",\"Audit\"],"
+        + "\"sections\":["
+        + "  \"AASP100H-0101\""
+        + "]"
+        + "}]";
+    JSONArray courses = (JSONArray) parser.parse(expectedJson);
+    ApiUtil mockedApiUtil = mock(ApiUtil.class);
+    when(mockedApiUtil.getJsonArray(any(URI.class))).thenReturn(courses);
+    CourseListServlet servlet = new CourseListServlet(mockedApiUtil);
+    servlet.doGet(mockedRequest, mockedResponse);
+
+    JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
+    JSONArray coursesDetailed = (JSONArray) responseObj.get("courses");
+
+    // Tests that response[courses] exists
+    Assert.assertNotNull(coursesDetailed);
+    // Checks that the correct number of JSON Objects are contained
+    Assert.assertEquals(coursesDetailed.size(), 2);
+    // Checks whether output is correct
+    JSONAssert.assertEquals(expectedJson, coursesDetailed.toString(), JSONCompareMode.STRICT);
   }
 
   @Test
@@ -116,9 +155,10 @@ public final class CourseListTest {
     ApiUtil apiUtil = mock(ApiUtil.class);
     when(apiUtil.getJsonArray(any(URI.class))).thenReturn(null);
     CourseListServlet servlet = new CourseListServlet(apiUtil);
-    servlet.doGet(null, mockedResponse);
-
-    JSONParser parser = new JSONParser();
+    servlet.doGet(mockedRequest, mockedResponse);
+    // Verifies whether status was set to SC_INTERNAL_SERVER_ERROR
+    verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    verify(mockedResponse, never()).setStatus(not(eq(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)));
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Internal server error.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
