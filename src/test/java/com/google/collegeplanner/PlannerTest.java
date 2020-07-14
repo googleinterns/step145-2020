@@ -42,6 +42,9 @@ public final class PlannerTest {
     String test =
         "{\"selectedClasses\":[{\"course_id\":\"AGNR499\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and s \"},"
         + "\"credits\":\"1\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC101\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi AGNR499 \"},"
+        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC106\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi AGNR499 \"},"
+        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC120\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi  \"},"
+        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"HELL120\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi CMSC106 and CMSC120 \"},"
         + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"}], \"semesters\": 4}";
     Reader inputString = new StringReader(test);
     BufferedReader reader = new BufferedReader(inputString);
@@ -55,7 +58,7 @@ public final class PlannerTest {
     servlet.doPost(mockedRequest, mockedResponse);
     writer.flush();
     // Check whether the string output is correct
-    JSONAssert.assertEquals(
-        stringWriter.toString(), "[[\"AGNR499\", \"CMSC101\"]]", JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(stringWriter.toString(),
+        "[[\"AGNR499\", \"CMSC106\",\"CMSC120\",\"CMSC101\",\"HELL120\"]]", JSONCompareMode.STRICT);
   }
 }
