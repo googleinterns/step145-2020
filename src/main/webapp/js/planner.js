@@ -19,8 +19,12 @@ import {CollegePlanner} from './courseSelector.js'
 async function getPlan() {
   const courseContainer = document.getElementById('order-area');
   attachNewSpinner(courseContainer);
+  const selectedClasses = []
+  CollegePlanner.getSelected().forEach(course =>
+    selectedClasses.push(CollegePlanner.getCourseInfo()[course])
+  );
   const data = {
-    selectedClasses: CollegePlanner.getSelected().join(','),
+    selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
   };
   const response = await fetch('/api/planner', {

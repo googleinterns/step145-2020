@@ -37,9 +37,10 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 @RunWith(JUnit4.class)
 public final class PlannerTest {
   @Test
-  public void servletResponseIsCorrect() throws Exception {
+  public void servletResponseIsCorrect() throws Exception { 
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
-    String test = "{\"selectedClasses\":\"CMSC101,CMSC106,CMSC122,CMSC131\", \"semesters\":4}";
+    String test = "{\"selectedClasses\":[{\"course_id\":\"AGNR499\",\"relationships\":{\"coreqs\":null,\"prereqs\":null},"
+    + "\"credits\":\"1\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"}], \"semesters\": 4}";
     Reader inputString = new StringReader(test);
     BufferedReader reader = new BufferedReader(inputString);
     when(mockedRequest.getReader()).thenReturn(reader);
@@ -52,7 +53,7 @@ public final class PlannerTest {
     servlet.doPost(mockedRequest, mockedResponse);
     writer.flush();
     // Check whether the string output is correct
-    JSONAssert.assertEquals(stringWriter.toString(),
-        "[[\"CMSC101\",\"CMSC106\",\"CMSC122\",\"CMSC131\"]]", JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(
+        stringWriter.toString(), "[[\"AGNR499\"]]",JSONCompareMode.STRICT);
   }
 }

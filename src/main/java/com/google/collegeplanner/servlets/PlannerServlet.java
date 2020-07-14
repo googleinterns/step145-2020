@@ -16,6 +16,7 @@ package com.google.collegeplanner.servlets;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,11 +44,16 @@ public class PlannerServlet extends HttpServlet {
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
-    String strClasses = (String) body.get("selectedClasses");
+    JSONArray selectedClasses = (JSONArray) body.get("selectedClasses");
     // Returns the courses in a single semester
-    String[][] courses = {strClasses.split(",")};
-    response.setContentType("applications/json;");
-    response.getWriter().println(new Gson().toJson(courses));
+    ArrayList<ArrayList<String>> semesters = new ArrayList<>();
+    ArrayList<String> semester = new ArrayList<>();
+    for (Object course : selectedClasses) {
+      semester.add((String)((JSONObject)course).get("course_id"));
+    }
+    semesters.add(semester);
+
+    response.getWriter().println(new Gson().toJson(semesters));
   }
 
   private static JSONObject getBody(HttpServletRequest request)
