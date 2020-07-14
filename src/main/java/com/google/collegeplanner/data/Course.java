@@ -1,6 +1,6 @@
 package com.google.collegeplanner.data;
 
-public class Class {
+public class Course {
   private String courseId;
   private String name;
   private String semester;
@@ -14,8 +14,9 @@ public class Class {
   private String additionalInfo;
   private String creditGrantedFor;
 
-  public Class(String courseId, String name, String semester, int credits, String deptId, String description, 
-  String[] gradingMethod, String coreqs, String prereqs, String restrictions, String additionalInfo, String creditGrantedFor) {
+  public Course(String courseId, String name, String semester, int credits, String deptId,
+      String description, String[] gradingMethod, String coreqs, String prereqs,
+      String restrictions, String additionalInfo, String creditGrantedFor) {
     this.courseId = courseId;
     this.name = name;
     this.semester = semester;
@@ -27,31 +28,32 @@ public class Class {
     this.prereqs = prereqs;
     this.restrictions = restrictions;
     this.additionalInfo = additionalInfo;
-    this.creditGrantedFor = creditGrantedFor; 
+    this.creditGrantedFor = creditGrantedFor;
   }
 
-  /* 
+  /*
    * Returns the season of the semester
    * The format of the semester String is the four digit year followed by
    * the two digit start month.
    */
   public String getSemesterSeason() {
-    /*
-     * startMonth stores the last two digits of the semester String as an int
-     */
+    // startMonth stores the last two digits of the semester String as an int
     int startMonth = Integer.parseInt(semester) % 100;
 
-    if(startMonth == 1 || startMonth == 2) {
-      return "Spring";
-    } else if(startMonth == 8 || startMonth == 9) {
-      return "Fall";
-    } else if(startMonth == 6) {
-      return "Summer I";
-    } else if(startMonth == 7) {
-      return "Summer II";
+    switch (startMonth) {
+      case 1:
+      case 2:
+        return "Spring";
+      case 6:
+        return "Summer I";
+      case 7:
+        return "Summer II";
+      case 8:
+      case 9:
+        return "Fall";
+      default:
+        return "Winter";
     }
-    
-    return "Winter";
   }
 
   /*
@@ -59,10 +61,11 @@ public class Class {
    * semester String as an int
    */
   public int getSemesterYear() {
-    return Integer.parseInt(semester.substring(0,4));
+    return Integer.parseInt(semester.substring(0, 4));
   }
 
   // Getter Methods
+
   public String getCourseId() {
     return courseId;
   }
