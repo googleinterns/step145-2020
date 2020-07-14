@@ -14,7 +14,6 @@ public final class TestCourse {
 
   @Before
   public void before() {
-      System.out.println("???");
     String[] gradingSystem = new String[] {"Regular", "Pass-Fail"};
     Course course = new Course("CMSC101", "Introduction to Computer Science", "202008", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
