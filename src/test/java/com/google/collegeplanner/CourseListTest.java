@@ -133,7 +133,6 @@ public final class CourseListTest {
         + "  \"AASP100H-0101\""
         + "]"
         + "}]";
-    JSONParser parser = new JSONParser();
     JSONArray courses = (JSONArray) parser.parse(expectedJson);
     ApiUtil mockedApiUtil = mock(ApiUtil.class);
     when(mockedApiUtil.getJsonArray(any(URI.class))).thenReturn(courses);
@@ -160,7 +159,6 @@ public final class CourseListTest {
     // Verifies whether status was set to SC_INTERNAL_SERVER_ERROR
     verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     verify(mockedResponse, never()).setStatus(not(eq(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)));
-    JSONParser parser = new JSONParser();
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Internal server error.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
