@@ -35,16 +35,17 @@ export const CollegePlanner = (() => {
     option.hidden = true;
     departmentContainer.appendChild(option);
     // Add each course to course list
-    const departmentsDetailed = departmentList.departments_detailed;
-    departmentsDetailed.forEach(department => addDepartmentOption(department, departmentContainer));
+    const departmentsDetailed = departmentList.departments;
+    departmentsDetailed.forEach(
+        department => addDepartmentOption(department, departmentContainer));
   }
 
   /**
    * Creates options in departments select list
    * @param {Object} department The JSON Object for the course to add to the
    *     dropdown
-   * @param {string} departmentContainer The id name of the container you want to add
-   *     options to
+   * @param {Object} departmentContainer The element of the container you want
+   *     to add options to
    */
   function addDepartmentOption(department, departmentContainer) {
     const option = document.createElement('option');
@@ -60,7 +61,8 @@ export const CollegePlanner = (() => {
     const departmentSelection = document.getElementById('departments');
     const selectedDepartment =
         departmentSelection.options[departmentSelection.selectedIndex].value;
-    const response = await fetch(`/api/courses?department=${selectedDepartment}`);
+    const response = await fetch(
+        `/api/courses?department=${encodeURIComponent(selectedDepartment)}`);
     const courseList = await response.json();
     const courseContainer = document.getElementById('courses');
     courseContainer.innerHTML =
@@ -72,7 +74,7 @@ export const CollegePlanner = (() => {
     option.hidden = true;
     courseContainer.appendChild(option);
     // Add each course to course list
-    const coursesDetailed = courseList.courses_detailed;
+    const coursesDetailed = courseList.courses;
     coursesDetailed.forEach(course => addCourseOption(course, courseContainer));
   }
 
@@ -80,8 +82,8 @@ export const CollegePlanner = (() => {
    * Creates options in select courses list
    * @param {Object} course The JSON Object for the course to add to the
    *     dropdown
-   * @param {string} courseContainer The id name of the container you want to add
-   *     options to
+   * @param {Object} courseContainer The element of the container you want to
+   *     add options to
    */
   function addCourseOption(course, courseContainer) {
     courseInfo[course.course_id] = course;
@@ -144,21 +146,23 @@ export const CollegePlanner = (() => {
     getCourseOptions();
   });
 
-  function getSelected(){
-      return selected;
+  function getSelected() {
+    return selected;
   }
 
-  function getCourses(){
-      return courses;
+  function getCourses() {
+    return courses;
   }
 
-  function getCourseInfo(){
-      return courseInfo;
+  function getCourseInfo() {
+    return courseInfo;
   }
 
   return {
     getSelected: getSelected,
-    getCourses, getCourses,
-    getCourseInfo, getCourseInfo
+    getCourses,
+    getCourses,
+    getCourseInfo,
+    getCourseInfo
   };
 })();

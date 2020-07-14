@@ -32,7 +32,7 @@ public class CourseListServlet extends HttpServlet {
   ApiUtil apiUtil;
 
   public CourseListServlet() {
-    this.apiUtil = new ApiUtil();
+    this(new ApiUtil());
   }
 
   public CourseListServlet(ApiUtil apiUtil) {
@@ -71,7 +71,7 @@ public class CourseListServlet extends HttpServlet {
     }
 
     JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses_detailed", jsonArray);
+    schoolCourseInfo.put("courses", jsonArray);
 
     response.setContentType("applications/json;");
     response.getWriter().println(schoolCourseInfo);

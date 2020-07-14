@@ -32,7 +32,7 @@ public class DepartmentServlet extends HttpServlet {
   ApiUtil apiUtil;
 
   public DepartmentServlet() {
-    this.apiUtil = new ApiUtil();
+    this(new ApiUtil());
   }
 
   public DepartmentServlet(ApiUtil apiUtil) {
@@ -40,7 +40,7 @@ public class DepartmentServlet extends HttpServlet {
   }
 
   /**
-   * Calls API and returns response with department details
+   * Calls API and returns response with a list of all departments
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -64,7 +64,7 @@ public class DepartmentServlet extends HttpServlet {
     }
 
     JSONObject schoolDeptInfo = new JSONObject();
-    schoolDeptInfo.put("departments_detailed", jsonArray);
+    schoolDeptInfo.put("departments", jsonArray);
 
     response.setContentType("applications/json;");
     response.getWriter().println(schoolDeptInfo);

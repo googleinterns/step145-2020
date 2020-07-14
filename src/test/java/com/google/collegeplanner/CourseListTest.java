@@ -69,7 +69,7 @@ public final class CourseListTest {
     servlet.doGet(mockedRequest, mockedResponse);
 
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
-    JSONArray coursesDetailed = (JSONArray) responseObj.get("courses_detailed");
+    JSONArray coursesDetailed = (JSONArray) responseObj.get("courses");
 
     // Tests that courses_detailed exists
     Assert.assertNotNull(coursesDetailed);
@@ -127,5 +127,4 @@ public final class CourseListTest {
     String expectedJson = "{\"message\":\"Internal server error.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
   }
-
 }

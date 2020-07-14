@@ -65,7 +65,7 @@ public final class DepartmentTest {
     servlet.doGet(null, mockedResponse);
 
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
-    JSONArray departmentsDetailed = (JSONArray) responseObj.get("departments_detailed");
+    JSONArray departmentsDetailed = (JSONArray) responseObj.get("departments");
 
     // Tests that departments_detailed exists
     Assert.assertNotNull(departmentsDetailed);
