@@ -17,6 +17,8 @@ package com.google.collegeplanner.servlets;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,6 +32,11 @@ import org.json.simple.parser.ParseException;
 /** Servlet that returns the mutli-semester plan for the given courses.*/
 @WebServlet("/api/planner")
 public class PlannerServlet extends HttpServlet {
+
+  static HashMap<String, HashSet<String>> prerequisiteGraph;
+  static HashMap<String, HashSet<String>> postreqGraph;
+  static HashMap<String, Integer> credits;
+
   /**
    * Organizes courses into the given number of semesters
    */
@@ -46,10 +53,10 @@ public class PlannerServlet extends HttpServlet {
     }
     JSONArray selectedClasses = (JSONArray) body.get("selectedClasses");
     // Returns the courses in a single semester
-    ArrayList<ArrayList<String>> semesters = new ArrayList<>();
-    ArrayList<String> semester = new ArrayList<>();
+    ArrayList<HashSet<String>> semesters = new ArrayList<>();
+    HashSet<String> semester = new HashSet<>();
     for (Object course : selectedClasses) {
-      semester.add((String)((JSONObject)course).get("course_id"));
+      semester.add((String) ((JSONObject) course).get("course_id"));
     }
     semesters.add(semester);
 
@@ -62,6 +69,31 @@ public class PlannerServlet extends HttpServlet {
         request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     JSONParser parser = new JSONParser();
     return (JSONObject) parser.parse(strBody);
+  }
+
+  private static void constructGraphs(JSONArray selectedClasses) throws IOException {
+    // Initialize maps and courseList
+    HashSet<String> courseList = new HashSet<>();
+    for (Object course : selectedClasses) {
+      String key = (String) ((JSONObject) course).get("course_id");
+      courseList.add(key);
+      prerequisiteGraph.put(key, new HashSet<String>());
+      postreqGraph.put(key, new HashSet<String>());
+      credits.put(key, 0);
+    }
+    for (int i = 0; i < selectedClasses.size(); i++) {
+    }
+  }
+
+  private static HashSet<String> getPrerequisites(String prereqString, HashSet<String> courseList) throws IOException {
+    HashSet<String> prereqs = new HashSet<>();
+    String[] words = prereqString.split("\\P{L}+");
+    for (String word : words) {
+      if (courseList.contains(word)) {
+        prereqs.add(word);
+      }
+    }
+    return prereqs;
   }
 
   private void respondWithError(String message, int errorType, HttpServletResponse response)

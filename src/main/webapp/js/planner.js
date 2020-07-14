@@ -20,9 +20,8 @@ async function getPlan() {
   const courseContainer = document.getElementById('order-area');
   attachNewSpinner(courseContainer);
   const selectedClasses = []
-  CollegePlanner.getSelected().forEach(course =>
-    selectedClasses.push(CollegePlanner.getCourseInfo()[course])
-  );
+  CollegePlanner.getSelected().forEach(
+      course => selectedClasses.push(CollegePlanner.getCourseInfo()[course]));
   const data = {
     selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
