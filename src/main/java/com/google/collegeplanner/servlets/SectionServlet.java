@@ -31,7 +31,7 @@ public class SectionServlet extends HttpServlet {
   ApiUtil apiUtil;
 
   public SectionServlet() {
-    this.apiUtil = new ApiUtil();
+    this(new ApiUtil());
   }
 
   public SectionServlet(ApiUtil apiUtil) {
