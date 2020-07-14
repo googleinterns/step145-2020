@@ -40,8 +40,9 @@ public final class PlannerTest {
   public void servletResponseIsCorrect() throws Exception {
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
     String test =
-        "{\"selectedClasses\":[{\"course_id\":\"AGNR499\",\"relationships\":{\"coreqs\":null,\"prereqs\":null},"
-        + "\"credits\":\"1\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"}], \"semesters\": 4}";
+        "{\"selectedClasses\":[{\"course_id\":\"AGNR499\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and s \"},"
+        + "\"credits\":\"1\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC101\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi AGNR499 \"},"
+        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"}], \"semesters\": 4}";
     Reader inputString = new StringReader(test);
     BufferedReader reader = new BufferedReader(inputString);
     when(mockedRequest.getReader()).thenReturn(reader);
@@ -54,6 +55,7 @@ public final class PlannerTest {
     servlet.doPost(mockedRequest, mockedResponse);
     writer.flush();
     // Check whether the string output is correct
-    JSONAssert.assertEquals(stringWriter.toString(), "[[\"AGNR499\"]]", JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(
+        stringWriter.toString(), "[[\"AGNR499\", \"CMSC101\"]]", JSONCompareMode.STRICT);
   }
 }

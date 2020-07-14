@@ -17,6 +17,7 @@ package com.google.collegeplanner.servlets;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -32,9 +33,9 @@ import org.json.simple.parser.ParseException;
 /** Servlet that returns the mutli-semester plan for the given courses.*/
 @WebServlet("/api/planner")
 public class PlannerServlet extends HttpServlet {
-
-  static HashMap<String, HashSet<String>> prerequisiteGraph;
-  static HashMap<String, HashSet<String>> postreqGraph;
+  static HashMap<String, HashSet<String>> prerequisites;
+  static HashMap<String, HashSet<String>> corequisites;
+  static HashMap<String, Integer> longestChains;
   static HashMap<String, Integer> credits;
 
   /**
@@ -59,6 +60,7 @@ public class PlannerServlet extends HttpServlet {
       semester.add((String) ((JSONObject) course).get("course_id"));
     }
     semesters.add(semester);
+    constructGraphs(selectedClasses);
 
     response.getWriter().println(new Gson().toJson(semesters));
   }
@@ -71,29 +73,92 @@ public class PlannerServlet extends HttpServlet {
     return (JSONObject) parser.parse(strBody);
   }
 
-  private static void constructGraphs(JSONArray selectedClasses) throws IOException {
+  private static void constructGraphs(JSONArray selectedClasses)
+      throws IOException, NumberFormatException {
     // Initialize maps and courseList
+    prerequisites = new HashMap<String, HashSet<String>>();
+    corequisites = new HashMap<String, HashSet<String>>();
+    longestChains = new HashMap<String, Integer>();
+    credits = new HashMap<String, Integer>();
+
     HashSet<String> courseList = new HashSet<>();
+    HashMap<String, HashSet<String>> postrequisites = new HashMap<String, HashSet<String>>();
     for (Object course : selectedClasses) {
       String key = (String) ((JSONObject) course).get("course_id");
       courseList.add(key);
-      prerequisiteGraph.put(key, new HashSet<String>());
-      postreqGraph.put(key, new HashSet<String>());
-      credits.put(key, 0);
+      postrequisites.put(key, new HashSet<>());
     }
-    for (int i = 0; i < selectedClasses.size(); i++) {
+
+    for (Object course : selectedClasses) {
+      String key = (String) ((JSONObject) course).get("course_id");
+      int creditVal = Integer.parseInt((String) ((JSONObject) course).get("credits"));
+
+      String prereqStr =
+          (String) ((JSONObject) ((JSONObject) course).get("relationships")).get("prereqs");
+      String coreqStr =
+          (String) ((JSONObject) ((JSONObject) course).get("relationships")).get("coreqs");
+      HashSet<String> prereqs = getCoursesFromString(prereqStr, courseList);
+      HashSet<String> coreqs = getCoursesFromString(coreqStr, courseList);
+      prerequisites.put(key, prereqs);
+      corequisites.put(key, coreqs);
+      credits.put(key, creditVal);
+      for (String prereq : prereqs) {
+        postrequisites.get(prereq).add(key);
+      }
+    }
+    getLongestChains(postrequisites, courseList);
+    System.out.println(courseList);
+    System.out.println(prerequisites);
+    System.out.println(corequisites);
+    System.out.println(postrequisites);
+    System.out.println(longestChains);
+    System.out.println(credits);
+  }
+
+  private static void getLongestChains(
+      HashMap<String, HashSet<String>> postrequisites, HashSet<String> courseList) {
+    for (String course : courseList) {
+      if (!longestChains.containsKey(course) ) {
+        getLongestChain(postrequisites, course);
+      }
     }
   }
 
-  private static HashSet<String> getPrerequisites(String prereqString, HashSet<String> courseList) throws IOException {
-    HashSet<String> prereqs = new HashSet<>();
-    String[] words = prereqString.split("\\P{L}+");
-    for (String word : words) {
-      if (courseList.contains(word)) {
-        prereqs.add(word);
+  private static int getLongestChain(HashMap<String, HashSet<String>> postrequisites, String course){
+      if (longestChains.containsKey(course)) {
+        return longestChains.get(course);
       }
+      if (postrequisites.get(course).size() == 0) {
+        longestChains.put(course, 1);
+        return 1;
+      }
+      HashSet<String> coursePrereqs = postrequisites.get(course);
+      ArrayList<Integer> childrenHeights = new ArrayList<>();
+      for (String prereq : coursePrereqs) {
+         childrenHeights.add(getLongestChain(postrequisites, prereq));
+      }
+      System.out.println(childrenHeights);
+      int myHeight = Collections.max(childrenHeights) + 1;
+      longestChains.put(course, myHeight);
+      return myHeight;
+  }
+
+  private static HashSet<String> getCoursesFromString(
+      String prereqString, HashSet<String> courseList) throws IOException {
+    HashSet<String> prereqs = new HashSet<>();
+    System.out.println(prereqString);
+    try {
+      String[] words = prereqString.split("[\\p{Punct}\\s]+");
+      for (String word : words) {
+        System.out.println(word);
+        if (courseList.contains(word)) {
+          prereqs.add(word);
+        }
+      }
+    } catch (NullPointerException e) {
+    } finally {
+      return prereqs;
     }
-    return prereqs;
   }
 
   private void respondWithError(String message, int errorType, HttpServletResponse response)
