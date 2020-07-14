@@ -1,5 +1,7 @@
 package com.google.collegeplanner.data;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 public class Course {
   private String courseId;
   private String name;
@@ -29,6 +31,15 @@ public class Course {
     this.restrictions = restrictions;
     this.additionalInfo = additionalInfo;
     this.creditGrantedFor = creditGrantedFor;
+  }
+
+  public Course(JSONObject json) {
+    this((String) json.get("course_id"), (String) json.get("name"), (String) json.get("semester"), 
+        (int) json.get("credits"), (String) json.get("dept_id"), (String) json.get("description"), 
+        null, (String) json.get("coreqs"), (String) json.get("prereqs"), (String) json.get("restrictions"), 
+        (String) json.get("additional_info"), (String) json.get("credit_granted_for"));
+        
+    this.gradingMethod = (String[]) ((JSONArray) json.get("grading_method")).toArray();
   }
 
   /*
