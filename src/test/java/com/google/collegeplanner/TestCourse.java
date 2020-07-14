@@ -14,7 +14,6 @@ public final class TestCourse {
 
   @Before
   public void before() {
-    System.out.println("before");
     gradingSystem = new String[] {"Regular", "Pass-Fail"};
     course = new Course("CMSC101", "Introduction to Computer Science", "202008", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
@@ -25,7 +24,6 @@ public final class TestCourse {
    */
   @Test
   public void getSemesterSeasonTest() {
-    System.out.println("yurr");
     String actual = course.getSemesterSeason();
     String expected = "Fall";
     Assert.assertEquals(expected, actual);
