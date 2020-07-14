@@ -61,20 +61,25 @@ public final class DepartmentTest {
 
   @Test
   public void servletResponseHasDepartments() throws Exception {
-    DepartmentServlet servlet = new DepartmentServlet();
+    String expectedJson =
+        "[{\"dept_id\":\"AAPS\",\"department\":\"Academic Achievement Programs\"},"
+        + "{\"dept_id\":\"AASP\",\"department\":\"African American Studies\"}]";
+    JSONParser parser = new JSONParser();
+    JSONArray departments = (JSONArray) parser.parse(expectedJson);
+    ApiUtil mockedApiUtil = mock(ApiUtil.class);
+    when(mockedApiUtil.getJsonArray(any(URI.class))).thenReturn(departments);
+    DepartmentServlet servlet = new DepartmentServlet(mockedApiUtil);
     servlet.doGet(null, mockedResponse);
 
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
     JSONArray departmentsDetailed = (JSONArray) responseObj.get("departments");
 
-    // Tests that departments_detailed exists
+    // Tests that response[departments] exists
     Assert.assertNotNull(departmentsDetailed);
     // Checks that the correct number of JSON Objects are contained
-    Assert.assertEquals(departmentsDetailed.size(), 199);
+    Assert.assertEquals(departmentsDetailed.size(), 2);
     // Checks whether the first one is correct
-    String expectedJson = "{\"dept_id\":\"AAPS\",\"department\":\"Academic Achievement Programs\"}";
-    JSONAssert.assertEquals(
-        expectedJson, departmentsDetailed.get(0).toString(), JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(expectedJson, departmentsDetailed.toString(), JSONCompareMode.STRICT);
   }
 
   @Test

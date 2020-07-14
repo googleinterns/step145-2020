@@ -47,8 +47,7 @@ public class CourseListServlet extends HttpServlet {
     // Create the URI and specify the parameters.
     String department = request.getParameter("department");
     if (department == null || department == "") {
-      respondWithError(
-          "Invalid query parameters.", HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError("Invalid query parameters.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
     URI uri;

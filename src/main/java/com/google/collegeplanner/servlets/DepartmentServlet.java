@@ -40,7 +40,8 @@ public class DepartmentServlet extends HttpServlet {
   }
 
   /**
-   * Calls API and returns response with a list of all departments. This is not dependent on any input. 
+   * Calls API and returns response with a list of all departments. This is not dependent on any
+   * input.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
