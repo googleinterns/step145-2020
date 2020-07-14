@@ -20,7 +20,7 @@ async function getPlan() {
   const courseContainer = document.getElementById('order-area');
   attachNewSpinner(courseContainer);
   const data = {
-    selectedClasses: CollegePlanner.selected.join(','),
+    selectedClasses: CollegePlanner.getSelected().join(','),
     semesters: document.getElementById('semesters').value
   };
   const response = await fetch('/api/planner', {

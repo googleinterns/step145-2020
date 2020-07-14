@@ -52,7 +52,7 @@ public final class PlannerTest {
     servlet.doPost(mockedRequest, mockedResponse);
     writer.flush();
     // Check whether the string output is correct
-    JSONAssert.assertEquals(
-        stringWriter.toString(), "[[\"CMSC101\",\"CMSC106\",\"CMSC122\",\"CMSC131\"]]",JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(stringWriter.toString(),
+        "[[\"CMSC101\",\"CMSC106\",\"CMSC122\",\"CMSC131\"]]", JSONCompareMode.STRICT);
   }
 }
