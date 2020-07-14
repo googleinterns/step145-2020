@@ -107,7 +107,7 @@ export const CollegePlanner = (() => {
         courseSelection.options[courseSelection.selectedIndex].value;
     if (!selected.includes(selectedCourse) &&
         courses.includes(selectedCourse)) {
-      selected.push(selectedCourse);
+      selected.push(selectedCourse); 
       Calendar.addCourse(courseInfo[selectedCourse]);
       courseContainer.appendChild(createCourseListElement(selectedCourse));
     }
