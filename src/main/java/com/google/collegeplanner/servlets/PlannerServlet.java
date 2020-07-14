@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -49,7 +50,7 @@ public class PlannerServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO(ramyabuva): Implement algorithm to split into the number of semesters
     JSONObject body;
-    int numSemesters = 1;
+    int numSemesters = 3;
     try {
       body = getBody(request);
     } catch (ParseException | NullPointerException | NumberFormatException e) {
@@ -65,9 +66,31 @@ public class PlannerServlet extends HttpServlet {
     for (int i = numSemesters; i > 0; i--) {
       int avgCredits = totalCredits / i;
       ArrayList<String> semester = new ArrayList<>();
-      
-      semesters.add(courseList);
+      Iterator<String> itr = courseList.iterator(); 
+      while (itr.hasNext()) { 
+        String course = itr.next(); 
+        if (indegree.get(course) == 0) { 
+          itr.remove();
+          avgCredits -= credits.get(course);
+          totalCredits -= credits.get(course);
+          semester.add(course); 
+        } 
+        if(depths.get(course) != i && avgCredits <= 0) {
+          break;
+        }
+      }
+      for (String course : semester) {
+        for (String postreq : postrequisites.get(course)) {
+          indegree.replace(postreq, indegree.get(postreq) - 1);
+        }
+      } 
+      semesters.add(semester);
     }
+    if(courseList.size() != 0){
+      respondWithError(
+          "Not enough semesters for schedule.", HttpServletResponse.SC_BAD_REQUEST, response);
+    }
+    response.setContentType("applications/json;");
     response.getWriter().println(new Gson().toJson(semesters));
   }
 

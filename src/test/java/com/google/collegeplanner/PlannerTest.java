@@ -59,6 +59,6 @@ public final class PlannerTest {
     writer.flush();
     // Check whether the string output is correct
     JSONAssert.assertEquals(stringWriter.toString(),
-        "[[\"AGNR499\", \"CMSC106\",\"CMSC120\",\"CMSC101\",\"HELL120\"]]", JSONCompareMode.STRICT);
+        "[[\"AGNR499\", \"CMSC120\"], [\"CMSC106\", \"CMSC101\"], [\"HELL120\"]]", JSONCompareMode.STRICT);
   }
 }
