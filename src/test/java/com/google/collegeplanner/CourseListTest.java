@@ -138,7 +138,7 @@ public final class CourseListTest {
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
     JSONArray coursesDetailed = (JSONArray) responseObj.get("courses");
 
-    // Tests that respone[courses] exists
+    // Tests that response[courses] exists
     Assert.assertNotNull(coursesDetailed);
     // Checks that the correct number of JSON Objects are contained
     Assert.assertEquals(coursesDetailed.size(), 2);

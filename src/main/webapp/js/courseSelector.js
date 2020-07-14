@@ -160,9 +160,7 @@ export const CollegePlanner = (() => {
 
   return {
     getSelected: getSelected,
-    getCourses,
-    getCourses,
-    getCourseInfo,
-    getCourseInfo
+    getCourses: getCourses,
+    getCourseInfo: getCourseInfo
   };
 })();
