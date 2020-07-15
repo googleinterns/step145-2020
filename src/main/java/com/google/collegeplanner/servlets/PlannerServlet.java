@@ -38,7 +38,7 @@ public class PlannerServlet extends HttpServlet {
   static HashMap<String, Integer> indegree;
   static HashMap<String, HashSet<String>> corequisites;
   static HashMap<String, HashSet<String>> postrequisites;
-  static HashMap<String, Integer> depths;
+  static HashMap<String, Integer> depths; // depth of a course (number in a prerequisite "chain" begining at that node)
   static HashMap<String, Integer> credits;
   static int totalCredits;
   static ArrayList<String> courseList;
@@ -48,12 +48,11 @@ public class PlannerServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO(ramyabuva): Implement algorithm to split into the number of semesters
     JSONObject body;
     int numSemesters;
     try {
       body = getBody(request);
-      numSemesters = Integer.parseInt((String)body.get("semesters"));
+      numSemesters = Integer.parseInt((String) body.get("semesters"));
     } catch (ParseException | NullPointerException | NumberFormatException e) {
       respondWithError(
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
@@ -67,27 +66,47 @@ public class PlannerServlet extends HttpServlet {
     for (int i = numSemesters; i > 0; i--) {
       int avgCredits = totalCredits / i;
       ArrayList<String> semester = new ArrayList<>();
-      Iterator<String> itr = courseList.iterator(); 
-      while (itr.hasNext()) { 
-        String course = itr.next(); 
-        if (indegree.get(course) == 0) { 
-          itr.remove();
-          avgCredits -= credits.get(course);
-          totalCredits -= credits.get(course);
-          semester.add(course); 
+      for (int j = 0; j < courseList.size(); j++) {
+        String course = courseList.get(j);
+        if (indegree.get(course) == 0) {
+          // Check if all corequisites also have an indegree of 0
+          boolean isValid = true;
+          for (String coreq : corequisites.get(course)) {
+            if (indegree.get(coreq) != 0) {
+              isValid = false;
+              break;
+            }
+          }
+          if (isValid) {
+            // If valid, add all to semester
+            courseList.remove(j);
+            j--;
+            avgCredits -= credits.get(course);
+            totalCredits -= credits.get(course);
+            semester.add(course);
+            for (String coreq : corequisites.get(course)) {
+              courseList.remove(coreq);
+              avgCredits -= credits.get(coreq);
+              totalCredits -= credits.get(coreq);
+              semester.add(coreq);
+            }
+          }
         } 
-        if(depths.get(course) != i && avgCredits <= 0) {
+        // Breaks out if there are no more required classes and we exceeded our credit limit
+        if (depths.get(course) != i && avgCredits <= 0) {
           break;
         }
       }
+      // Update indegrees for all postrequisites
       for (String course : semester) {
         for (String postreq : postrequisites.get(course)) {
           indegree.replace(postreq, indegree.get(postreq) - 1);
         }
-      } 
+      }
       semesters.add(semester);
     }
-    if(courseList.size() != 0){
+    // If courseList is not empty, scheduling was not possible
+    if (!courseList.isEmpty()) {
       respondWithError(
           "Not enough semesters for schedule.", HttpServletResponse.SC_BAD_REQUEST, response);
     }
@@ -105,7 +124,7 @@ public class PlannerServlet extends HttpServlet {
 
   private static void constructGraphs(JSONArray selectedClasses)
       throws IOException, NumberFormatException {
-    // Initialize maps and courseList
+    // Initialize graph representation and courseList
     indegree = new HashMap<String, Integer>();
     corequisites = new HashMap<String, HashSet<String>>();
     depths = new HashMap<String, Integer>();
@@ -139,8 +158,8 @@ public class PlannerServlet extends HttpServlet {
     getAllDepths();
 
     // sort courseList from greatest depth to lowest depth
-    Collections.sort(courseList, (String m1, String m2) -> 
-            depths.get(m2).compareTo(depths.get(m1)));
+    Collections.sort(
+        courseList, (String m1, String m2) -> depths.get(m2).compareTo(depths.get(m1)));
   }
 
   private static void getAllDepths() {
@@ -169,8 +188,7 @@ public class PlannerServlet extends HttpServlet {
     return myHeight;
   }
 
-  private static HashSet<String> getCoursesFromString(String engCourses)
-      throws IOException {
+  private static HashSet<String> getCoursesFromString(String engCourses) throws IOException {
     HashSet<String> prereqs = new HashSet<>();
     try {
       String[] words = engCourses.split("[\\p{Punct}\\s]+");
