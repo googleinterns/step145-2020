@@ -14,8 +14,8 @@
 package com.google.collegeplanner;
 
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -158,7 +158,8 @@ public final class CourseListTest {
     servlet.doGet(mockedRequest, mockedResponse);
     // Verifies whether status was set to SC_INTERNAL_SERVER_ERROR
     verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    verify(mockedResponse, never()).setStatus(not(eq(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)));
+    verify(mockedResponse, never())
+        .setStatus(not(eq(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)));
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Internal server error.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
