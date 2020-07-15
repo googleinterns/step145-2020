@@ -1,33 +1,84 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.package com.google.collegeplanner.data;
 package com.google.collegeplanner.data;
 
+import java.lang.InstantiationException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 public class Course {
   /*
-   * courseId represents the name of the course that can be found on the course catalog. Example, ENGL101
-   * name represents the full name of the course. Example, Academic Writing
-   * semester represents the 4 digit year follow by the two digit month when the course starts. Example, 202008
-   * credits represents the number of credits the course is worth. 
-   * deptId represents the 4 character ID of the department that the class falls into. Example, ENGL
-   * description represents the description of the class found on the course catalog.
-   * gradingMethod represents the list of possible grading methods students can opt for. Example, regular, pass-fail.
-   * coreqs represents the corequsite classes for this course. Example, BIO106 is the lab for BIO101 and must be taken together
-   * prereqs represents the prerequsite classes for this course. Example, MATH101, MATH201, and either MATH105 or MATH115.
-   * restrictions represents the restrictions placed on the registration of this course. Example, This class is only avaiable to incoming Freshman.
-   * additionalInfo represents the additional information for this course found on the course catalog.
-   * creditGrantedFor represents the classes this course grants credit for. Example, THET285 grants credit for COMM107
+   * courseId represents the name of the course that
+   * can be found on the course catalog. Example, ENGL101
    */
   private String courseId;
+  /*
+   * name represents the full name of the course.
+   * Example, Academic Writing
+   */
   private String name;
+  /*
+   * semester represents the 4 digit year followed by
+   * the two digit month when the course starts. Example, 202008
+   */
   private String semester;
+  /*
+   * credits represents the number of credits the course is worth.
+   */
   private int credits;
+  /*
+   * deptId represents the 4 character ID of the
+   * department that the class falls into. Example, ENGL
+   */
   private String deptId;
+  /*
+   * description represents the description of
+   * the class found on the course catalog.
+   */
   private String description;
+  /*
+   * gradingMethod represents the list of possible grading
+   * methods students can opt for. Example, regular, pass-fail.
+   */
   private String[] gradingMethod;
+  /*
+   * coreqs represents the corequsite classes for this
+   * course. Example, BIO106 is the lab for BIO101 and
+   * must be taken together
+   */
   private String coreqs;
+  /*
+   * prereqs represents the prerequsite classes for
+   * this course. Example, MATH101, MATH201, and
+   * either MATH105 or MATH115.
+   */
   private String prereqs;
+  /*
+   * restrictions represents the restrictions placed on the
+   * registration of this course. Example, This
+   * class is only avaiable to incoming Freshman.
+   */
   private String restrictions;
+  /*
+   * additionalInfo represents the additional information
+   * for this course found on the course catalog.
+   */
   private String additionalInfo;
+  /*
+   *creditGrantedFor represents the classes this course
+   * grants credit for. Example, THET285 grants credit for COMM107
+   */
   private String creditGrantedFor;
 
   public Course(String courseId, String name, String semester, int credits, String deptId,
@@ -63,6 +114,9 @@ public class Course {
    * the two digit start month.
    */
   public String getSemesterSeason() {
+    if (semester.length() != 6) {
+      return "Invalid Semester Format";
+    }
     // startMonth stores the last two digits of the semester String as an int
     int startMonth = Integer.parseInt(semester) % 100;
 
@@ -77,8 +131,10 @@ public class Course {
       case 8:
       case 9:
         return "Fall";
-      default:
+      case 12:
         return "Winter";
+      default:
+        return "Invalid Month";
     }
   }
 
@@ -87,6 +143,9 @@ public class Course {
    * semester String as an int
    */
   public int getSemesterYear() {
+    if (semester.length() != 6) {
+      return 0;
+    }
     return Integer.parseInt(semester.substring(0, 4));
   }
 
