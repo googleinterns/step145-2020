@@ -37,16 +37,51 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 @RunWith(JUnit4.class)
 public final class PlannerTest {
   @Test
-  public void servletResponseIsCorrect() throws Exception {
+  public void servletResponseIsValid() throws Exception {
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
-    // TODO(ramyabuva): Clean up test case
     String test =
-        "{\"selectedClasses\":[{\"course_id\":\"AGNR499\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and s \"},"
-        + "\"credits\":\"1\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC101\",\"relationships\":{\"coreqs\":\"CMSC120 s\",\"prereqs\":\" and hi AGNR499 \"},"
-        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC106\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi AGNR499 \"},"
-        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC120\",\"relationships\":{\"coreqs\":\"CMSC101 s\",\"prereqs\":\" and hi  \"},"
-        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"HELL120\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi CMSC106 and CMSC120 \"},"
-        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"}], \"semesters\": \"3\"}";
+        "{\"selectedClasses\":[{"
+        + "\"course_id\":\"AASP100\","
+        + "\"relationships\":{"
+        + "  \"coreqs\":null,"
+        + "  \"prereqs\":null"
+        + "},"
+        + "\"credits\":\"3\","
+        + "},"
+        + "{"
+        + "\"course_id\":\"CMSC106\","
+        + "\"relationships\":{"
+        + "  \"coreqs\":\"Take with CMSC120\","
+        + "  \"prereqs\":\"Must have taken AASP100\""
+        + "},"
+        + "\"credits\":\"3\","
+        + "},"
+        + "{"
+        + "\"course_id\":\"CMSC120\","
+        + "\"relationships\":{"
+        + "  \"coreqs\":\"Take with CMSC106\","
+        + "  \"prereqs\":null"
+        + "},"
+        + "\"credits\":\"4\","
+        + "},"
+        + "{"
+        + "\"course_id\":\"CMSC122\","
+        + "\"relationships\":{"
+        + "  \"coreqs\":null,"
+        + "  \"prereqs\":\"AASP100 is a prerequisite\""
+        + "},"
+        + "\"credits\":\"3\","
+        + "},"
+        + "{"
+        + "\"course_id\":\"AGNR499\","
+        + "\"relationships\":{"
+        + "  \"coreqs\":null,"
+        + "  \"prereqs\":\"Need to take CMSC106\""
+        + "},"
+        + "\"credits\":\"3\","
+        + "},"
+        +"],"
+        + "\"semesters\": \"3\"}";
     Reader inputString = new StringReader(test);
     BufferedReader reader = new BufferedReader(inputString);
     when(mockedRequest.getReader()).thenReturn(reader);
@@ -60,7 +95,7 @@ public final class PlannerTest {
     writer.flush();
     // Check whether the string output is correct
     JSONAssert.assertEquals(stringWriter.toString(),
-        "[[\"AGNR499\"], [ \"CMSC106\",\"CMSC120\", \"CMSC101\"], [\"HELL120\"]]",
+        "[[\"AASP100\"], [ \"CMSC106\",\"CMSC120\", \"CMSC122\"], [\"AGNR499\"]]",
         JSONCompareMode.STRICT);
   }
 }

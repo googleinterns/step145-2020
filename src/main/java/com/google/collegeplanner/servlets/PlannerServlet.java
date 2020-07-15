@@ -111,14 +111,12 @@ public class PlannerServlet extends HttpServlet {
    * Given a course, returns whether all of its corequisites have a indegree of 0
    */
   private boolean isValidToAdd(String course) {
-    boolean isValid = true;
     for (String coreq : corequisites.get(course)) {
       if (indegree.get(coreq) != 0) {
-        isValid = false;
-        break;
+        return false;
       }
     }
-    return isValid;
+    return true;
   }
 
   /**
