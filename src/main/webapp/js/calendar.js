@@ -46,12 +46,12 @@ export const Calendar = (() => {
         workweek: true,
       },
       timezones: [{
-        timezoneOffset: -420,
-        tooltip: 'Los Angeles',
+        timezoneOffset: -240,
+        tooltip: 'Eastern Time',
       }],
     });
     // The hard coded date that all scheduled events should fall around
-    // Date: Sunday January 2nd, 2000 @ 00:00 PST
+    // Date: Sunday January 2nd, 2000 @ 00:00 EST
     cal.setDate(new Date('2000-01-02T00:00:00'));
   }
 
