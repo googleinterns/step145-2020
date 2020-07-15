@@ -50,9 +50,10 @@ public class PlannerServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO(ramyabuva): Implement algorithm to split into the number of semesters
     JSONObject body;
-    int numSemesters = 3;
+    int numSemesters;
     try {
       body = getBody(request);
+      numSemesters = Integer.parseInt((String)body.get("semesters"));
     } catch (ParseException | NullPointerException | NumberFormatException e) {
       respondWithError(
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);

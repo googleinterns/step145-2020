@@ -45,7 +45,7 @@ public final class PlannerTest {
         + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC106\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi AGNR499 \"},"
         + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC120\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi  \"},"
         + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"HELL120\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and hi CMSC106 and CMSC120 \"},"
-        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"}], \"semesters\": 4}";
+        + "\"credits\":\"3\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"}], \"semesters\": \"3\"}";
     Reader inputString = new StringReader(test);
     BufferedReader reader = new BufferedReader(inputString);
     when(mockedRequest.getReader()).thenReturn(reader);
