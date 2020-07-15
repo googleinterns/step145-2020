@@ -39,8 +39,7 @@ public final class PlannerTest {
   @Test
   public void servletResponseIsValid() throws Exception {
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
-    String test =
-        "{\"selectedClasses\":[{"
+    String test = "{\"selectedClasses\":[{"
         + "\"course_id\":\"AASP100\","
         + "\"relationships\":{"
         + "  \"coreqs\":null,"
@@ -80,7 +79,7 @@ public final class PlannerTest {
         + "},"
         + "\"credits\":\"3\","
         + "},"
-        +"],"
+        + "],"
         + "\"semesters\": \"3\"}";
     Reader inputString = new StringReader(test);
     BufferedReader reader = new BufferedReader(inputString);

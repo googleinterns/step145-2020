@@ -36,7 +36,8 @@ import org.json.simple.parser.ParseException;
 @WebServlet("/api/planner")
 public class PlannerServlet extends HttpServlet {
   private HashMap<String, Integer> indegree; // Number of prerequisites for a course
-  private HashMap<String, HashSet<String>> nextCourses; // Courses that come after the given course in the graph
+  private HashMap<String, HashSet<String>>
+      nextCourses; // Courses that come after the given course in the graph
   private HashMap<String, HashSet<String>> corequisites;
   private HashMap<String, Integer> depths; // depth of a course in the graph
   private HashMap<String, Integer> credits; // Number of credits for each course
@@ -109,6 +110,8 @@ public class PlannerServlet extends HttpServlet {
 
   /**
    * Given a course, returns whether all of its corequisites have a indegree of 0
+   *
+   * @param course The course ID for the course
    */
   private boolean isValidToAdd(String course) {
     for (String coreq : corequisites.get(course)) {
@@ -133,6 +136,9 @@ public class PlannerServlet extends HttpServlet {
   /**
    * Creates the representation for the graph and reads/stores necessary information from
    * selectedClasses
+   *
+   * @param selectedClasses JSONArray that contains details for all of the courses selected by the
+   *     user
    */
   private void constructGraphs(JSONArray selectedClasses)
       throws IOException, NumberFormatException {
@@ -174,8 +180,8 @@ public class PlannerServlet extends HttpServlet {
     fillDepths();
 
     // sort courseList from greatest depth to lowest depth
-    Collections.sort(
-        courseList, (String course1, String course2) -> depths.get(course2).compareTo(depths.get(course1)));
+    Collections.sort(courseList,
+        (String course1, String course2) -> depths.get(course2).compareTo(depths.get(course1)));
   }
 
   /**
@@ -192,6 +198,8 @@ public class PlannerServlet extends HttpServlet {
 
   /**
    * Dynamic Programming Algorithm to find the depth of a course
+   *
+   * @param course The course ID for the course
    */
   private int getDepth(String course) {
     if (depths.containsKey(course)) {
@@ -213,6 +221,8 @@ public class PlannerServlet extends HttpServlet {
   /**
    * Takes English representation of course prerequisites/corequisites and returns a HashSet with
    * all the contained courses
+   *
+   * @param engCourses The natural language string to get courses from
    */
   private HashSet<String> getCoursesFromString(String engCourses) throws IOException {
     HashSet<String> prereqs = new HashSet<>();
