@@ -13,10 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO: Add ability to remove courses from the calendar
-// TODO: Add ability to choose which section the user wants, not just
-// automatically
-//  choosing the first section
+// TODO(savsa): Add ability to remove courses from the calendar
+// TODO(#34): Add ability to choose which section the user wants, not just
+//  automatically choosing the first section
 
 export const Calendar = (() => {
   let id = 1;  // The id of the next scheudle that will be added to the calendar
@@ -64,7 +63,8 @@ export const Calendar = (() => {
     if (course == null) {
       return;
     }
-    const response = await fetch(`/api/sections?course_id=${course.course_id}`);
+    const response = await fetch(
+        `/api/sections?course_id=${encodeURIComponent(course.course_id)}`);
     const json = await response.json();
 
     // For now, just choose the first section out of the available ones
@@ -76,20 +76,20 @@ export const Calendar = (() => {
     const endTime = firstMeetingInfo.end_time;
 
     if (meetingDays.includes('M')) {
-      handleCourseAddition(course, startTime, endTime, enum_days.DATE_MONDAY);
+      addCourseToCalendar(course, startTime, endTime, enum_days.DATE_MONDAY);
     }
     if (meetingDays.includes('Tu')) {
-      handleCourseAddition(course, startTime, endTime, enum_days.DATE_TUESDAY);
+      addCourseToCalendar(course, startTime, endTime, enum_days.DATE_TUESDAY);
     }
     if (meetingDays.includes('W')) {
-      handleCourseAddition(
+      addCourseToCalendar(
           course, startTime, endTime, enum_days.DATE_WEDNESDAY);
     }
     if (meetingDays.includes('Th')) {
-      handleCourseAddition(course, startTime, endTime, enum_days.DATE_THURSDAY);
+      addCourseToCalendar(course, startTime, endTime, enum_days.DATE_THURSDAY);
     }
     if (meetingDays.includes('F')) {
-      handleCourseAddition(course, startTime, endTime, enum_days.DATE_FRIDAY);
+      addCourseToCalendar(course, startTime, endTime, enum_days.DATE_FRIDAY);
     }
   }
 
@@ -102,10 +102,10 @@ export const Calendar = (() => {
    *     time eg. 8:30pm
    * @param {enum_days} day The day that the course falls on
    */
-  function handleCourseAddition(course, startTime, endTime, day) {
+  function addCourseToCalendar(course, startTime, endTime, day) {
     const startDate = createDateFromTimeString(startTime, day);
     const endDate = createDateFromTimeString(endTime, day);
-    addScheduleToCalendar(course, startDate, endDate);
+    createSchedule(course, startDate, endDate);
   }
 
   /**
@@ -114,9 +114,9 @@ export const Calendar = (() => {
    * @param {Date} startDate The Date object of the start time
    * @param {Date} endDate The Date object of the end time
    */
-  function addScheduleToCalendar(course, startDate, endDate) {
-    // TODO: Have each schedule be a different color. The color is currently
-    // hard coded to be blue so all schedules look the same.
+  function createSchedule(course, startDate, endDate) {
+    // TODO(savsa): Have each schedule be a different color. The color is
+    // currently hard coded to be blue so all schedules look the same.
     cal.createSchedules([{
       id: id.toString(),
       color: '#ffffff',
