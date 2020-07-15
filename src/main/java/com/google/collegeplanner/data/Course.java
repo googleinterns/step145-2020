@@ -3,6 +3,20 @@ package com.google.collegeplanner.data;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 public class Course {
+  /*
+   * courseId represents the name of the course that can be found on the course catalog. Example, ENGL101
+   * name represents the full name of the course. Example, Academic Writing
+   * semester represents the 4 digit year follow by the two digit month when the course starts. Example, 202008
+   * credits represents the number of credits the course is worth. 
+   * deptId represents the 4 character ID of the department that the class falls into. Example, ENGL
+   * description represents the description of the class found on the course catalog.
+   * gradingMethod represents the list of possible grading methods students can opt for. Example, regular, pass-fail.
+   * coreqs represents the corequsite classes for this course. Example, BIO106 is the lab for BIO101 and must be taken together
+   * prereqs represents the prerequsite classes for this course. Example, MATH101, MATH201, and either MATH105 or MATH115.
+   * restrictions represents the restrictions placed on the registration of this course. Example, This class is only avaiable to incoming Freshman.
+   * additionalInfo represents the additional information for this course found on the course catalog.
+   * creditGrantedFor represents the classes this course grants credit for. Example, THET285 grants credit for COMM107
+   */
   private String courseId;
   private String name;
   private String semester;
@@ -34,11 +48,12 @@ public class Course {
   }
 
   public Course(JSONObject json) {
-    this((String) json.get("course_id"), (String) json.get("name"), (String) json.get("semester"), 
-        (int) json.get("credits"), (String) json.get("dept_id"), (String) json.get("description"), 
-        null, (String) json.get("coreqs"), (String) json.get("prereqs"), (String) json.get("restrictions"), 
-        (String) json.get("additional_info"), (String) json.get("credit_granted_for"));
-        
+    this((String) json.get("course_id"), (String) json.get("name"), (String) json.get("semester"),
+        (int) json.get("credits"), (String) json.get("dept_id"), (String) json.get("description"),
+        null, (String) json.get("coreqs"), (String) json.get("prereqs"),
+        (String) json.get("restrictions"), (String) json.get("additional_info"),
+        (String) json.get("credit_granted_for"));
+
     this.gradingMethod = (String[]) ((JSONArray) json.get("grading_method")).toArray();
   }
 
