@@ -7,13 +7,10 @@ PRETTIER=node_modules/prettier/bin-prettier.js
 node_modules:
 	npm install prettier clang-format css-validator html-validate eslint eslint-config-google
 
-devprep: 
-	cp src/main/webapp/vendor/startbootstrap/index.html src/main/webapp/index.html
-
-devserver: devprep
+devserver: 
 	mvn package appengine:run
 
-deploy: devprep
+deploy: 
 	mvn package appengine:deploy
 
 pretty: node_modules
