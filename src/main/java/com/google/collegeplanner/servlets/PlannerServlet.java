@@ -28,7 +28,7 @@ import org.json.simple.parser.ParseException;
 
 /** Servlet that returns the mutli-semester plan for the given courses.*/
 @WebServlet("/api/planner")
-public class PlannerServlet extends HttpServlet {
+public class PlannerServlet extends BaseServlet {
   /**
    * Organizes courses into the given number of semesters
    */
@@ -39,8 +39,7 @@ public class PlannerServlet extends HttpServlet {
     try {
       body = getBody(request);
     } catch (ParseException | NullPointerException e) {
-      respondWithError(
-          "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError(HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
     String strClasses = (String) body.get("selectedClasses");
@@ -56,14 +55,5 @@ public class PlannerServlet extends HttpServlet {
         request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     JSONParser parser = new JSONParser();
     return (JSONObject) parser.parse(strBody);
-  }
-
-  private void respondWithError(String message, int errorType, HttpServletResponse response)
-      throws IOException {
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("message", message);
-    jsonObject.put("status", "error");
-    response.setStatus(errorType);
-    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
