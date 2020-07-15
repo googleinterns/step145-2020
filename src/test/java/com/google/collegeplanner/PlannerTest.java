@@ -39,6 +39,7 @@ public final class PlannerTest {
   @Test
   public void servletResponseIsCorrect() throws Exception {
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
+    // TODO(ramyabuva): Clean up test case
     String test =
         "{\"selectedClasses\":[{\"course_id\":\"AGNR499\",\"relationships\":{\"coreqs\":\"aslfkjs s\",\"prereqs\":\" and s \"},"
         + "\"credits\":\"1\",\"name\":\"Special Problems; Special Problems\",\"dept_id\":\"AGNR\",\"department\":\"Agriculture and Natural Resources\"},{\"course_id\":\"CMSC101\",\"relationships\":{\"coreqs\":\"CMSC120 s\",\"prereqs\":\" and hi AGNR499 \"},"
