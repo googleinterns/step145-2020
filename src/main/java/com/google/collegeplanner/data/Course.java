@@ -11,9 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.package com.google.collegeplanner.data;
+
 package com.google.collegeplanner.data;
 
-import java.lang.InstantiationException;
+import java.lang.Exception;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -38,10 +39,10 @@ public class Course {
    */
   private int credits;
   /*
-   * deptId represents the 4 character ID of the
+   * departmentId represents the 4 character ID of the
    * department that the class falls into. Example, ENGL
    */
-  private String deptId;
+  private String departmentId;
   /*
    * description represents the description of
    * the class found on the course catalog.
@@ -53,17 +54,17 @@ public class Course {
    */
   private String[] gradingMethod;
   /*
-   * coreqs represents the corequsite classes for this
+   * corequisites represents the corequisite classes for this
    * course. Example, BIO106 is the lab for BIO101 and
    * must be taken together
    */
-  private String coreqs;
+  private String corequisites;
   /*
-   * prereqs represents the prerequsite classes for
+   * prerequisites represents the prerequisite classes for
    * this course. Example, MATH101, MATH201, and
    * either MATH105 or MATH115.
    */
-  private String prereqs;
+  private String prerequisites;
   /*
    * restrictions represents the restrictions placed on the
    * registration of this course. Example, This
@@ -81,18 +82,18 @@ public class Course {
    */
   private String creditGrantedFor;
 
-  public Course(String courseId, String name, String semester, int credits, String deptId,
-      String description, String[] gradingMethod, String coreqs, String prereqs,
+  public Course(String courseId, String name, String semester, int credits, String departmentId,
+      String description, String[] gradingMethod, String corequisites, String prerequisites,
       String restrictions, String additionalInfo, String creditGrantedFor) {
     this.courseId = courseId;
     this.name = name;
     this.semester = semester;
     this.credits = credits;
-    this.deptId = deptId;
+    this.departmentId = departmentId;
     this.description = description;
     this.gradingMethod = gradingMethod;
-    this.coreqs = coreqs;
-    this.prereqs = prereqs;
+    this.corequisites = corequisites;
+    this.prerequisites = prerequisites;
     this.restrictions = restrictions;
     this.additionalInfo = additionalInfo;
     this.creditGrantedFor = creditGrantedFor;
@@ -113,9 +114,9 @@ public class Course {
    * The format of the semester String is the four digit year followed by
    * the two digit start month.
    */
-  public String getSemesterSeason() {
+  public String getSemesterSeason() throws Exception {
     if (semester.length() != 6) {
-      return "Invalid Semester Format";
+      throw new Exception("Invalid Semester Format");
     }
     // startMonth stores the last two digits of the semester String as an int
     int startMonth = Integer.parseInt(semester) % 100;
@@ -134,7 +135,7 @@ public class Course {
       case 12:
         return "Winter";
       default:
-        return "Invalid Month";
+        throw new Exception("Invalid Start Month");
     }
   }
 
@@ -142,9 +143,9 @@ public class Course {
    * Returns the year of the semester, which is the first four digits of the
    * semester String as an int
    */
-  public int getSemesterYear() {
+  public int getSemesterYear() throws Exception {
     if (semester.length() != 6) {
-      return 0;
+      throw new Exception("Invalid Semester Format");
     }
     return Integer.parseInt(semester.substring(0, 4));
   }
@@ -167,8 +168,8 @@ public class Course {
     return credits;
   }
 
-  public String getDeptId() {
-    return deptId;
+  public String getDepartmentId() {
+    return departmentId;
   }
 
   public String getDescription() {
@@ -179,12 +180,12 @@ public class Course {
     return gradingMethod;
   }
 
-  public String getCoreqs() {
-    return coreqs;
+  public String getCorequisites() {
+    return corequisites;
   }
 
-  public String getPrereqs() {
-    return prereqs;
+  public String getPrerequisites() {
+    return prerequisites;
   }
 
   public String getRestrictions() {

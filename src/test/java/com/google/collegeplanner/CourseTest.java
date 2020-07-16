@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.package com.google.collegeplanner.data;
+
 package com.google.collegeplanner.data;
 
 import org.junit.Assert;
@@ -34,33 +35,51 @@ public final class CourseTest {
    * This method tests the getSemesterSeason() method of the Class class
    */
   @Test
-  public void getSemesterSeasonSuccessTest() {
+  public void getSemesterSeasonSuccess() {
     course = new Course("CMSC101", "Introduction to Computer Science", "202008", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    Assert.assertEquals("Fall", course.getSemesterSeason());
+    try {
+      Assert.assertEquals("Fall", course.getSemesterSeason());
+    } catch (Exception e) {
+      Assert.fail();
+    }
   }
 
   /*
    * This method tests the getSemesterYear() method of the Class class
    */
   @Test
-  public void getSemesterYearSuccessTest() {
+  public void getSemesterYearSuccess() {
     course = new Course("CMSC101", "Introduction to Computer Science", "202008", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    Assert.assertEquals(2020, course.getSemesterYear());
+    try {
+      Assert.assertEquals(2020, course.getSemesterYear());
+    } catch (Exception e) {
+      Assert.fail();
+    }
   }
 
   @Test
-  public void invalidMonthTest() {
+  public void invalidMonth() {
     course = new Course("CMSC101", "Introduction to Computer Science", "202003", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    Assert.assertEquals("Invalid Month", course.getSemesterSeason());
+    try {
+      course.getSemesterSeason();
+      Assert.fail();
+    } catch (Exception e) {
+      // Passes Test by throwing exception as expected
+    }
   }
 
   @Test
-  public void invalidFormatTest() {
+  public void invalidFormat() {
     course = new Course("CMSC101", "Introduction to Computer Science", "03", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    Assert.assertEquals("Invalid Semester Format", course.getSemesterSeason());
+    try {
+      course.getSemesterYear();
+      Assert.fail();
+    } catch (Exception e) {
+      // Passes Test by throwing exception as expected
+    }
   }
 }
