@@ -93,6 +93,9 @@ export const Calendar = (() => {
  * past.
  */
 function initCalendar() {
+  // The timezone takes into account the Easter Time zone offset + 1 hour of
+  // dayling savings. Since it's a set day in the past, scheduling dates on this
+  // calendar shouldn't change because of the time zone.
   cal = new tui.Calendar('#calendar', {
     defaultView: 'week',
     useCreationPopup: true,
@@ -103,8 +106,8 @@ function initCalendar() {
     scheduleView: ['time'],
     taskView: false,
     timezones: [{
-      timezoneOffset: -240,
-      tooltip: 'Eastern Time',
+      timezoneOffset: -300,
+      tooltip: 'EDT',
     }],
   });
   // The hard coded date that all scheduled events should fall around
