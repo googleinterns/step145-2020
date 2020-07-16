@@ -56,7 +56,7 @@ public class PlannerServlet extends HttpServlet {
       body = getBody(request);
       numSemesters = Integer.parseInt((String) body.get("semesters"));
       selectedClasses = (JSONArray) body.get("selectedClasses");
-    } catch (ParseException | NullPointerException | NumberFormatException e) {
+    } catch (Throwable e) {
       respondWithError(
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
@@ -67,7 +67,7 @@ public class PlannerServlet extends HttpServlet {
     ArrayList<ArrayList<String>> semesters = getPlan(numSemesters);
     // If courseList is not empty, scheduling was not possible
     if (!courseList.isEmpty()) {
-        return;
+      return;
     }
     response.setContentType("applications/json;");
     response.getWriter().println(new Gson().toJson(semesters));
@@ -78,7 +78,7 @@ public class PlannerServlet extends HttpServlet {
    *
    * @param numSemesters The number of semesters remaining
    */
-  private ArrayList<ArrayList<String>> getPlan(int numSemesters){
+  private ArrayList<ArrayList<String>> getPlan(int numSemesters) {
     ArrayList<ArrayList<String>> semesters = new ArrayList<>();
     for (int i = numSemesters; i > 0; i--) {
       int avgCredits = totalCredits / i;
@@ -235,7 +235,8 @@ public class PlannerServlet extends HttpServlet {
    *
    * @param courseRelationshipDescription The natural language string to get courses from
    */
-  private HashSet<String> getCoursesFromString(String courseRelationshipDescription) throws IOException {
+  private HashSet<String> getCoursesFromString(String courseRelationshipDescription)
+      throws IOException {
     HashSet<String> prereqs = new HashSet<>();
     if (courseRelationshipDescription == null) {
       return prereqs;
