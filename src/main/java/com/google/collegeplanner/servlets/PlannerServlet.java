@@ -51,18 +51,34 @@ public class PlannerServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     JSONObject body;
     int numSemesters;
+    JSONArray selectedClasses;
     try {
       body = getBody(request);
       numSemesters = Integer.parseInt((String) body.get("semesters"));
+      selectedClasses = (JSONArray) body.get("selectedClasses");
     } catch (ParseException | NullPointerException | NumberFormatException e) {
       respondWithError(
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
-    JSONArray selectedClasses = (JSONArray) body.get("selectedClasses");
 
     constructGraphs(selectedClasses);
 
+    ArrayList<ArrayList<String>> semesters = getPlan(numSemesters);
+    // If courseList is not empty, scheduling was not possible
+    if (!courseList.isEmpty()) {
+        return;
+    }
+    response.setContentType("applications/json;");
+    response.getWriter().println(new Gson().toJson(semesters));
+  }
+
+  /**
+   * Creates and returns a valid plan for the given number of semesters
+   *
+   * @param numSemesters The number of semesters remaining
+   */
+  private ArrayList<ArrayList<String>> getPlan(int numSemesters){
     ArrayList<ArrayList<String>> semesters = new ArrayList<>();
     for (int i = numSemesters; i > 0; i--) {
       int avgCredits = totalCredits / i;
@@ -99,13 +115,7 @@ public class PlannerServlet extends HttpServlet {
       }
       semesters.add(semester);
     }
-    // If courseList is not empty, scheduling was not possible
-    if (!courseList.isEmpty()) {
-      respondWithError(
-          "Not enough semesters for schedule.", HttpServletResponse.SC_BAD_REQUEST, response);
-    }
-    response.setContentType("applications/json;");
-    response.getWriter().println(new Gson().toJson(semesters));
+    return semesters;
   }
 
   /**
@@ -159,17 +169,18 @@ public class PlannerServlet extends HttpServlet {
 
     // populate class variables
     for (Object course : selectedClasses) {
-      String key = (String) ((JSONObject) course).get("course_id");
-      int creditVal = Integer.parseInt((String) ((JSONObject) course).get("credits"));
+      JSONObject courseJson = (JSONObject) course;
+      String key = (String) courseJson.get("course_id");
+      int creditVal = Integer.parseInt((String) courseJson.get("credits"));
       credits.put(key, creditVal);
       totalCredits += creditVal;
 
       HashSet<String> prereqs = getCoursesFromString(
-          (String) ((JSONObject) ((JSONObject) course).get("relationships")).get("prereqs"));
+          (String) ((JSONObject) courseJson.get("relationships")).get("prereqs"));
       indegree.put(key, prereqs.size());
 
       HashSet<String> coreqs = getCoursesFromString(
-          (String) ((JSONObject) ((JSONObject) course).get("relationships")).get("coreqs"));
+          (String) ((JSONObject) courseJson.get("relationships")).get("coreqs"));
       corequisites.put(key, coreqs);
 
       for (String prereq : prereqs) {
@@ -222,14 +233,14 @@ public class PlannerServlet extends HttpServlet {
    * Takes English representation of course prerequisites/corequisites and returns a HashSet with
    * all the contained courses
    *
-   * @param engCourses The natural language string to get courses from
+   * @param courseRelationshipDescription The natural language string to get courses from
    */
-  private HashSet<String> getCoursesFromString(String engCourses) throws IOException {
+  private HashSet<String> getCoursesFromString(String courseRelationshipDescription) throws IOException {
     HashSet<String> prereqs = new HashSet<>();
-    if (engCourses == null) {
+    if (courseRelationshipDescription == null) {
       return prereqs;
     }
-    String[] words = engCourses.split("[\\p{Punct}\\s]+");
+    String[] words = courseRelationshipDescription.split("[\\p{Punct}\\s]+");
     for (String word : words) {
       if (courseList.contains(word)) {
         prereqs.add(word);
