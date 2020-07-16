@@ -11,7 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 86d3d346e8ef3829f438031834dfc5aa383f03d9
 package com.google.collegeplanner;
 
 import static org.mockito.AdditionalMatchers.not;
