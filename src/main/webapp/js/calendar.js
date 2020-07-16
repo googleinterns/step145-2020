@@ -25,11 +25,13 @@ let DateTime = luxon.DateTime;  // An alias for the Luxon DateTime object
  * @enum {int}
  */
 const enumDays = {
-  DATE_MONDAY: 0,
-  DATE_TUESDAY: 1,
-  DATE_WEDNESDAY: 2,
-  DATE_THURSDAY: 3,
-  DATE_FRIDAY: 4,
+  DATE_SUNDAY: 0,
+  DATE_MONDAY: 1,
+  DATE_TUESDAY: 2,
+  DATE_WEDNESDAY: 3,
+  DATE_THURSDAY: 4,
+  DATE_FRIDAY: 5,
+  DATE_SATURDAY: 6,
 };
 
 export const Calendar = (() => {
@@ -59,6 +61,9 @@ export const Calendar = (() => {
     const startTime = firstMeetingInfo.start_time;
     const endTime = firstMeetingInfo.end_time;
 
+    if (meetingDays.includes('Su')) {
+      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
+    }
     if (meetingDays.includes('M')) {
       addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY);
     }
@@ -73,6 +78,9 @@ export const Calendar = (() => {
     }
     if (meetingDays.includes('F')) {
       addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY);
+    }
+    if (meetingDays.includes('Sa')) {
+      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY);
     }
   }
 
@@ -94,9 +102,6 @@ function initCalendar() {
     isReadOnly: true,
     scheduleView: ['time'],
     taskView: false,
-    week: {
-      workweek: true,
-    },
     timezones: [{
       timezoneOffset: -240,
       tooltip: 'Eastern Time',
@@ -158,15 +163,15 @@ function createSchedule(course, startDate, endDate) {
  * @return {DateTime} The new DateTime object.
  */
 function createDate(day, hour, min) {
-  let monday = DateTime.fromObject({
+  let sunday = DateTime.fromObject({
     month: 1,
-    day: 3,
+    day: 2,
     year: 2000,
     hour: 0,
     second: 0,
     zone: 'America/New_York',
   });
-  return monday.plus({days: day, hours: hour, minutes: min});
+  return sunday.plus({days: day, hours: hour, minutes: min});
 }
 
 /**
