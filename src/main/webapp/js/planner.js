@@ -26,14 +26,44 @@ async function getPlan() {
     selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
   };
-  const response = await fetch('/api/planner', {
-    method: 'POST',
-    body: JSON.stringify(data),
-  });
+  courseContainer.innerText = '';
+  try {
+    const response = await fetch('/api/planner', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
 
-  const courseList = await response.json();
-  const courseData = courseList.semester_plan;
-  createTable(courseData, courseContainer);
+    const courseList = await response.json();
+    if (response.ok) {
+      const courseData = courseList.semester_plan;
+      if (!courseData.length) {
+        createAlert(
+            'These courses did not fit in the given number of semesters.',
+            'primary', courseContainer);
+      } else {
+        createTable(courseData, courseContainer);
+      }
+    } else {
+      createAlert(courseList.message, 'warning', courseContainer);
+    }
+  } catch (err) {
+    alert('An error occurred.');
+  }
+}
+
+/**
+ * Creates an alert with the specified message in the container
+ * @param {string} message The message string you want to be displayed
+ * @param {string} type type of alert you want to display (primary, secondary,
+ *     success, warning, danger)
+ * @param {Object} container the container you want to display the alert in
+ */
+function createAlert(message, type, container) {
+  const alert = document.createElement('div');
+  alert.setAttribute('class', `alert alert-${type}`);
+  alert.setAttribute('role', 'alert');
+  alert.appendChild(document.createTextNode(message));
+  container.appendChild(alert);
 }
 
 /**
