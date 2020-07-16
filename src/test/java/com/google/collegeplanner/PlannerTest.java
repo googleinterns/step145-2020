@@ -274,7 +274,6 @@ public final class PlannerTest {
     PlannerServlet servlet = new PlannerServlet();
     servlet.doPost(mockedRequest, mockedResponse);
     // Check whether the string output is correct
-    System.out.println(stringWriter.toString());
     JSONAssert.assertEquals(
         stringWriter.toString(), "{\"semester_plan\":[[\"AASP100\"]]}", JSONCompareMode.STRICT);
   }

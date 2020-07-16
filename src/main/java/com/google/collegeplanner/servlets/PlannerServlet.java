@@ -57,7 +57,7 @@ public class PlannerServlet extends HttpServlet {
       body = getBody(request);
       numSemesters = Integer.parseInt((String) body.get("semesters"));
       selectedClasses = (JSONArray) body.get("selectedClasses");
-    } catch (Throwable e) {
+    } catch (NumberFormatException | ClassCastException | ParseException | NullPointerException e) {
       respondWithError(
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
