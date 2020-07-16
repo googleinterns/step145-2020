@@ -34,14 +34,6 @@ export const Calendar = (() => {
     DATE_FRIDAY: 4,
   };
 
-  //   const enumDays = {
-  //   DATE_MONDAY: 'M',
-  //   DATE_TUESDAY: 'Tu',
-  //   DATE_WEDNESDAY: 'W',
-  //   DATE_THURSDAY: 'Th',
-  //   DATE_FRIDAY: 'F',
-  // };
-
   /**
    * Initializes the calendar and moves the view to a hardcoded date in the
    * past.
