@@ -17,50 +17,22 @@
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
+let id = 1;  // The id of the next schedule that will be added to the calendar
+let cal;     // The calendar object
+let DateTime = luxon.DateTime;  // An alias for the Luxon DateTime object
+/**
+ * Days of the school week.
+ * @enum {int}
+ */
+const enumDays = {
+  DATE_MONDAY: 0,
+  DATE_TUESDAY: 1,
+  DATE_WEDNESDAY: 2,
+  DATE_THURSDAY: 3,
+  DATE_FRIDAY: 4,
+};
+
 export const Calendar = (() => {
-  let id = 1;  // The id of the next schedule that will be added to the calendar
-  let cal;     // The calendar object
-  let DateTime = luxon.DateTime;
-
-  /**
-   * Days of the school week.
-   * @enum {int}
-   */
-  const enumDays = { 
-    DATE_MONDAY: 0,
-    DATE_TUESDAY: 1,
-    DATE_WEDNESDAY: 2,
-    DATE_THURSDAY: 3,
-    DATE_FRIDAY: 4,
-  };
-
-  /**
-   * Initializes the calendar and moves the view to a hardcoded date in the
-   * past.
-   */
-  function initCalendar() {
-    cal = new tui.Calendar('#calendar', {
-      defaultView: 'week',
-      useCreationPopup: true,
-      useDetailPopup: true,
-      disableDblClick: true,
-      disableClick: true,
-      isReadOnly: true,
-      scheduleView: ['time'],
-      taskView: false,
-      week: {
-        workweek: true,
-      },
-      timezones: [{
-        timezoneOffset: -240,
-        tooltip: 'Eastern Time',
-      }],
-    });
-    // The hard coded date that all scheduled events should fall around
-    // Date: Sunday January 2nd, 2000 @ 00:00 EST
-    cal.setDate(new Date('2000-01-02T00:00:00'));
-  }
-
   /**
    * Adds a course to the calendar.
    * @param {Object} course The JSON Object for the course.
@@ -94,8 +66,7 @@ export const Calendar = (() => {
       addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY);
     }
     if (meetingDays.includes('W')) {
-      addCourseToCalendar(
-          course, startTime, endTime, enumDays.DATE_WEDNESDAY);
+      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY);
     }
     if (meetingDays.includes('Th')) {
       addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY);
@@ -105,89 +76,113 @@ export const Calendar = (() => {
     }
   }
 
-  /**
-   * Adds a course to the calendar given the day of the week and a time.
-   * @param {Object} course The JSON Object for the course.
-   * @param {string} startTime The string representation of a 12-hour clock
-   *     time eg. 8:30pm.
-   * @param {string} endTime The string representation of a 12-hour clock
-   *     time eg. 8:30pm.
-   * @param {enumDays} day The day that the course falls on.
-   */
-  function addCourseToCalendar(course, startTime, endTime, day) {
-    const startDate = createDateFromTimeString(startTime, day);
-    const endDate = createDateFromTimeString(endTime, day);
-    createSchedule(course, startDate, endDate);
-  }
-
-  /**
-   * Creates a schedule on the calendar using the toast API.
-   * @param {Object} course The JSON Object for the course.
-   * @param {DateTime} startDate The DateTime object of the start time.
-   * @param {DateTime} endDate The DateTime object of the end time.
-   */
-  function createSchedule(course, startDate, endDate) {
-    // TODO(savsa): Have each schedule be a different color. The color is
-    // currently hard coded to be blue so all schedules look the same.
-    cal.createSchedules([{
-      id: id.toString(),
-      color: '#ffffff',
-      bgColor: '#00a9ff',
-      borderColor: '#00a9ff',
-      calendarId: '1',
-      title: course.name,
-      category: 'time',
-      location: course.building,
-      start: startDate.toISO(),
-      end: endDate.toISO(),
-      isReadOnly: true,
-    }]);
-    // Each schedule needs a unique ID. We'll start at 1 and go up from there.
-    id++;
-  }
-
-  /**
-   * Creates a schedule on the calendar using the toast API.
-   * @param {enumDays} day The day that the course falls on.
-   * @param {int} hour The army-time hour portion of the time/date we want
-   *     to create.
-   * @param {hour} min The army-time minute portion of the time/date we want
-   *     to create.
-   * @return {DateTime} The new DateTime object.
-   */
-  function createDate(day, hour, min) {
-    let monday = DateTime.fromObject({
-      month: 1,
-      day: 3,
-      year: 2000,
-      hour: 0,
-      second: 0,
-      zone: 'America/New_York',
-    });
-    return monday.plus({
-      days: day,
-      hours: hour,
-      minutes: min
-    });
-  }
-
-  /**
-   * Creates a Date object from the string representation of a time.
-   * @param {string} time The string representation of a 12-hour clock time eg.
-   *     8:30pm.
-   * @param {enumDays} day The day that the course falls on.
-   * @return {DateTime} The new DateTime object.
-   */
-  function createDateFromTimeString(time, day) {
-    let dt = DateTime.fromFormat(time, "h:mma");
-    const hour = dt.hour;
-    const minutes = dt.minute;
-    return createDate(day, hour, minutes);
-  }
-
-  window.addEventListener('load', () => {
-    initCalendar();
-  });
-
   return {addCourse: addCourse};
 })();
+
+
+/**
+ * Initializes the calendar and moves the view to a hardcoded date in the
+ * past.
+ */
+function initCalendar() {
+  cal = new tui.Calendar('#calendar', {
+    defaultView: 'week',
+    useCreationPopup: true,
+    useDetailPopup: true,
+    disableDblClick: true,
+    disableClick: true,
+    isReadOnly: true,
+    scheduleView: ['time'],
+    taskView: false,
+    week: {
+      workweek: true,
+    },
+    timezones: [{
+      timezoneOffset: -240,
+      tooltip: 'Eastern Time',
+    }],
+  });
+  // The hard coded date that all scheduled events should fall around
+  // Date: Sunday January 2nd, 2000 @ 00:00 EST
+  cal.setDate(new Date('2000-01-02T00:00:00'));
+}
+
+/**
+ * Adds a course to the calendar given the day of the week and a time.
+ * @param {Object} course The JSON Object for the course.
+ * @param {string} startTime The string representation of a 12-hour clock
+ *     time eg. 8:30pm.
+ * @param {string} endTime The string representation of a 12-hour clock
+ *     time eg. 8:30pm.
+ * @param {enumDays} day The day that the course falls on.
+ */
+function addCourseToCalendar(course, startTime, endTime, day) {
+  const startDate = createDateFromTimeString(startTime, day);
+  const endDate = createDateFromTimeString(endTime, day);
+  createSchedule(course, startDate, endDate);
+}
+
+/**
+ * Creates a schedule on the calendar using the toast API.
+ * @param {Object} course The JSON Object for the course.
+ * @param {DateTime} startDate The DateTime object of the start time.
+ * @param {DateTime} endDate The DateTime object of the end time.
+ */
+function createSchedule(course, startDate, endDate) {
+  // TODO(savsa): Have each schedule be a different color. The color is
+  // currently hard coded to be blue so all schedules look the same.
+  cal.createSchedules([{
+    id: id.toString(),
+    color: '#ffffff',
+    bgColor: '#00a9ff',
+    borderColor: '#00a9ff',
+    calendarId: '1',
+    title: course.name,
+    category: 'time',
+    location: course.building,
+    start: startDate.toISO(),
+    end: endDate.toISO(),
+    isReadOnly: true,
+  }]);
+  // Each schedule needs a unique ID. We'll start at 1 and go up from there.
+  id++;
+}
+
+/**
+ * Creates a schedule on the calendar using the toast API.
+ * @param {enumDays} day The day that the course falls on.
+ * @param {int} hour The army-time hour portion of the time/date we want
+ *     to create.
+ * @param {hour} min The army-time minute portion of the time/date we want
+ *     to create.
+ * @return {DateTime} The new DateTime object.
+ */
+function createDate(day, hour, min) {
+  let monday = DateTime.fromObject({
+    month: 1,
+    day: 3,
+    year: 2000,
+    hour: 0,
+    second: 0,
+    zone: 'America/New_York',
+  });
+  return monday.plus({days: day, hours: hour, minutes: min});
+}
+
+/**
+ * Creates a Date object from the string representation of a time.
+ * @param {string} time The string representation of a 12-hour clock time eg.
+ *     8:30pm.
+ * @param {enumDays} day The day that the course falls on.
+ * @return {DateTime} The new DateTime object.
+ */
+function createDateFromTimeString(time, day) {
+  let dt = DateTime.fromFormat(time, 'h:mma');
+  const hour = dt.hour;
+  const minutes = dt.minute;
+  return createDate(day, hour, minutes);
+}
+
+window.addEventListener('load', () => {
+  initCalendar();
+});
