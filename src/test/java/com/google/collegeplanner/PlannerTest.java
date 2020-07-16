@@ -208,7 +208,8 @@ public final class PlannerTest {
     PlannerServlet servlet = new PlannerServlet();
     servlet.doPost(mockedRequest, mockedResponse);
     // Check whether the string output is correct
-    JSONAssert.assertEquals(stringWriter.toString(), "{\"semester_plan\":[]}", JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(
+        stringWriter.toString(), "{\"semester_plan\":[]}", JSONCompareMode.STRICT);
   }
 
   @Test
@@ -274,8 +275,7 @@ public final class PlannerTest {
     servlet.doPost(mockedRequest, mockedResponse);
     // Check whether the string output is correct
     System.out.println(stringWriter.toString());
-    JSONAssert.assertEquals(stringWriter.toString(),
-        "{\"semester_plan\":[[\"AASP100\"]]}",
-        JSONCompareMode.STRICT);
+    JSONAssert.assertEquals(
+        stringWriter.toString(), "{\"semester_plan\":[[\"AASP100\"]]}", JSONCompareMode.STRICT);
   }
 }

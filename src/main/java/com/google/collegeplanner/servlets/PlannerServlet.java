@@ -167,7 +167,7 @@ public class PlannerServlet extends HttpServlet {
     // creates CourseList and initialize nextCourses HashSets
     for (Object course : selectedClasses) {
       String key = (String) ((JSONObject) course).get("course_id");
-      if (!courseLookup.contains(key)){
+      if (!courseLookup.contains(key)) {
         courseList.add(key);
       }
       courseLookup.add(key);
