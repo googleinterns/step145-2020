@@ -17,12 +17,27 @@
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
-let id = 1;  // The id of the next schedule that will be added to the calendar
-let calendar;     // The calendar object
-const DateTime = luxon.DateTime;  // An alias for the Luxon DateTime object
+/** 
+ * The id of the next schedule that will be added to the calendar.
+ * @type {number}
+ */
+let id = 1;
+
+/** 
+ * The calendar object.
+ * @type {Calendar}
+ */
+let calendar;
+
+/** 
+ * An alias for the Luxon DateTime object.
+ * @type {DateTime}
+ */
+const DateTime = luxon.DateTime;
+
 /**
  * Days of the school week.
- * @enum {int}
+ * @enum {number}
  */
 const enumDays = {
   DATE_SUNDAY: 0,
@@ -35,7 +50,37 @@ const enumDays = {
 };
 
 export const Calendar = (() => {
-  /**
+  return {addCourse: addCourse};
+})();
+
+/**
+ * Initializes the calendar and moves the view to a hardcoded date in the
+ * past.
+ */
+function initCalendar() {
+  // The timezone takes into account the Easter Time zone offset + 1 hour of
+  // dayling savings. Since it's a set day in the past, scheduling dates on this
+  // calendar shouldn't change because of the time zone.
+  calendar = new tui.Calendar('#calendar', {
+    defaultView: 'week',
+    useCreationPopup: true,
+    useDetailPopup: true,
+    disableDblClick: true,
+    disableClick: true,
+    isReadOnly: true,
+    scheduleView: ['time'],
+    taskView: false,
+    timezones: [{
+      timezoneOffset: -300,
+      tooltip: 'EDT',
+    }],
+  });
+  // The hard coded date that all scheduled events should fall around
+  // Date: Sunday January 2nd, 2000 @ 00:00 EST
+  calendar.setDate(new Date('2000-01-02T00:00:00'));
+}
+
+ /**
    * Adds a course to the calendar.
    * @param {Object} course The JSON Object for the course.
    */
@@ -84,37 +129,6 @@ export const Calendar = (() => {
     }
   }
 
-  return {addCourse: addCourse};
-})();
-
-
-/**
- * Initializes the calendar and moves the view to a hardcoded date in the
- * past.
- */
-function initCalendar() {
-  // The timezone takes into account the Easter Time zone offset + 1 hour of
-  // dayling savings. Since it's a set day in the past, scheduling dates on this
-  // calendar shouldn't change because of the time zone.
-  calendar = new tui.Calendar('#calendar', {
-    defaultView: 'week',
-    useCreationPopup: true,
-    useDetailPopup: true,
-    disableDblClick: true,
-    disableClick: true,
-    isReadOnly: true,
-    scheduleView: ['time'],
-    taskView: false,
-    timezones: [{
-      timezoneOffset: -300,
-      tooltip: 'EDT',
-    }],
-  });
-  // The hard coded date that all scheduled events should fall around
-  // Date: Sunday January 2nd, 2000 @ 00:00 EST
-  calendar.setDate(new Date('2000-01-02T00:00:00'));
-}
-
 /**
  * Adds a course to the calendar given the day of the week and a time.
  * @param {Object} course The JSON Object for the course.
@@ -159,14 +173,14 @@ function createSchedule(course, startDate, endDate) {
 /**
  * Creates a schedule on the calendar using the toast API.
  * @param {enumDays} day The day that the course falls on.
- * @param {int} hour The army-time hour portion of the time/date we want
+ * @param {number} hour The army-time hour portion of the time/date we want
  *     to create.
  * @param {hour} min The army-time minute portion of the time/date we want
  *     to create.
  * @return {DateTime} The new DateTime object.
  */
 function createDate(day, hour, min) {
-  let sunday = DateTime.fromObject({
+  const sunday = DateTime.fromObject({
     month: 1,
     day: 2,
     year: 2000,
@@ -185,7 +199,7 @@ function createDate(day, hour, min) {
  * @return {DateTime} The new DateTime object.
  */
 function createDateFromTimeString(time, day) {
-  let dt = DateTime.fromFormat(time, 'h:mma');
+  const dt = DateTime.fromFormat(time, 'h:mma');
   const hour = dt.hour;
   const minutes = dt.minute;
   return createDate(day, hour, minutes);

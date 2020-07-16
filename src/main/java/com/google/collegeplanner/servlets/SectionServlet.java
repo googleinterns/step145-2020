@@ -68,7 +68,7 @@ public class SectionServlet extends HttpServlet {
     JSONObject sectionsInfo = new JSONObject();
     sectionsInfo.put("sections", jsonArray);
 
-    response.setContentType("applications/json;");
+    response.setContentType("application/json;");
     response.getWriter().println(sectionsInfo);
   }
 
