@@ -162,11 +162,15 @@ public class PlannerServlet extends HttpServlet {
     credits = new HashMap<String, Integer>();
     nextCourses = new HashMap<String, HashSet<String>>();
     courseList = new LinkedList<>();
+    HashSet<String> courseLookup = new HashSet<>(); // To avoid duplicate courses in O(1)
 
     // creates CourseList and initialize nextCourses HashSets
     for (Object course : selectedClasses) {
       String key = (String) ((JSONObject) course).get("course_id");
-      courseList.add(key);
+      if (!courseLookup.contains(key)){
+        courseList.add(key);
+      }
+      courseLookup.add(key);
       nextCourses.put(key, new HashSet<>());
     }
 

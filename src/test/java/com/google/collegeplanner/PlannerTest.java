@@ -246,4 +246,36 @@ public final class PlannerTest {
         "{\"message\":\"Invalid body for POST request.\",\"status\":\"error\"}",
         JSONCompareMode.STRICT);
   }
+
+  @Test
+  public void servletIgnoresDuplicateCourses() throws Exception {
+    String test = "{\"selectedClasses\":[{"
+        + "\"course_id\":\"AASP100\","
+        + "\"relationships\":{"
+        + "  \"coreqs\":null,"
+        + "  \"prereqs\":null"
+        + "},"
+        + "\"credits\":\"3\","
+        + "},{"
+        + "\"course_id\":\"AASP100\","
+        + "\"relationships\":{"
+        + "  \"coreqs\":null,"
+        + "  \"prereqs\":null"
+        + "},"
+        + "\"credits\":\"3\","
+        + "}"
+        + "],"
+        + "\"semesters\": \"1\"}";
+    Reader inputString = new StringReader(test);
+    BufferedReader reader = new BufferedReader(inputString);
+    when(mockedRequest.getReader()).thenReturn(reader);
+
+    PlannerServlet servlet = new PlannerServlet();
+    servlet.doPost(mockedRequest, mockedResponse);
+    // Check whether the string output is correct
+    System.out.println(stringWriter.toString());
+    JSONAssert.assertEquals(stringWriter.toString(),
+        "{\"semester_plan\":[[\"AASP100\"]]}",
+        JSONCompareMode.STRICT);
+  }
 }
