@@ -18,8 +18,8 @@
 //  automatically choosing the first section
 
 let id = 1;  // The id of the next schedule that will be added to the calendar
-let cal;     // The calendar object
-let DateTime = luxon.DateTime;  // An alias for the Luxon DateTime object
+let calendar;     // The calendar object
+const DateTime = luxon.DateTime;  // An alias for the Luxon DateTime object
 /**
  * Days of the school week.
  * @enum {int}
@@ -96,7 +96,7 @@ function initCalendar() {
   // The timezone takes into account the Easter Time zone offset + 1 hour of
   // dayling savings. Since it's a set day in the past, scheduling dates on this
   // calendar shouldn't change because of the time zone.
-  cal = new tui.Calendar('#calendar', {
+  calendar = new tui.Calendar('#calendar', {
     defaultView: 'week',
     useCreationPopup: true,
     useDetailPopup: true,
@@ -112,7 +112,7 @@ function initCalendar() {
   });
   // The hard coded date that all scheduled events should fall around
   // Date: Sunday January 2nd, 2000 @ 00:00 EST
-  cal.setDate(new Date('2000-01-02T00:00:00'));
+  calendar.setDate(new Date('2000-01-02T00:00:00'));
 }
 
 /**
@@ -139,7 +139,7 @@ function addCourseToCalendar(course, startTime, endTime, day) {
 function createSchedule(course, startDate, endDate) {
   // TODO(savsa): Have each schedule be a different color. The color is
   // currently hard coded to be blue so all schedules look the same.
-  cal.createSchedules([{
+  calendar.createSchedules([{
     id: id.toString(),
     color: '#ffffff',
     bgColor: '#00a9ff',
