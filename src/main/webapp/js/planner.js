@@ -32,7 +32,8 @@ async function getPlan() {
   });
 
   const courseList = await response.json();
-  createTable(courseList, courseContainer);
+  const courseData = courseList.semester_plan;
+  createTable(courseData, courseContainer);
 }
 
 /**

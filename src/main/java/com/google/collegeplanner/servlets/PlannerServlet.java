@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -39,9 +40,9 @@ public class PlannerServlet extends HttpServlet {
   private HashMap<String, HashSet<String>>
       nextCourses; // Courses that come after the given course in the graph
   private HashMap<String, HashSet<String>> corequisites;
-  private HashMap<String, Integer> depths; // depth of a course in the graph
+  private HashMap<String, Integer> heights; // height of a course in the graph
   private HashMap<String, Integer> credits; // Number of credits for each course
-  private ArrayList<String> courseList;
+  private LinkedList<String> courseList;
   private int totalCredits;
 
   /**
@@ -65,12 +66,10 @@ public class PlannerServlet extends HttpServlet {
     constructGraphs(selectedClasses);
 
     ArrayList<ArrayList<String>> semesters = getPlan(numSemesters);
-    // If courseList is not empty, scheduling was not possible
-    if (!courseList.isEmpty()) {
-      return;
-    }
+    JSONObject coursePlan = new JSONObject();
+    coursePlan.put("semester_plan", semesters);
     response.setContentType("applications/json;");
-    response.getWriter().println(new Gson().toJson(semesters));
+    response.getWriter().println(new Gson().toJson(coursePlan));
   }
 
   /**
@@ -80,6 +79,9 @@ public class PlannerServlet extends HttpServlet {
    */
   private ArrayList<ArrayList<String>> getPlan(int numSemesters) {
     ArrayList<ArrayList<String>> semesters = new ArrayList<>();
+    if (courseList.size() > 0 && heights.get(courseList.get(0)) > numSemesters) {
+      return semesters;
+    }
     for (int i = numSemesters; i > 0; i--) {
       int avgCredits = totalCredits / i;
       ArrayList<String> semester = new ArrayList<>();
@@ -102,8 +104,9 @@ public class PlannerServlet extends HttpServlet {
             }
           }
         }
-        // Breaks out if there are no more required classes and we exceeded our credit limit
-        if (depths.get(course) != i && avgCredits <= 0) {
+        // Guarantees that all classes that must be taken in this semester are added
+        if (heights.get(course) != i && avgCredits <= 0) {
+          // Breaks out if there are no more required classes and we exceeded our credit limit
           break;
         }
       }
@@ -155,10 +158,10 @@ public class PlannerServlet extends HttpServlet {
     // Initialize graph representation and courseList
     indegree = new HashMap<String, Integer>();
     corequisites = new HashMap<String, HashSet<String>>();
-    depths = new HashMap<String, Integer>();
+    heights = new HashMap<String, Integer>();
     credits = new HashMap<String, Integer>();
     nextCourses = new HashMap<String, HashSet<String>>();
-    courseList = new ArrayList<>();
+    courseList = new LinkedList<>();
 
     // creates CourseList and initialize nextCourses HashSets
     for (Object course : selectedClasses) {
@@ -188,45 +191,48 @@ public class PlannerServlet extends HttpServlet {
       }
     }
 
-    fillDepths();
+    fillHeights();
 
-    // sort courseList from greatest depth to lowest depth
+    // sort courseList from greatest height to lowest height
     Collections.sort(courseList,
-        (String course1, String course2) -> depths.get(course2).compareTo(depths.get(course1)));
+        (String course1, String course2) -> heights.get(course2).compareTo(heights.get(course1)));
   }
 
   /**
-   * Populate this.depths with the depth of each course
+   * Populate this.heights with the height of each course
    */
-  private void fillDepths() {
-    // Calls recursive function to find depths
+  private void fillHeights() {
+    // Calls recursive function to find heights
     for (String course : courseList) {
-      if (!depths.containsKey(course)) {
-        getDepth(course);
+      if (!heights.containsKey(course)) {
+        getHeight(course);
       }
     }
   }
 
   /**
-   * Dynamic Programming Algorithm to find the depth of a course
+   * Dynamic Programming Algorithm to find the height of a course
    *
    * @param course The course ID for the course
    */
-  private int getDepth(String course) {
-    if (depths.containsKey(course)) {
-      return depths.get(course);
+  private int getHeight(String course) {
+    if (heights.containsKey(course)) {
+      return heights.get(course);
     }
     if (nextCourses.get(course).size() == 0) {
-      depths.put(course, 1);
+      heights.put(course, 1);
       return 1;
     }
-    ArrayList<Integer> childrenDepths = new ArrayList<>();
+    int maxHeight = 0;
     for (String nextCourse : nextCourses.get(course)) {
-      childrenDepths.add(getDepth(nextCourse));
+      int newHeight = getHeight(nextCourse);
+      if (newHeight > maxHeight) {
+        maxHeight = newHeight;
+      }
     }
-    int courseDepth = Collections.max(childrenDepths) + 1;
-    depths.put(course, courseDepth);
-    return courseDepth;
+    int courseHeight = maxHeight + 1;
+    heights.put(course, courseHeight);
+    return courseHeight;
   }
 
   /**

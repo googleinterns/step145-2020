@@ -116,7 +116,7 @@ public final class PlannerTest {
     servlet.doPost(mockedRequest, mockedResponse);
     // Check whether the string output is correct
     JSONAssert.assertEquals(stringWriter.toString(),
-        "[[\"AASP100\"], [ \"CMSC106\",\"CMSC120\", \"CMSC122\"], [\"AGNR499\"]]",
+        "{\"semester_plan\":[[\"AASP100\"], [ \"CMSC106\",\"CMSC120\", \"CMSC122\"], [\"AGNR499\"]]}",
         JSONCompareMode.STRICT);
   }
 
@@ -208,7 +208,7 @@ public final class PlannerTest {
     PlannerServlet servlet = new PlannerServlet();
     servlet.doPost(mockedRequest, mockedResponse);
     // Check whether the string output is correct
-    Assert.assertEquals(stringWriter.toString(), "");
+    JSONAssert.assertEquals(stringWriter.toString(), "{\"semester_plan\":[]}", JSONCompareMode.STRICT);
   }
 
   @Test
