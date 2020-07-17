@@ -11,6 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+import {Calendar} from './calendar.js';
+
 export const CollegePlanner = (() => {
   let selected = [];  // Courses selected by the user
   let courses = [];   // List with all courses
@@ -105,6 +108,7 @@ export const CollegePlanner = (() => {
     if (!selected.includes(selectedCourse) &&
         courses.includes(selectedCourse)) {
       selected.push(selectedCourse);
+      Calendar.addCourse(courseInfo[selectedCourse]);
       courseContainer.appendChild(createCourseListElement(selectedCourse));
     }
   }
