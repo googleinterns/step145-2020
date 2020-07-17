@@ -74,6 +74,7 @@ public abstract class BaseServlet extends HttpServlet {
 
   /**
    * Responds with an HTTP error with a custom message.
+   * @param message The custom error message.
    * @param status The status int that we want to respond with.
    * @param response The HttpServletResponse object.
    */
