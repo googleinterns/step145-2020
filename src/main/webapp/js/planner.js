@@ -19,11 +19,8 @@ import {CollegePlanner} from './courseSelector.js'
 async function getPlan() {
   const courseContainer = document.getElementById('order-area');
   attachNewSpinner(courseContainer);
-  const selectedClasses = []
-  CollegePlanner.getSelected().forEach(
-      course => selectedClasses.push(CollegePlanner.getCourseInfo()[course]));
   const data = {
-    selectedClasses: selectedClasses,
+    selectedClasses: CollegePlanner.getSelected().join(','),
     semesters: document.getElementById('semesters').value
   };
   const response = await fetch('/api/planner', {
@@ -32,8 +29,7 @@ async function getPlan() {
   });
 
   const courseList = await response.json();
-  const courseData = courseList.semester_plan;
-  createTable(courseData, courseContainer);
+  createTable(courseList, courseContainer);
 }
 
 /**
