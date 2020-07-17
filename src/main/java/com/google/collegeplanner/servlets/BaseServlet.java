@@ -68,7 +68,22 @@ public abstract class BaseServlet extends HttpServlet {
     jsonObject.put("message", message);
     jsonObject.put("status", "error");
     response.setStatus(status);
-    response.setContentType("applications/json;");
+    response.setContentType("application/json;");
+    response.getWriter().println(new Gson().toJson(jsonObject));
+  }
+
+  /**
+   * Responds with an HTTP error with a custom message.
+   * @param status The status int that we want to respond with.
+   * @param response The HttpServletResponse object.
+   */
+  public void respondWithError(String message, int status, HttpServletResponse response)
+      throws IOException {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.put("message", message);
+    jsonObject.put("status", "error");
+    response.setStatus(status);
+    response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
