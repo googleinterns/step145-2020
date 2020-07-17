@@ -27,27 +27,29 @@ async function getPlan() {
     semesters: document.getElementById('semesters').value
   };
   courseContainer.innerText = '';
+  let response;
+  let courseList;
   try {
-    const response = await fetch('/api/planner', {
+    response = await fetch('/api/planner', {
       method: 'POST',
       body: JSON.stringify(data),
     });
-
-    const courseList = await response.json();
-    if (response.ok) {
-      const courseData = courseList.semester_plan;
-      if (!courseData.length) {
-        createAlert(
-            'These courses did not fit in the given number of semesters.',
-            'primary', courseContainer);
-      } else {
-        createTable(courseData, courseContainer);
-      }
-    } else {
-      createAlert(courseList.message, 'warning', courseContainer);
-    }
+    courseList = await response.json();
   } catch (err) {
     alert('An error occurred.');
+    return;
+  }
+  if (response.ok) {
+    const courseData = courseList.semester_plan;
+    if (!courseData.length) {
+      createAlert(
+          'These courses did not fit in the given number of semesters.',
+          'primary', courseContainer);
+    } else {
+      createTable(courseData, courseContainer);
+    }
+  } else {
+    createAlert(courseList.message, 'warning', courseContainer);
   }
 }
 

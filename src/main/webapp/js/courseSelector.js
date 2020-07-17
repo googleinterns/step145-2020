@@ -26,25 +26,28 @@ export const CollegePlanner = (() => {
    * Gets departments from /api/departments servlet to populate dropdown list
    */
   async function getDepartmentOptions() {
+    let response;
+    let departmentList;
     try {
-      const response = await fetch('/api/departments');
-      const departmentList = await response.json();
-      const departmentContainer = document.getElementById('departments');
-      departmentContainer.innerHTML =
-          '';  // Clearing departmentContainer to get rid of previous options
-      // Add instruction to courseList dropdown
-      const option = document.createElement('option');
-      option.innerText = 'Select a Department';
-      option.selected = true;
-      option.hidden = true;
-      departmentContainer.appendChild(option);
-      // Add each course to course list
-      const departmentsDetailed = departmentList.departments;
-      departmentsDetailed.forEach(
-          department => addDepartmentOption(department, departmentContainer));
+      response = await fetch('/api/departments');
+      departmentList = await response.json();
     } catch (err) {
       alert('An error occurred.');
+      return;
     }
+    const departmentContainer = document.getElementById('departments');
+    departmentContainer.innerHTML =
+        '';  // Clearing departmentContainer to get rid of previous options
+    // Add instruction to courseList dropdown
+    const option = document.createElement('option');
+    option.innerText = 'Select a Department';
+    option.selected = true;
+    option.hidden = true;
+    departmentContainer.appendChild(option);
+    // Add each course to course list
+    const departmentsDetailed = departmentList.departments;
+    departmentsDetailed.forEach(
+        department => addDepartmentOption(department, departmentContainer));
   }
 
   /**
@@ -68,26 +71,28 @@ export const CollegePlanner = (() => {
     const departmentSelection = document.getElementById('departments');
     const selectedDepartment =
         departmentSelection.options[departmentSelection.selectedIndex].value;
+    let response;
+    let courseList;
     try {
-      const response = await fetch(
+      response = await fetch(
           `/api/courses?department=${encodeURIComponent(selectedDepartment)}`);
-      const courseList = await response.json();
-      const courseContainer = document.getElementById('courses');
-      courseContainer.innerHTML =
-          '';  // Clearing courseContainer to get rid of previous options
-      // Add default option to courses dropdown
-      const option = document.createElement('option');
-      option.innerText = 'Select a Course';
-      option.selected = true;
-      option.hidden = true;
-      courseContainer.appendChild(option);
-      // Add each course to course list
-      const coursesDetailed = courseList.courses;
-      coursesDetailed.forEach(
-          course => addCourseOption(course, courseContainer));
+      courseList = await response.json();
     } catch (err) {
       alert('An error occurred.');
+      return;
     }
+    const courseContainer = document.getElementById('courses');
+    courseContainer.innerHTML =
+        '';  // Clearing courseContainer to get rid of previous options
+    // Add default option to courses dropdown
+    const option = document.createElement('option');
+    option.innerText = 'Select a Course';
+    option.selected = true;
+    option.hidden = true;
+    courseContainer.appendChild(option);
+    // Add each course to course list
+    const coursesDetailed = courseList.courses;
+    coursesDetailed.forEach(course => addCourseOption(course, courseContainer));
   }
 
   /**
