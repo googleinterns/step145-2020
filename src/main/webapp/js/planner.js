@@ -36,36 +36,21 @@ async function getPlan() {
     });
     courseList = await response.json();
   } catch (err) {
-    alert('An error occurred.');
+    createAlert('An error occurred', 'danger', courseContainer);
     return;
   }
   if (response.ok) {
     const courseData = courseList.semester_plan;
     if (!courseData.length) {
-      createAlert(
+      CollegePlanner.createAlert(
           'These courses did not fit in the given number of semesters.',
           'primary', courseContainer);
     } else {
-      createTable(courseData, courseContainer);
+      CollegePlanner.createTable(courseData, courseContainer);
     }
   } else {
-    createAlert(courseList.message, 'warning', courseContainer);
+    CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);
   }
-}
-
-/**
- * Creates an alert with the specified message in the container
- * @param {string} message The message string you want to be displayed
- * @param {string} type type of alert you want to display (primary, secondary,
- *     success, warning, danger)
- * @param {Object} container the container you want to display the alert in
- */
-function createAlert(message, type, container) {
-  const alert = document.createElement('div');
-  alert.setAttribute('class', `alert alert-${type}`);
-  alert.setAttribute('role', 'alert');
-  alert.appendChild(document.createTextNode(message));
-  container.appendChild(alert);
 }
 
 /**

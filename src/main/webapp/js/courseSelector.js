@@ -32,7 +32,7 @@ export const CollegePlanner = (() => {
       response = await fetch('/api/departments');
       departmentList = await response.json();
     } catch (err) {
-      alert('An error occurred.');
+      createAlert('An error occurred', 'danger', document.getElementById('alert-container'));
       return;
     }
     const departmentContainer = document.getElementById('departments');
@@ -78,7 +78,7 @@ export const CollegePlanner = (() => {
           `/api/courses?department=${encodeURIComponent(selectedDepartment)}`);
       courseList = await response.json();
     } catch (err) {
-      alert('An error occurred.');
+      createAlert('An error occurred', 'danger', document.getElementById('alert-container'));
       return;
     }
     const courseContainer = document.getElementById('courses');
@@ -154,6 +154,22 @@ export const CollegePlanner = (() => {
     liElement.appendChild(deleteButtonElement);
     return liElement;
   }
+
+/**
+ * Creates an alert with the specified message in the container
+ * @param {string} message The message string you want to be displayed
+ * @param {string} type type of alert you want to display (primary, secondary,
+ *     success, warning, danger)
+ * @param {Object} container the container you want to display the alert in
+ */
+function createAlert(message, type, container) {
+  const alert = document.createElement('div');
+  alert.setAttribute('class', `alert alert-${type}`);
+  alert.setAttribute('role', 'alert');
+  alert.appendChild(document.createTextNode(message));
+  container.appendChild(alert);
+}
+
   window.addEventListener('load', () => {
     getDepartmentOptions();
   });
@@ -179,6 +195,7 @@ export const CollegePlanner = (() => {
   return {
     getSelected: getSelected,
     getCourses: getCourses,
-    getCourseInfo: getCourseInfo
+    getCourseInfo: getCourseInfo,
+    createAlert: createAlert
   };
 })();
