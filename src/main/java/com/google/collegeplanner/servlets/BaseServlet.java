@@ -34,7 +34,6 @@ public abstract class BaseServlet extends HttpServlet {
 
   /**
    * Responds with an HTTP error.
-   *
    * @param status The status int that we want to respond with.
    * @param response The HttpServletResponse object.
    */
