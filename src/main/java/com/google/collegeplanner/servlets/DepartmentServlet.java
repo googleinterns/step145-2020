@@ -50,7 +50,7 @@ public class DepartmentServlet extends BaseServlet {
       builder.setParameter("semester", "202008");
       uri = builder.build();
     } catch (URISyntaxException e) {
-      super.respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
