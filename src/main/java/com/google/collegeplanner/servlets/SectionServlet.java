@@ -45,7 +45,8 @@ public class SectionServlet extends BaseServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String courseId = request.getParameter("course_id");
     if (courseId == null || courseId == "") {
-      respondWithError(HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError(
+          "Invalid or missing course id.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
 

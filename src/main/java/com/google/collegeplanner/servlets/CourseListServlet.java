@@ -45,7 +45,8 @@ public class CourseListServlet extends BaseServlet {
     // Create the URI and specify the parameters.
     String department = request.getParameter("department");
     if (department == null || department == "") {
-      respondWithError("Invalid or missing department parameter.", HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError(
+          "Invalid or missing department parameter.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
     URI uri;

@@ -64,12 +64,7 @@ public abstract class BaseServlet extends HttpServlet {
         message = "Error.";
     }
 
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("message", message);
-    jsonObject.put("status", "error");
-    response.setStatus(status);
-    response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(jsonObject));
+    respondWithError(message, status, response);
   }
 
   /**
