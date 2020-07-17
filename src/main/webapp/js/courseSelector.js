@@ -54,7 +54,7 @@ export const CollegePlanner = (() => {
    * Creates options in departments select list
    * @param {Object} department The JSON Object for the course to add to the
    *     dropdown
-   * @param {Object} departmentContainer The element of the container you want
+   * @param {Element} departmentContainer The element of the container you want
    *     to add options to
    */
   function addDepartmentOption(department, departmentContainer) {
@@ -99,7 +99,7 @@ export const CollegePlanner = (() => {
    * Creates options in select courses list
    * @param {Object} course The JSON Object for the course to add to the
    *     dropdown
-   * @param {Object} courseContainer The element of the container you want to
+   * @param {Element} courseContainer The element of the container you want to
    *     add options to
    */
   function addCourseOption(course, courseContainer) {
@@ -160,7 +160,7 @@ export const CollegePlanner = (() => {
  * @param {string} message The message string you want to be displayed
  * @param {string} type type of alert you want to display (primary, secondary,
  *     success, warning, danger)
- * @param {Object} container the container you want to display the alert in
+ * @param {Element} container the container you want to display the alert in
  */
 function createAlert(message, type, container) {
   const alert = document.createElement('div');

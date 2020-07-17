@@ -36,7 +36,7 @@ async function getPlan() {
     });
     courseList = await response.json();
   } catch (err) {
-    createAlert('An error occurred', 'danger', courseContainer);
+    CollegePlanner.createAlert('An error occurred', 'danger', courseContainer);
     return;
   }
   if (response.ok) {
@@ -55,7 +55,7 @@ async function getPlan() {
 
 /**
  * Creates spinner to signify loading and adds to the courseContainer
- * @param {Object} courseContainer container for course list
+ * @param {Element} courseContainer container for course list
  */
 function attachNewSpinner(courseContainer) {
   const spinner = document.createElement('i');
@@ -67,7 +67,7 @@ function attachNewSpinner(courseContainer) {
 /**
  * Creates table from a 2D array
  * @param {Object} tableData 2D array with separation of courses
- * @param {Object} courseContainer container for course list
+ * @param {Element} courseContainer container for course list
  */
 function createTable(tableData, courseContainer) {
   courseContainer.innerText = '';
