@@ -27,15 +27,15 @@ import org.json.simple.JSONObject;
 
 /** Servlet that returns list of course sections.*/
 @WebServlet("/api/sections")
-public class SectionServlet extends HttpServlet {
+public class SectionServlet extends BaseServlet {
   ApiUtil apiUtil;
 
   public SectionServlet() {
-    this(new ApiUtil());
+    super(new ApiUtil());
   }
 
   public SectionServlet(ApiUtil apiUtil) {
-    this.apiUtil = apiUtil;
+    super(apiUtil);
   }
 
   /**
@@ -45,7 +45,7 @@ public class SectionServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String courseId = request.getParameter("course_id");
     if (courseId == null || courseId == "") {
-      respondWithError("Bad request.", HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError(HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
 
@@ -53,15 +53,13 @@ public class SectionServlet extends HttpServlet {
     try {
       uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
     } catch (URISyntaxException e) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
     JSONArray jsonArray = apiUtil.getJsonArray(uri);
     if (jsonArray == null) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
@@ -70,14 +68,5 @@ public class SectionServlet extends HttpServlet {
 
     response.setContentType("application/json;");
     response.getWriter().println(sectionsInfo);
-  }
-
-  private void respondWithError(String message, int errorType, HttpServletResponse response)
-      throws IOException {
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("message", message);
-    jsonObject.put("status", "error");
-    response.setStatus(errorType);
-    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
