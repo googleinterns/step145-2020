@@ -14,41 +14,103 @@
 
 package com.google.collegeplanner.servlets;
 
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
-import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.Key;
-import com.google.cloud.datastore.KeyFactory;
-import com.google.cloud.datastore.Query;
-import com.google.cloud.datastore.QueryResults;
-import com.google.cloud.datastore.StructuredQuery;
-import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import java.net.URI;
+import org.apache.http.client.utils.URIBuilder;
+import java.net.URISyntaxException;
 
 /** Provides an interface for making outside API calls. */
 public class DatastoreServlet {
  
   public void test() {
-    Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ApiUtil apiUtil = new ApiUtil();
+    JSONArray coursesArray;
+    Entity entity;
+    int page = 0;
+    while (true) {
+      // loop through pages
+      URI uri;
+      try {
+        URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
+        builder.setParameter("page", Integer.toString(page++));
+        uri = builder.build();
+      } catch (URISyntaxException e) {
+        break;
+      }
+      coursesArray = apiUtil.getJsonArray(uri);
+      if (coursesArray == null) {
+        break;
+      }
+      
+      addCourses(coursesArray);
+  }
 
-    // Create entity
-    KeyFactory keyFactory = datastore.newKeyFactory().setKind("Course");
-    Key key = keyFactory.newKey("john.doe@gmail.com");
-    Entity entity = Entity.newBuilder(key)
-        .set("name", "John Doe")
-        .set("age", 51)
-        .set("favorite_food", "pizza")
-        .build();
-    datastore.put(entity);
+  private void addCourses(JSONArray coursesArray) {
+    if (coursesArray == null) {
+      return;
+    }
 
-    // Query for Data
-    Query<Entity> query = Query.newEntityQueryBuilder()
-      .setKind("Person")
-      .setFilter(PropertyFilter.eq("favorite_food", "pizza"))
-      .build();
-    QueryResults<Entity> results = datastore.run(query);
-    while (results.hasNext()) {
-      Entity currentEntity = results.next();
-      System.out.println(currentEntity.getString("name") + ", you're invited to a pizza party!");
+
+    JSONObject courseJson;
+    Entity entity;
+    URI uri;
+    JSONArray sectionsArray;
+    for (int i = 0; i < coursesArray.size(); i++) {
+      // loop through courses
+
+      // we have a course
+      courseJson = coursesArray.getJSONObject(i);
+      Course course = new Course(courseJson);
+
+      entity = new Entity("Course");
+      entity.setProperty("course_id", course.getCourseId());
+      entity.setProperty("name", course.getName());
+      entity.setProperty("semester", course.getSemester());
+      entity.setProperty("credits", course.getCredits());
+      entity.setProperty("department_id", course.getDepartmentId());
+      entity.setProperty("description", course.getDescription());
+      entity.setProperty("coreqs", course.getCorequirements());
+      entity.setProperty("prereqs", course.getPrerequirements());
+      entity.setProperty("restrictions", course.getRestrictions());
+      entity.setProperty("additional_info", course.getAdditionalInfo());
+      entity.setProperty("credit_granted_for", course.getCreditGrantedFor());
+      entity.setProperty("grading_method", course.getGradingMethod());
+
+      try {
+        uri = new URI("https://api.umd.io/v1/courses/" + course.getCourseId() + "/sections");
+      } catch (URISyntaxException e) {
+        return;
+      }
+
+      sectionsArray = apiUtil.getJsonArray(uri);
+      if (sectionsArray == null) {
+        return;
+      }
+      addSectionsToCourse(entity, sectionsArray);
+    }
+  } 
+
+  private void addSectionsToCourse(Entity entity, JSONArray sectionsArray) {
+    if (entity == null || sectionsArray == null) {
+      return;
+    }
+
+    for (int j = 0; j < sectionsArray.size(); j++) {
+      // loop through sections
+      JSONObject sectionJson = sectionsArray.getJSONObject(i);
     }
   }
+
 }
