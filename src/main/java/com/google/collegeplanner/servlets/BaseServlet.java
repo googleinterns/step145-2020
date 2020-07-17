@@ -42,7 +42,7 @@ public abstract class BaseServlet extends HttpServlet {
     switch (status) {
       case HttpServletResponse.SC_OK:
         // 200
-        message = "OK";
+        message = "OK.";
         break;
       case HttpServletResponse.SC_BAD_REQUEST:
         // 400
