@@ -74,7 +74,6 @@ public class PlannerServlet extends HttpServlet {
 
   /**
    * Creates and returns a valid plan for the given number of semesters
-   *
    * @param numSemesters The number of semesters remaining
    */
   private ArrayList<ArrayList<String>> getPlan(int numSemesters) {
@@ -123,7 +122,6 @@ public class PlannerServlet extends HttpServlet {
 
   /**
    * Given a course, returns whether all of its corequisites have a indegree of 0
-   *
    * @param course The course ID for the course
    */
   private boolean isValidToAdd(String course) {
@@ -149,7 +147,6 @@ public class PlannerServlet extends HttpServlet {
   /**
    * Creates the representation for the graph and reads/stores necessary information from
    * selectedClasses
-   *
    * @param selectedClasses JSONArray that contains details for all of the courses selected by the
    *     user
    */
@@ -216,7 +213,6 @@ public class PlannerServlet extends HttpServlet {
 
   /**
    * Dynamic Programming Algorithm to find the height of a course
-   *
    * @param course The course ID for the course
    */
   private int getHeight(String course) {
