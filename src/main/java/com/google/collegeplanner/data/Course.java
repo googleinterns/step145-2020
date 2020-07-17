@@ -14,7 +14,8 @@
 
 package com.google.collegeplanner.data;
 
-import java.lang.Exception;
+import java.text.ParseException;
+import java.util.GregorianCalendar;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -114,12 +115,17 @@ public class Course {
    * The format of the semester String is the four digit year followed by
    * the two digit start month.
    */
-  public String getSemesterSeason() throws Exception {
+  public String getSemesterSeason() throws ParseException {
     if (semester.length() != 6) {
-      throw new Exception("Invalid Semester Format");
+      throw new ParseException("Invalid Semester Format", 0);
     }
+    int startMonth;
     // startMonth stores the last two digits of the semester String as an int
-    int startMonth = Integer.parseInt(semester) % 100;
+    try {
+      startMonth = Integer.parseInt(semester) % 100;
+    } catch (NumberFormatException e) {
+      throw new ParseException("Invalid Start Month Format", 4);
+    }
 
     switch (startMonth) {
       case 1:
@@ -135,7 +141,7 @@ public class Course {
       case 12:
         return "Winter";
       default:
-        throw new Exception("Invalid Start Month");
+        throw new ParseException("Invalid Start Month", 4);
     }
   }
 
@@ -143,11 +149,23 @@ public class Course {
    * Returns the year of the semester, which is the first four digits of the
    * semester String as an int
    */
-  public int getSemesterYear() throws Exception {
+  public int getSemesterYear() throws ParseException {
+    GregorianCalendar cal = new GregorianCalendar();
+    int currentYear = cal.get(GregorianCalendar.YEAR);
+    int semesterYear;
     if (semester.length() != 6) {
-      throw new Exception("Invalid Semester Format");
+      throw new ParseException("Invalid Semester Format", 0);
     }
-    return Integer.parseInt(semester.substring(0, 4));
+    try {
+      semesterYear = Integer.parseInt(semester.substring(0, 4));
+      if (semesterYear > currentYear + 20 || semesterYear < currentYear - 5) {
+        throw new ParseException("Invalid Year. (Too far in the future or too far in the past)", 0);
+      }
+    } catch (NumberFormatException e) {
+      throw new ParseException("Invalid Semester Year Format", 0);
+    }
+
+    return semesterYear;
   }
 
   // Getter Methods
