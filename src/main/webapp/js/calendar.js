@@ -50,7 +50,9 @@ const enumDays = {
 };
 
 /**
- *
+ * Maps a course id to the array of the corresponding schedule ids on the
+ * calendar. Note that a single course with 3 meeting days has 3 different
+ * schedule ids. This is why we need an array to house them.
  * @type {{courseId: string}, {scheduleIds: array}}
  */
 let scheduleInfo = {};
