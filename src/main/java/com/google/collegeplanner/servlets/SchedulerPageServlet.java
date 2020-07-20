@@ -38,7 +38,7 @@ public class SchedulerPageServlet extends HttpServlet {
       request.setAttribute("userEmail", userService.getCurrentUser().getEmail());
       request.setAttribute("userLink", userService.createLogoutURL("/"));
     } else {
-      request.setAttribute("userEmail", "Log in");
+      request.setAttribute("userEmail", null);
       request.setAttribute("userLink", userService.createLoginURL("/"));
     }
     RequestDispatcher view = request.getRequestDispatcher("scheduler.jsp");

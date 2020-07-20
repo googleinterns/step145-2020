@@ -38,7 +38,7 @@ public class PlannerPageServlet extends HttpServlet {
       request.setAttribute("userEmail", userService.getCurrentUser().getEmail());
       request.setAttribute("userLink", userService.createLogoutURL("/planner"));
     } else {
-      request.setAttribute("userEmail", "Log in");
+      request.setAttribute("userEmail", null);
       request.setAttribute("userLink", userService.createLoginURL("/planner"));
     }
     RequestDispatcher view = request.getRequestDispatcher("planner.jsp");
