@@ -116,8 +116,6 @@ async function addCourse(course) {
   const startTime = firstMeetingInfo.start_time;
   const endTime = firstMeetingInfo.end_time;
 
-
-
   if (meetingDays.includes('Su')) {
     addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
   }
