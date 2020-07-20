@@ -180,8 +180,7 @@ function createSchedule(course, startDate, endDate) {
   if (scheduleInfo[course.course_id] == null) {
     scheduleInfo[course.course_id] = [];
   }
-  scheduleInfo[course.course_id].push(id);
-  id++;
+  scheduleInfo[course.course_id].push(id++);
 }
 
 /**
