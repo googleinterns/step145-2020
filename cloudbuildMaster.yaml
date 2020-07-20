@@ -1,5 +1,4 @@
 steps:
- - name: 'gcr.io/cloud-builders/docker'
-   args: ['build', '-t', 'gcr.io/step-team-145/image', '.']
- - name: 'gcr.io/step-team-145/image'
-   args: ['deploy']
+ - name: maven:3-jdk-8
+   entrypoint: mvn
+   args: ['package', 'appengine:deploy']
