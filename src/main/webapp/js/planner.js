@@ -19,22 +19,43 @@ import {CollegePlanner} from './courseSelector.js'
 async function getPlan() {
   const courseContainer = document.getElementById('order-area');
   attachNewSpinner(courseContainer);
+  const selectedClasses = []
+  CollegePlanner.getSelected().forEach(
+      course => selectedClasses.push(CollegePlanner.getCourseInfo()[course]));
   const data = {
-    selectedClasses: CollegePlanner.getSelected().join(','),
+    selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
   };
-  const response = await fetch('/api/planner', {
-    method: 'POST',
-    body: JSON.stringify(data),
-  });
-
-  const courseList = await response.json();
-  createTable(courseList, courseContainer);
+  courseContainer.innerText = ''; // Clears card body to get rid of spinner
+  let response;
+  let courseList;
+  try {
+    response = await fetch('/api/planner', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    courseList = await response.json();
+  } catch (err) {
+    CollegePlanner.createAlert('An error occurred', 'danger', courseContainer);
+    return;
+  }
+  if (response.ok) {
+    const courseData = courseList.semester_plan;
+    if (!courseData.length) {
+      CollegePlanner.createAlert(
+          'These courses did not fit in the given number of semesters.',
+          'primary', courseContainer);
+    } else {
+      CollegePlanner.createTable(courseData, courseContainer);
+    }
+  } else {
+    CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);
+  }
 }
 
 /**
  * Creates spinner to signify loading and adds to the courseContainer
- * @param {Object} courseContainer container for course list
+ * @param {Element} courseContainer container for course list
  */
 function attachNewSpinner(courseContainer) {
   const spinner = document.createElement('i');
@@ -46,7 +67,7 @@ function attachNewSpinner(courseContainer) {
 /**
  * Creates table from a 2D array
  * @param {Object} tableData 2D array with separation of courses
- * @param {Object} courseContainer container for course list
+ * @param {Element} courseContainer container for course list
  */
 function createTable(tableData, courseContainer) {
   courseContainer.innerText = '';
