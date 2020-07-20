@@ -1,0 +1,8 @@
+.tui-full-calendar-dayname-date {
+  display: none;
+}
+
+.tui-full-calendar-dayname-name {
+  color: #858796;
+  font-size: 15px;
+}
