@@ -28,7 +28,6 @@ import org.json.simple.JSONObject;
 /** Servlet that returns list of course sections.*/
 @WebServlet("/api/sections")
 public class SectionServlet extends BaseServlet {
-  ApiUtil apiUtil;
 
   public SectionServlet() {
     super(new ApiUtil());
