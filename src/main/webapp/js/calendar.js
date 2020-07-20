@@ -177,7 +177,6 @@ function createSchedule(course, startDate, endDate) {
     isReadOnly: true,
   }]);
   // Each schedule needs a unique ID. We'll start at 1 and go up from there.
-  // const scheduleIds = scheduleInfo[course.course_id];
   if (scheduleInfo[course.course_id] == null) {
     scheduleInfo[course.course_id] = [];
   }
