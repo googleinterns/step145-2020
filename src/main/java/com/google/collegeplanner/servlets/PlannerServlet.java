@@ -35,7 +35,7 @@ import org.json.simple.parser.ParseException;
 
 /** Servlet that returns the mutli-semester plan for the given courses.*/
 @WebServlet("/api/planner")
-public class PlannerServlet extends HttpServlet {
+public class PlannerServlet extends BaseServlet {
   private HashMap<String, Integer> indegree; // Number of prerequisites for a course
   private HashMap<String, HashSet<String>>
       nextCourses; // Courses that come after the given course in the graph
@@ -254,14 +254,5 @@ public class PlannerServlet extends HttpServlet {
       }
     }
     return prereqs;
-  }
-
-  private void respondWithError(String message, int errorType, HttpServletResponse response)
-      throws IOException {
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("message", message);
-    jsonObject.put("status", "error");
-    response.setStatus(errorType);
-    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
