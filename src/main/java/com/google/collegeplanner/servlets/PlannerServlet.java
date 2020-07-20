@@ -77,11 +77,13 @@ public class PlannerServlet extends HttpServlet {
   private JSONObject getPlan(int numSemesters) {
     JSONObject coursePlan = new JSONObject();
     ArrayList<ArrayList<String>> semesters = new ArrayList<>();
+    ArrayList<Integer> creditsPerSemester = new ArrayList<>();
     // if there is a valid ordering, create ordering
     if (courseList.size() <= 0 || heights.get(courseList.get(0)) <= numSemesters) {
       for (int i = numSemesters; i > 0; i--) {
         int avgCredits = totalCredits / i;
         ArrayList<String> semester = new ArrayList<>();
+        int semesterCredits = 0;
         for (int j = 0; j < courseList.size(); j++) {
           String course = courseList.get(j);
           if (indegree.get(course) == 0) {
@@ -90,19 +92,19 @@ public class PlannerServlet extends HttpServlet {
               // If valid, add all to semester
               courseList.remove(j);
               j--;
-              avgCredits -= credits.get(course);
+              semesterCredits += credits.get(course);
               totalCredits -= credits.get(course);
               semester.add(course);
               for (String coreq : corequisites.get(course)) {
                 courseList.remove(coreq);
-                avgCredits -= credits.get(coreq);
+                semesterCredits += credits.get(coreq);
                 totalCredits -= credits.get(coreq);
                 semester.add(coreq);
               }
             }
           }
           // Guarantees that all classes that must be taken in this semester are added
-          if (heights.get(course) != i && avgCredits <= 0) {
+          if (heights.get(course) != i && avgCredits <= semesterCredits) {
             // Breaks out if there are no more required classes and we exceeded our credit limit
             break;
           }
@@ -114,9 +116,11 @@ public class PlannerServlet extends HttpServlet {
           }
         }
         semesters.add(semester);
+        creditsPerSemester.add(semesterCredits);
       }
     }
     coursePlan.put("semester_plan", semesters);
+    coursePlan.put("semester_credits", creditsPerSemester);
     return coursePlan;
   }
 
