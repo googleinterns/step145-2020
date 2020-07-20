@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 --%>
 <jsp:include page="/vendor/startbootstrap/template.jsp">
-  <jsp:param name="content" value="index-content"/>
+  <jsp:param name="userEmail" value="${requestScope[\"userEmail\"]}"/> 
+  <jsp:param name="userLink" value="${requestScope[\"userLink\"]}"/> 
+  <jsp:param name="activeScheduler" value="active"/> 
+  <jsp:param name="content" value="scheduler-content"/>
   <jsp:param name="scriptFile" value="calendar"/>
 </jsp:include>

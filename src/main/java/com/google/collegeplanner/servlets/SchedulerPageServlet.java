@@ -24,11 +24,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that renders the /planner page.*/
-@WebServlet("/planner")
-public class PlannerPageServlet extends HttpServlet {
+/** Servlet that renders the / page.*/
+@WebServlet("/")
+public class SchedulerPageServlet extends HttpServlet {
   /**
-   * Renders planner.jsp
+   * Renders scheduler.jsp
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -36,12 +36,12 @@ public class PlannerPageServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       request.setAttribute("userEmail", userService.getCurrentUser().getEmail());
-      request.setAttribute("userLink", userService.createLogoutURL("/planner"));
+      request.setAttribute("userLink", userService.createLogoutURL("/"));
     } else {
       request.setAttribute("userEmail", "Log in");
-      request.setAttribute("userLink", userService.createLoginURL("/planner"));
+      request.setAttribute("userLink", userService.createLoginURL("/"));
     }
-    RequestDispatcher view = request.getRequestDispatcher("planner.jsp");
+    RequestDispatcher view = request.getRequestDispatcher("scheduler.jsp");
     view.forward(request, response);
   }
 }
