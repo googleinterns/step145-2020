@@ -17,19 +17,19 @@
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
-/** 
+/**
  * The id of the next schedule that will be added to the calendar.
  * @type {number}
  */
 let id = 1;
 
-/** 
+/**
  * The calendar object.
  * @type {Calendar}
  */
 let calendar;
 
-/** 
+/**
  * An alias for the Luxon DateTime object.
  * @type {DateTime}
  */
@@ -49,8 +49,14 @@ const enumDays = {
   DATE_SATURDAY: 6,
 };
 
+/**
+ *
+ * @type {{courseId: string}, {scheduleIds: array}}
+ */
+let scheduleInfo = {};
+
 export const Calendar = (() => {
-  return {addCourse: addCourse};
+  return {addCourse: addCourse, removeCourse: removeCourse};
 })();
 
 /**
@@ -80,54 +86,58 @@ function initCalendar() {
   calendar.setDate(new Date('2000-01-02T00:00:00'));
 }
 
- /**
-   * Adds a course to the calendar.
-   * @param {Object} course The JSON Object for the course.
-   */
-  async function addCourse(course) {
-    if (course == null) {
-      return;
-    }
-    const response = await fetch(
-        `/api/sections?course_id=${encodeURIComponent(course.course_id)}`);
-    const json = await response.json();
-
-    // For now, just choose the first section out of the available ones
-    if (json.sections == null) {
-      return;
-    }
-    const firstSection = json.sections[0];
-    if (firstSection.meetings == null) {
-      return;
-    }
-    const firstMeetingInfo = firstSection.meetings[0];
-    const meetingDays = firstMeetingInfo.days;
-
-    const startTime = firstMeetingInfo.start_time;
-    const endTime = firstMeetingInfo.end_time;
-
-    if (meetingDays.includes('Su')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
-    }
-    if (meetingDays.includes('M')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY);
-    }
-    if (meetingDays.includes('Tu')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY);
-    }
-    if (meetingDays.includes('W')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY);
-    }
-    if (meetingDays.includes('Th')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY);
-    }
-    if (meetingDays.includes('F')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY);
-    }
-    if (meetingDays.includes('Sa')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY);
-    }
+/**
+ * Adds a course to the calendar.
+ * @param {Object} course The JSON Object for the course.
+ */
+async function addCourse(course) {
+  if (course == null) {
+    return;
   }
+
+  const course_id = course.course_id;
+  const response =
+      await fetch(`/api/sections?course_id=${encodeURIComponent(course_id)}`);
+  const json = await response.json();
+
+  // For now, just choose the first section out of the available ones
+  if (json.sections == null) {
+    return;
+  }
+  const firstSection = json.sections[0];
+  if (firstSection.meetings == null) {
+    return;
+  }
+  const firstMeetingInfo = firstSection.meetings[0];
+  const meetingDays = firstMeetingInfo.days;
+
+  const startTime = firstMeetingInfo.start_time;
+  const endTime = firstMeetingInfo.end_time;
+
+
+
+  if (meetingDays.includes('Su')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
+  }
+  if (meetingDays.includes('M')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY);
+  }
+  if (meetingDays.includes('Tu')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY);
+  }
+  if (meetingDays.includes('W')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY);
+  }
+  if (meetingDays.includes('Th')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY);
+  }
+  if (meetingDays.includes('F')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY);
+  }
+  if (meetingDays.includes('Sa')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY);
+  }
+}
 
 /**
  * Adds a course to the calendar given the day of the week and a time.
@@ -167,7 +177,27 @@ function createSchedule(course, startDate, endDate) {
     isReadOnly: true,
   }]);
   // Each schedule needs a unique ID. We'll start at 1 and go up from there.
+  // const scheduleIds = scheduleInfo[course.course_id];
+  if (scheduleInfo[course.course_id] == null) {
+    scheduleInfo[course.course_id] = [];
+  }
+  scheduleInfo[course.course_id].push(id);
   id++;
+}
+
+/**
+ * Removes a schedule on the calendar using the toast API.
+ * @param {string} course_id The course_id of the course we want to remove.
+ */
+function removeCourse(course_id) {
+  const scheduleIds = scheduleInfo[course_id];
+  if (scheduleIds == null) {
+    return;
+  }
+
+  scheduleIds.forEach(scheduleId => {
+    calendar.deleteSchedule(scheduleId.toString(), '1');
+  });
 }
 
 /**
