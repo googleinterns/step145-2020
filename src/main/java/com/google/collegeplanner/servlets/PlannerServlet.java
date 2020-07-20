@@ -65,9 +65,7 @@ public class PlannerServlet extends HttpServlet {
 
     constructGraphs(selectedClasses);
 
-    ArrayList<ArrayList<String>> semesters = getPlan(numSemesters);
-    JSONObject coursePlan = new JSONObject();
-    coursePlan.put("semester_plan", semesters);
+    JSONObject coursePlan = getPlan(numSemesters);
     response.setContentType("applications/json;");
     response.getWriter().println(new Gson().toJson(coursePlan));
   }
@@ -76,48 +74,50 @@ public class PlannerServlet extends HttpServlet {
    * Creates and returns a valid plan for the given number of semesters
    * @param numSemesters The number of semesters remaining
    */
-  private ArrayList<ArrayList<String>> getPlan(int numSemesters) {
+  private JSONObject getPlan(int numSemesters) {
+    JSONObject coursePlan = new JSONObject();
     ArrayList<ArrayList<String>> semesters = new ArrayList<>();
-    if (courseList.size() > 0 && heights.get(courseList.get(0)) > numSemesters) {
-      return semesters;
-    }
-    for (int i = numSemesters; i > 0; i--) {
-      int avgCredits = totalCredits / i;
-      ArrayList<String> semester = new ArrayList<>();
-      for (int j = 0; j < courseList.size(); j++) {
-        String course = courseList.get(j);
-        if (indegree.get(course) == 0) {
-          // Check if all corequisites also have an indegree of 0
-          if (isValidToAdd(course)) {
-            // If valid, add all to semester
-            courseList.remove(j);
-            j--;
-            avgCredits -= credits.get(course);
-            totalCredits -= credits.get(course);
-            semester.add(course);
-            for (String coreq : corequisites.get(course)) {
-              courseList.remove(coreq);
-              avgCredits -= credits.get(coreq);
-              totalCredits -= credits.get(coreq);
-              semester.add(coreq);
+    // if there is a valid ordering, create ordering
+    if (courseList.size() <= 0 || heights.get(courseList.get(0)) <= numSemesters) {
+      for (int i = numSemesters; i > 0; i--) {
+        int avgCredits = totalCredits / i;
+        ArrayList<String> semester = new ArrayList<>();
+        for (int j = 0; j < courseList.size(); j++) {
+          String course = courseList.get(j);
+          if (indegree.get(course) == 0) {
+            // Check if all corequisites also have an indegree of 0
+            if (isValidToAdd(course)) {
+              // If valid, add all to semester
+              courseList.remove(j);
+              j--;
+              avgCredits -= credits.get(course);
+              totalCredits -= credits.get(course);
+              semester.add(course);
+              for (String coreq : corequisites.get(course)) {
+                courseList.remove(coreq);
+                avgCredits -= credits.get(coreq);
+                totalCredits -= credits.get(coreq);
+                semester.add(coreq);
+              }
             }
           }
+          // Guarantees that all classes that must be taken in this semester are added
+          if (heights.get(course) != i && avgCredits <= 0) {
+            // Breaks out if there are no more required classes and we exceeded our credit limit
+            break;
+          }
         }
-        // Guarantees that all classes that must be taken in this semester are added
-        if (heights.get(course) != i && avgCredits <= 0) {
-          // Breaks out if there are no more required classes and we exceeded our credit limit
-          break;
+        // Update indegrees for all next courses
+        for (String course : semester) {
+          for (String nextCourse : nextCourses.get(course)) {
+            indegree.replace(nextCourse, indegree.get(nextCourse) - 1);
+          }
         }
+        semesters.add(semester);
       }
-      // Update indegrees for all next courses
-      for (String course : semester) {
-        for (String nextCourse : nextCourses.get(course)) {
-          indegree.replace(nextCourse, indegree.get(nextCourse) - 1);
-        }
-      }
-      semesters.add(semester);
     }
-    return semesters;
+    coursePlan.put("semester_plan", semesters);
+    return coursePlan;
   }
 
   /**
