@@ -69,7 +69,7 @@ public class CourseListServlet extends BaseServlet {
     JSONObject schoolCourseInfo = new JSONObject();
     schoolCourseInfo.put("courses", jsonArray);
 
-    response.setContentType("applications/json;");
+    response.setContentType("application/json;");
     response.getWriter().println(schoolCourseInfo);
   }
 }
