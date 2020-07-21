@@ -26,8 +26,17 @@ export const CollegePlanner = (() => {
    * Gets departments from /api/departments servlet to populate dropdown list
    */
   async function getDepartmentOptions() {
-    const response = await fetch('/api/departments');
-    const departmentList = await response.json();
+    let response;
+    let departmentList;
+    try {
+      response = await fetch('/api/departments');
+      departmentList = await response.json();
+    } catch (err) {
+      createAlert(
+          'An error occurred', 'danger',
+          document.getElementById('alert-container'));
+      return;
+    }
     const departmentContainer = document.getElementById('departments');
     departmentContainer.innerHTML =
         '';  // Clearing departmentContainer to get rid of previous options
@@ -47,7 +56,7 @@ export const CollegePlanner = (() => {
    * Creates options in departments select list
    * @param {Object} department The JSON Object for the course to add to the
    *     dropdown
-   * @param {Object} departmentContainer The element of the container you want
+   * @param {Element} departmentContainer The element of the container you want
    *     to add options to
    */
   function addDepartmentOption(department, departmentContainer) {
@@ -64,9 +73,18 @@ export const CollegePlanner = (() => {
     const departmentSelection = document.getElementById('departments');
     const selectedDepartment =
         departmentSelection.options[departmentSelection.selectedIndex].value;
-    const response = await fetch(
-        `/api/courses?department=${encodeURIComponent(selectedDepartment)}`);
-    const courseList = await response.json();
+    let response;
+    let courseList;
+    try {
+      response = await fetch(
+          `/api/courses?department=${encodeURIComponent(selectedDepartment)}`);
+      courseList = await response.json();
+    } catch (err) {
+      createAlert(
+          'An error occurred', 'danger',
+          document.getElementById('alert-container'));
+      return;
+    }
     const courseContainer = document.getElementById('courses');
     courseContainer.innerHTML =
         '';  // Clearing courseContainer to get rid of previous options
@@ -85,7 +103,7 @@ export const CollegePlanner = (() => {
    * Creates options in select courses list
    * @param {Object} course The JSON Object for the course to add to the
    *     dropdown
-   * @param {Object} courseContainer The element of the container you want to
+   * @param {Element} courseContainer The element of the container you want to
    *     add options to
    */
   function addCourseOption(course, courseContainer) {
@@ -140,6 +158,22 @@ export const CollegePlanner = (() => {
     liElement.appendChild(deleteButtonElement);
     return liElement;
   }
+
+  /**
+   * Creates an alert with the specified message in the container
+   * @param {string} message The message string you want to be displayed
+   * @param {string} type type of alert you want to display (primary, secondary,
+   *     success, warning, danger)
+   * @param {Element} container the container you want to display the alert in
+   */
+  function createAlert(message, type, container) {
+    const alert = document.createElement('div');
+    alert.setAttribute('class', `alert alert-${type}`);
+    alert.setAttribute('role', 'alert');
+    alert.appendChild(document.createTextNode(message));
+    container.appendChild(alert);
+  }
+
   window.addEventListener('load', () => {
     getDepartmentOptions();
   });
@@ -165,6 +199,7 @@ export const CollegePlanner = (() => {
   return {
     getSelected: getSelected,
     getCourses: getCourses,
-    getCourseInfo: getCourseInfo
+    getCourseInfo: getCourseInfo,
+    createAlert: createAlert
   };
 })();

@@ -26,19 +26,41 @@ async function getPlan() {
     selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
   };
-  const response = await fetch('/api/planner', {
-    method: 'POST',
-    body: JSON.stringify(data),
-  });
-
-  const courseList = await response.json();
-  const courseData = courseList.semester_plan;
-  createTable(courseData, courseContainer);
+  courseContainer.innerText = '';  // Clears card body to get rid of spinner
+  let response;
+  let courseList;
+  try {
+    response = await fetch('/api/planner', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    courseList = await response.json();
+  } catch (err) {
+    CollegePlanner.createAlert('An error occurred', 'danger', courseContainer);
+    return;
+  }
+  if (response.ok) {
+    const courseData = courseList.semester_plan;
+    const creditsData = courseList.semester_credits;
+    if (!courseData.length) {
+      CollegePlanner.createAlert(
+          'These courses did not fit in the given number of semesters.',
+          'primary', courseContainer);
+    } else if (courseData.length == creditsData.length) {
+      createTable(courseData, creditsData, courseContainer);
+    } else {
+      CollegePlanner.createAlert(
+          'An invalid response was recieved.',
+          'warning', courseContainer);
+    }
+  } else {
+    CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);
+  }
 }
 
 /**
  * Creates spinner to signify loading and adds to the courseContainer
- * @param {Object} courseContainer container for course list
+ * @param {Element} courseContainer container for course list
  */
 function attachNewSpinner(courseContainer) {
   const spinner = document.createElement('i');
@@ -50,9 +72,10 @@ function attachNewSpinner(courseContainer) {
 /**
  * Creates table from a 2D array
  * @param {Object} tableData 2D array with separation of courses
- * @param {Object} courseContainer container for course list
+ * @param {Object} creditsData Array with credits for each semester
+ * @param {Element} courseContainer container for course list
  */
-function createTable(tableData, courseContainer) {
+function createTable(tableData, creditsData, courseContainer) {
   courseContainer.innerText = '';
   const table = document.createElement('table');
   const tableBody = document.createElement('tbody');
@@ -61,7 +84,7 @@ function createTable(tableData, courseContainer) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
     const semesterLabel = document.createElement('b');
-    semesterLabel.innerText = `Semester ${i + 1}:`;
+    semesterLabel.innerText = `Semester ${i + 1} (${creditsData[i]} Credits):`;
     cell.appendChild(semesterLabel);
     row.appendChild(cell);
 
