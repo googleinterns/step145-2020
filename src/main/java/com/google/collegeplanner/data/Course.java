@@ -103,11 +103,12 @@ public class Course {
   public Course(JSONObject json) {
     this((String) json.get("course_id"), (String) json.get("name"), (String) json.get("semester"),
         (int) json.get("credits"), (String) json.get("dept_id"), (String) json.get("description"),
-        null, (String) json.get("coreqs"), (String) json.get("prereqs"),
-        (String) json.get("restrictions"), (String) json.get("additional_info"),
-        (String) json.get("credit_granted_for"));
-
-    this.gradingMethod = (String[]) ((JSONArray) json.get("grading_method")).toArray();
+        (String[]) ((JSONArray) json.get("grading_method")).toArray(), 
+        (String) ((JSONObject) json.get("relationships")).get("coreqs"), 
+        (String) ((JSONObject) json.get("relationships")).get("prereqs"), 
+        (String) ((JSONObject) json.get("relationships")).get("restrictions"), 
+        (String) ((JSONObject) json.get("relationships")).get("additional_info"), 
+        (String) ((JSONObject) json.get("relationships")).get("credit_granted_for"));
   }
 
   /*
@@ -119,6 +120,7 @@ public class Course {
     if (semester.length() != 6) {
       throw new ParseException("Invalid Semester Format", 0);
     }
+    
     int startMonth;
     // startMonth stores the last two digits of the semester String as an int
     try {
