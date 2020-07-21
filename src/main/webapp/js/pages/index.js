@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Calendar} from './calendar.js';
-import {CollegePlanner} from './courseSelector.js'
+import {Calendar} from '../lib/calendar.js';
+import {CollegePlanner} from '../lib/courseSelector.js';
+import {Test} from '../lib/test.js';
 
 window.addEventListener('load', () => {
   Calendar.initCalendar();

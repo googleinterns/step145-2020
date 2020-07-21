@@ -21,6 +21,8 @@ export const Calendar = (() => {
   return {addCourse: addCourse, initCalendar: initCalendar};
 })();
 
+console.log('bye');
+
 /**
  * The id of the next schedule that will be added to the calendar.
  * @type {number}

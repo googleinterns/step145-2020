@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {CollegePlanner} from './courseSelector.js'
+import {CollegePlanner} from '../lib/courseSelector.js';
 
 /**
  * Gets results from /planner servlet to results
