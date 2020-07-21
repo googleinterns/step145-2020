@@ -126,11 +126,8 @@ export const CollegePlanner = (() => {
     if (!selected.includes(selectedCourse) &&
         courses.includes(selectedCourse)) {
       selected.push(selectedCourse);
-      if (Calendar.getCalendar() !== null) {
-        console.log('not null');
+      if (Calendar.getCalendar() != null) {
         Calendar.addCourse(courseInfo[selectedCourse]);
-      } else {
-        console.log('null');
       }
       courseContainer.appendChild(createCourseListElement(selectedCourse));
     }
@@ -158,7 +155,9 @@ export const CollegePlanner = (() => {
     deleteButtonElement.setAttribute(
         'class', 'float-right rounded-circle border-0');
     deleteButtonElement.addEventListener('click', () => {
+    if (Calendar.getCalendar() != null) {
       Calendar.removeCourse(liElement.getAttribute('value'));
+    }
       liElement.remove();
       selected = selected.filter(value => value != course);
     });
