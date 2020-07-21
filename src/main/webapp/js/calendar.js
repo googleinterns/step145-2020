@@ -49,6 +49,10 @@ const enumDays = {
   DATE_SATURDAY: 6,
 };
 
+const scheduleColors = ['#C0392B', '##F5B7B1', '#F39C12', '#D35400', '#F1C40F', '##B7950B', 
+'#27AE60', '#2ECC71', '#1ABC9C', '#117A65', '#2980B9', '#1F618D', '#9B59B6', '#5B2C6F', '#34495E',
+'#1C2833', '#5D6D7E', '#5D6D7E'];
+
 export const Calendar = (() => {
   return {addCourse: addCourse};
 })();
@@ -106,26 +110,28 @@ async function addCourse(course) {
   const startTime = firstMeetingInfo.start_time;
   const endTime = firstMeetingInfo.end_time;
 
+  const color = scheduleColors.pop();
+
   if (meetingDays.includes('Su')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY, color);
   }
   if (meetingDays.includes('M')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY);
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY, color);
   }
   if (meetingDays.includes('Tu')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY);
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY, color);
   }
   if (meetingDays.includes('W')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY);
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY, color);
   }
   if (meetingDays.includes('Th')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY);
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY, color);
   }
   if (meetingDays.includes('F')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY);
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY, color);
   }
   if (meetingDays.includes('Sa')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY);
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY, color);
   }
 }
 
@@ -138,10 +144,10 @@ async function addCourse(course) {
  *     time eg. 8:30pm.
  * @param {enumDays} day The day that the course falls on.
  */
-function addCourseToCalendar(course, startTime, endTime, day) {
+function addCourseToCalendar(course, startTime, endTime, day, color) {
   const startDate = createDateFromTimeString(startTime, day);
   const endDate = createDateFromTimeString(endTime, day);
-  createSchedule(course, startDate, endDate);
+  createSchedule(course, startDate, endDate, color);
 }
 
 /**
@@ -150,14 +156,16 @@ function addCourseToCalendar(course, startTime, endTime, day) {
  * @param {DateTime} startDate The DateTime object of the start time.
  * @param {DateTime} endDate The DateTime object of the end time.
  */
-function createSchedule(course, startDate, endDate) {
-  // TODO(savsa): Have each schedule be a different color. The color is
-  // currently hard coded to be blue so all schedules look the same.
+function createSchedule(course, startDate, endDate, color) {
+  // The default color is hard-coded to be blue;
+  if (color == null) {
+    color = '#00a9ff';
+  }
   calendar.createSchedules([{
     id: id.toString(),
     color: '#ffffff',
-    bgColor: '#00a9ff',
-    borderColor: '#00a9ff',
+    bgColor: color,
+    borderColor: color,
     calendarId: '1',
     title: course.name,
     category: 'time',
@@ -207,4 +215,8 @@ function createDateFromTimeString(time, day) {
 
 window.addEventListener('load', () => {
   initCalendar();
+  // Randomize the colors.
+  scheduleColors.sort(() => {
+    return 0.5 - Math.random();
+  });
 });
