@@ -46,8 +46,12 @@ async function getPlan() {
       CollegePlanner.createAlert(
           'These courses did not fit in the given number of semesters.',
           'primary', courseContainer);
-    } else {
+    } else if (courseData.length == creditsData.length) {
       createTable(courseData, creditsData, courseContainer);
+    } else {
+      CollegePlanner.createAlert(
+          'An invalid response was recieved.',
+          'warning', courseContainer);
     }
   } else {
     CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);
