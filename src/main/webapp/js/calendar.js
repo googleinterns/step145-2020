@@ -17,6 +17,10 @@
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
+export const Calendar = (() => {
+  return {addCourse: addCourse, initCalendar: initCalendar};
+})();
+
 /**
  * The id of the next schedule that will be added to the calendar.
  * @type {number}
@@ -48,10 +52,6 @@ const enumDays = {
   DATE_FRIDAY: 5,
   DATE_SATURDAY: 6,
 };
-
-export const Calendar = (() => {
-  return {addCourse: addCourse};
-})();
 
 /**
  * Initializes the calendar and moves the view to a hardcoded date in the
@@ -204,7 +204,3 @@ function createDateFromTimeString(time, day) {
   const minutes = dt.minute;
   return createDate(day, hour, minutes);
 }
-
-window.addEventListener('load', () => {
-  initCalendar();
-});

@@ -53,7 +53,7 @@
         </div>
         <!-- Card Body -->
         <div class="card-body">
-          <form>
+          <form class="course-list">
             <ul class="list-group" id="selected-classes"></ul>
             <br />
             <a href="#" class="btn btn-primary btn-icon-split">
