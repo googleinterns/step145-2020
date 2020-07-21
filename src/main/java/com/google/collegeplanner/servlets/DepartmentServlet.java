@@ -28,15 +28,13 @@ import org.json.simple.JSONObject;
 
 /** Servlet that returns list of departments.*/
 @WebServlet("/api/departments")
-public class DepartmentServlet extends HttpServlet {
-  ApiUtil apiUtil;
-
+public class DepartmentServlet extends BaseServlet {
   public DepartmentServlet() {
-    this(new ApiUtil());
+    super(new ApiUtil());
   }
 
   public DepartmentServlet(ApiUtil apiUtil) {
-    this.apiUtil = apiUtil;
+    super(apiUtil);
   }
 
   /**
@@ -52,31 +50,20 @@ public class DepartmentServlet extends HttpServlet {
       builder.setParameter("semester", "202008");
       uri = builder.build();
     } catch (URISyntaxException e) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
     JSONArray jsonArray = apiUtil.getJsonArray(uri);
     if (jsonArray == null) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
     JSONObject schoolDeptInfo = new JSONObject();
     schoolDeptInfo.put("departments", jsonArray);
 
-    response.setContentType("applications/json;");
+    response.setContentType("application/json;");
     response.getWriter().println(schoolDeptInfo);
-  }
-
-  private void respondWithError(String message, int errorType, HttpServletResponse response)
-      throws IOException {
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("message", message);
-    jsonObject.put("status", "error");
-    response.setStatus(errorType);
-    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
