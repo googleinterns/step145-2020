@@ -60,6 +60,12 @@
       <artifactId>jsonassert</artifactId>
       <version>1.5.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-testing</artifactId>
+      <version>1.9.81</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
