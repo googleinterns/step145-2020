@@ -14,7 +14,6 @@
 
 import {Calendar} from '../lib/calendar.js';
 import {CollegePlanner} from '../lib/courseSelector.js';
-import {Test} from '../lib/test.js';
 
 window.addEventListener('load', () => {
   Calendar.initCalendar();
