@@ -68,7 +68,7 @@ public class PlannerServlet extends BaseServlet {
     ArrayList<ArrayList<String>> semesters = getPlan(numSemesters);
     JSONObject coursePlan = new JSONObject();
     coursePlan.put("semester_plan", semesters);
-    response.setContentType("applications/json;");
+    response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(coursePlan));
   }
 
