@@ -126,7 +126,12 @@ export const CollegePlanner = (() => {
     if (!selected.includes(selectedCourse) &&
         courses.includes(selectedCourse)) {
       selected.push(selectedCourse);
-      Calendar.addCourse(courseInfo[selectedCourse]);
+      if (Calendar.getCalendar() !== null) {
+        console.log('not null');
+        Calendar.addCourse(courseInfo[selectedCourse]);
+      } else {
+        console.log('null');
+      }
       courseContainer.appendChild(createCourseListElement(selectedCourse));
     }
   }

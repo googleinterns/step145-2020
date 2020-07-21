@@ -58,7 +58,7 @@ const enumDays = {
 let scheduleInfo = {};
 
 export const Calendar = (() => {
-  return {addCourse: addCourse, removeCourse: removeCourse};
+  return {addCourse: addCourse, removeCourse: removeCourse, getCalendar, getCalendar};
 })();
 
 /**
@@ -229,6 +229,10 @@ function createDateFromTimeString(time, day) {
   const hour = dt.hour;
   const minutes = dt.minute;
   return createDate(day, hour, minutes);
+}
+
+function getCalendar() {
+  return calendar;
 }
 
 window.addEventListener('load', () => {
