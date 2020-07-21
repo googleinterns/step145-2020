@@ -63,7 +63,7 @@ public class DepartmentServlet extends BaseServlet {
     JSONObject schoolDeptInfo = new JSONObject();
     schoolDeptInfo.put("departments", jsonArray);
 
-    response.setContentType("applications/json;");
+    response.setContentType("application/json;");
     response.getWriter().println(schoolDeptInfo);
   }
 }

@@ -26,7 +26,7 @@ async function getPlan() {
     selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
   };
-  courseContainer.innerText = ''; // Clears card body to get rid of spinner
+  courseContainer.innerText = '';  // Clears card body to get rid of spinner
   let response;
   let courseList;
   try {

@@ -96,10 +96,8 @@ async function addCourse(course) {
   if (course == null) {
     return;
   }
-
-  const course_id = course.course_id;
-  const response =
-      await fetch(`/api/sections?course_id=${encodeURIComponent(course_id)}`);
+  const response = await fetch(
+      `/api/sections?course_id=${encodeURIComponent(course.course_id)}`);
   const json = await response.json();
 
   // For now, just choose the first section out of the available ones
