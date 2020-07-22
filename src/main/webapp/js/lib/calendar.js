@@ -50,6 +50,14 @@ const enumDays = {
 };
 
 /**
+ * Maps a course id to the array of the corresponding schedule ids on the
+ * calendar. Note that a single course with 3 meeting days has 3 different
+ * schedule ids. This is why we need an array to house them.
+ * @type {{courseId: string}, {scheduleIds: array}}
+ */
+let scheduleInfo = {};
+
+/**
  * Initializes the calendar and moves the view to a hardcoded date in the
  * past.
  */
@@ -219,4 +227,8 @@ function createDateFromTimeString(time, day) {
   return createDate(day, hour, minutes);
 }
 
-export default {addCourse: addCourse, initCalendar: initCalendar}
+export default {
+  addCourse: addCourse,
+  removeCourse: removeCourse,
+  initCalendar: initCalendar
+}
