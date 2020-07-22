@@ -17,19 +17,19 @@
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
-/** 
+/**
  * The id of the next schedule that will be added to the calendar.
  * @type {number}
  */
 let id = 1;
 
-/** 
+/**
  * The calendar object.
  * @type {Calendar}
  */
 let calendar;
 
-/** 
+/**
  * An alias for the Luxon DateTime object.
  * @type {DateTime}
  */
@@ -48,10 +48,6 @@ const enumDays = {
   DATE_FRIDAY: 5,
   DATE_SATURDAY: 6,
 };
-
-export const Calendar = (() => {
-  return {addCourse: addCourse};
-})();
 
 /**
  * Initializes the calendar and moves the view to a hardcoded date in the
@@ -80,54 +76,54 @@ function initCalendar() {
   calendar.setDate(new Date('2000-01-02T00:00:00'));
 }
 
- /**
-   * Adds a course to the calendar.
-   * @param {Object} course The JSON Object for the course.
-   */
-  async function addCourse(course) {
-    if (course == null) {
-      return;
-    }
-    const response = await fetch(
-        `/api/sections?course_id=${encodeURIComponent(course.course_id)}`);
-    const json = await response.json();
-
-    // For now, just choose the first section out of the available ones
-    if (json.sections == null) {
-      return;
-    }
-    const firstSection = json.sections[0];
-    if (firstSection.meetings == null) {
-      return;
-    }
-    const firstMeetingInfo = firstSection.meetings[0];
-    const meetingDays = firstMeetingInfo.days;
-
-    const startTime = firstMeetingInfo.start_time;
-    const endTime = firstMeetingInfo.end_time;
-
-    if (meetingDays.includes('Su')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
-    }
-    if (meetingDays.includes('M')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY);
-    }
-    if (meetingDays.includes('Tu')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY);
-    }
-    if (meetingDays.includes('W')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY);
-    }
-    if (meetingDays.includes('Th')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY);
-    }
-    if (meetingDays.includes('F')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY);
-    }
-    if (meetingDays.includes('Sa')) {
-      addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY);
-    }
+/**
+ * Adds a course to the calendar.
+ * @param {Object} course The JSON Object for the course.
+ */
+async function addCourse(course) {
+  if (course == null) {
+    return;
   }
+  const response = await fetch(
+      `/api/sections?course_id=${encodeURIComponent(course.course_id)}`);
+  const json = await response.json();
+
+  // For now, just choose the first section out of the available ones
+  if (json.sections == null) {
+    return;
+  }
+  const firstSection = json.sections[0];
+  if (firstSection.meetings == null) {
+    return;
+  }
+  const firstMeetingInfo = firstSection.meetings[0];
+  const meetingDays = firstMeetingInfo.days;
+
+  const startTime = firstMeetingInfo.start_time;
+  const endTime = firstMeetingInfo.end_time;
+
+  if (meetingDays.includes('Su')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
+  }
+  if (meetingDays.includes('M')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY);
+  }
+  if (meetingDays.includes('Tu')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY);
+  }
+  if (meetingDays.includes('W')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY);
+  }
+  if (meetingDays.includes('Th')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY);
+  }
+  if (meetingDays.includes('F')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY);
+  }
+  if (meetingDays.includes('Sa')) {
+    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY);
+  }
+}
 
 /**
  * Adds a course to the calendar given the day of the week and a time.
@@ -205,6 +201,4 @@ function createDateFromTimeString(time, day) {
   return createDate(day, hour, minutes);
 }
 
-window.addEventListener('load', () => {
-  initCalendar();
-});
+export default {addCourse: addCourse, initCalendar: initCalendar}

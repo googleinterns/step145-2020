@@ -28,15 +28,13 @@ import org.json.simple.JSONObject;
 
 /** Servlet that returns list of courses.*/
 @WebServlet("/api/courses")
-public class CourseListServlet extends HttpServlet {
-  ApiUtil apiUtil;
-
+public class CourseListServlet extends BaseServlet {
   public CourseListServlet() {
-    this(new ApiUtil());
+    super(new ApiUtil());
   }
 
   public CourseListServlet(ApiUtil apiUtil) {
-    this.apiUtil = apiUtil;
+    super(apiUtil);
   }
 
   /**
@@ -47,7 +45,8 @@ public class CourseListServlet extends HttpServlet {
     // Create the URI and specify the parameters.
     String department = request.getParameter("department");
     if (department == null || department == "") {
-      respondWithError("Invalid query parameters.", HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError(
+          "Invalid or missing department.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
     URI uri;
@@ -57,31 +56,20 @@ public class CourseListServlet extends HttpServlet {
       builder.setParameter("dept_id", department);
       uri = builder.build();
     } catch (URISyntaxException e) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
     JSONArray jsonArray = apiUtil.getJsonArray(uri);
     if (jsonArray == null) {
-      respondWithError(
-          "Internal server error.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
     JSONObject schoolCourseInfo = new JSONObject();
     schoolCourseInfo.put("courses", jsonArray);
 
-    response.setContentType("applications/json;");
+    response.setContentType("application/json;");
     response.getWriter().println(schoolCourseInfo);
-  }
-
-  private void respondWithError(String message, int errorType, HttpServletResponse response)
-      throws IOException {
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("message", message);
-    jsonObject.put("status", "error");
-    response.setStatus(errorType);
-    response.getWriter().println(new Gson().toJson(jsonObject));
   }
 }
