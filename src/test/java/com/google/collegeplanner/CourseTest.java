@@ -17,15 +17,19 @@ package com.google.collegeplanner.data;
 import java.text.ParseException;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.rules.ExpectedException;
 
 /** Tests Course */
 @RunWith(JUnit4.class)
 public final class CourseTest {
   private String[] gradingSystem;
   private Course course;
+  @Rule
+  public ExpectedException exceptionRule = ExpectedException.none();
 
   @Before
   public void before() {
@@ -53,48 +57,47 @@ public final class CourseTest {
   }
 
   @Test
-  public void invalidMonthNumber() {
+  public void invalidMonthNumber() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "202003", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-
-    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterSeason());
-    assertThat(thrown).hasMessageThat().contains("Invalid Start Month");
+    exceptionRule.expect(ParseException.class);
+    exceptionRule.expectMessage("Invalid Start Month");
+    course.getSemesterSeason();
   }
 
   @Test
-  public void invalidMonthFormat() {
+  public void invalidMonthFormat() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "2020f3", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-
-    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterSeason());
-    assertThat(thrown).hasMessageThat().contains("Invalid Start Month Format");
-  }
+    exceptionRule.expect(ParseException.class);
+    exceptionRule.expectMessage("Invalid Start Month Format");
+    course.getSemesterSeason();
+}
 
   @Test
-  public void invalidYearNumber() {
+  public void invalidYearNumber() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "177608", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-
-    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterYear());
-    assertThat(thrown).hasMessageThat().contains(
-        "Invalid Year. (Too far in the future or too far in the past)");
+    exceptionRule.expect(ParseException.class);
+    exceptionRule.expectMessage("Invalid Year. (Too far in the future or too far in the past)");
+    course.getSemesterYear();
   }
 
   @Test
-  public void invalidYearFormat() {
+  public void invalidYearFormat() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "r8e108", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-
-    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterYear());
-    assertThat(thrown).hasMessageThat().contains("Invalid Semester Year Format");
+    exceptionRule.expect(ParseException.class);
+    exceptionRule.expectMessage("Invalid Semester Year Format");
+    course.getSemesterYear();
   }
 
   @Test
-  public void invalidFormat() {
+  public void invalidFormat() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "03", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-
-    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterYear());
-    assertThat(thrown).hasMessageThat().contains("Invalid Semester Format");
+    exceptionRule.expect(ParseException.class);
+    exceptionRule.expectMessage("Invalid Semester Format");
+    course.getSemesterYear();
   }
 }
