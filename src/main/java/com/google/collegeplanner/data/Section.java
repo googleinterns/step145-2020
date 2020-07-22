@@ -13,6 +13,8 @@
 // limitations under the License.package com.google.collegeplanner.data;
 
 package com.google.collegeplanner.data;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class Section {
   private String sectionId;
@@ -34,12 +36,23 @@ public class Section {
     this.meetings = meetings;
   }
 
+  public Section(JSONObject json) {
+    this((String) json.get("section_id"), (String) json.get("course_id"), (String) json.get("waitlist")
+        (int) json.get("open_seats"), (int) json.get("seats"), 
+        (String[]) ((JSONArray) json.get("instructors")).toArray(),
+        new Meeting[((JSONArray) json.get("meetings")).toArray().length]);
+    
+    for(int i = 0; i < meetings.length; i++) {
+      meetings[i] = new Meeting((JSONObject) ((JSONArray) json.get("meetings")).toArray()[i]);
+    }
+  }
+
   // This method returns true if the two sections conflict with each other and
   // returns false if they do not conflict.
-  public boolean conflicts(Section other) {
+  public boolean conflictsWith(Section other) {
     for (Meeting meeting : meetings) {
       for (Meeting otherMeeting : other.getMeetings()) {
-        if (meeting.conflicts(otherMeeting)) {
+        if (meeting.conflictsWith(otherMeeting)) {
           return true;
         }
       }
@@ -90,5 +103,24 @@ public class Section {
     }
 
     return toString;
+  }
+
+  public JSONObject toJSON() {
+    JSONObject json = new JSONObject();
+    JSONArray instructorsArray = new JSONArray();
+    JSONArray meetingsArray = new JSONArray();
+    instructorsArray.addAll(instructors);
+    for(Meeting meeting : meetings) {
+      meetingsArray.add(meeting.toJSON());
+    }
+    json.put("section_id", sectionId);
+    json.put("course_id", courseId);
+    json.put("waitlist", waitlist);
+    json.put("open_seats", openSeats);
+    json.put("seats", seats);
+    json.put("instructors", instructorsArray);
+    json.put("meetings", meetingsArray);
+
+    return json;
   }
 }

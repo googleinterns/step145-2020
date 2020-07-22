@@ -119,4 +119,32 @@ public class Meeting {
 
     return toString;
   }
+
+  public JSONObject toJSON() {
+    JSONObject json = new JSONObject();
+    String daysString = "";
+
+    if(days.contain(DayOfWeek.MONDAY)) {
+      daysString += "M";
+    }
+    if(days.contain(DayOfWeek.TUESDAY)) {
+      daysString += "TU";
+    }
+    if(days.contain(DayOfWeek.WEDNESDAY)) {
+      daysString += "W";
+    }
+    if(days.contain(DayOfWeek.THURSDAY)) {
+      daysString += "TH";
+    }
+    if(days.contain(DayOfWeek.FRIDAY)) {
+      daysString += "F";
+    }
+
+    json.put("days", daysString);
+    json.put("room", room);
+    json.put("building", building);
+    json.put("start_time", startTime);
+    json.put("end_time", endTime);
+    return json;
+  }
 }
