@@ -51,7 +51,7 @@ public class Meeting {
     if (days.toUpperCase().contains("F")) {
       this.days.add(DayOfWeek.FRIDAY);
     }
-    if (days.toUpperCase().contains("S") && !days.toUpperCase().contains("SD")) {
+    if (days.toUpperCase().contains("SA") || days.toUpperCase().contains("SU")) {
       throw new ParseException("Invalid Day, no Weekends on Academic Calendar");
     }
   }
