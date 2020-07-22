@@ -56,60 +56,45 @@ public final class CourseTest {
   public void invalidMonthNumber() {
     course = new Course("CMSC101", "Introduction to Computer Science", "202003", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    try {
-      course.getSemesterSeason();
-      Assert.fail();
-    } catch (ParseException e) {
-      Assert.assertEquals("Invalid Start Month", e.getMessage());
-    }
+
+    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterSeason());
+    assertThat(thrown).hasMessageThat().contains("Invalid Start Month");
   }
 
   @Test
   public void invalidMonthFormat() {
     course = new Course("CMSC101", "Introduction to Computer Science", "2020f3", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    try {
-      course.getSemesterSeason();
-      Assert.fail();
-    } catch (ParseException e) {
-      Assert.assertEquals("Invalid Start Month Format", e.getMessage());
-    }
+
+    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterSeason());
+    assertThat(thrown).hasMessageThat().contains("Invalid Start Month Format");
   }
 
   @Test
   public void invalidYearNumber() {
     course = new Course("CMSC101", "Introduction to Computer Science", "177608", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    try {
-      course.getSemesterYear();
-      Assert.fail();
-    } catch (ParseException e) {
-      Assert.assertEquals(
-          "Invalid Year. (Too far in the future or too far in the past)", e.getMessage());
-    }
+
+    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterYear());
+    assertThat(thrown).hasMessageThat().contains(
+        "Invalid Year. (Too far in the future or too far in the past)");
   }
 
   @Test
   public void invalidYearFormat() {
     course = new Course("CMSC101", "Introduction to Computer Science", "r8e108", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    try {
-      course.getSemesterYear();
-      Assert.fail();
-    } catch (ParseException e) {
-      Assert.assertEquals("Invalid Semester Year Format", e.getMessage());
-    }
+
+    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterYear());
+    assertThat(thrown).hasMessageThat().contains("Invalid Semester Year Format");
   }
 
   @Test
   public void invalidFormat() {
     course = new Course("CMSC101", "Introduction to Computer Science", "03", 4, "CMSC",
         "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
-    try {
-      course.getSemesterYear();
-      Assert.fail();
-    } catch (ParseException e) {
-      Assert.assertEquals("Invalid Semester Format", e.getMessage());
-    }
+
+    ParseException thrown = assertThrows(ParseException.class,() -> course.getSemesterYear());
+    assertThat(thrown).hasMessageThat().contains("Invalid Semester Format");
   }
 }
