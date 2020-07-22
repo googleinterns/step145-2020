@@ -49,10 +49,6 @@ const enumDays = {
   DATE_SATURDAY: 6,
 };
 
-export const Calendar = (() => {
-  return {addCourse: addCourse};
-})();
-
 /**
  * Initializes the calendar and moves the view to a hardcoded date in the
  * past.
@@ -205,6 +201,4 @@ function createDateFromTimeString(time, day) {
   return createDate(day, hour, minutes);
 }
 
-window.addEventListener('load', () => {
-  initCalendar();
-});
+export default {addCourse: addCourse, initCalendar: initCalendar}
