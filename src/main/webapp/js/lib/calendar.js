@@ -17,10 +17,6 @@
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
-export const Calendar = (() => {
-  return {addCourse: addCourse, initCalendar: initCalendar};
-})();
-
 /**
  * The id of the next schedule that will be added to the calendar.
  * @type {number}
@@ -204,3 +200,5 @@ function createDateFromTimeString(time, day) {
   const minutes = dt.minute;
   return createDate(day, hour, minutes);
 }
+
+export default {addCourse: addCourse, initCalendar: initCalendar}

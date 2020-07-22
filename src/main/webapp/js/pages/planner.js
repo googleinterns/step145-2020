@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {CollegePlanner} from '../lib/courseSelector.js';
+import CollegePlanner from '../lib/courseSelector.js';
 
 /**
  * Gets results from /planner servlet to results
@@ -51,8 +51,7 @@ async function getPlan() {
       createTable(courseData, creditsData, courseContainer);
     } else {
       CollegePlanner.createAlert(
-          'An invalid response was recieved.',
-          'warning', courseContainer);
+          'An invalid response was recieved.', 'warning', courseContainer);
     }
   } else {
     CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);

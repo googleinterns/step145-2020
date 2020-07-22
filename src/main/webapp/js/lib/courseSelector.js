@@ -12,18 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const CollegePlanner = (() => {
-  return {
-    getSelected: getSelected,
-    getCourses: getCourses,
-    getCourseInfo: getCourseInfo,
-    createAlert: createAlert,
-    getDepartmentOptions: getDepartmentOptions,
-    getCourseOptions: getCourseOptions,
-    addToSelected: addToSelected,
-  };
-})();
-
 let selected = [];  // Courses selected by the user
 let courses = [];   // List with all courses
 /**
@@ -192,3 +180,13 @@ function getCourses() {
 function getCourseInfo() {
   return courseInfo;
 }
+
+export default {
+  getSelected: getSelected,
+  getCourses: getCourses,
+  getCourseInfo: getCourseInfo,
+  createAlert: createAlert,
+  getDepartmentOptions: getDepartmentOptions,
+  getCourseOptions: getCourseOptions,
+  addToSelected: addToSelected,
+};
