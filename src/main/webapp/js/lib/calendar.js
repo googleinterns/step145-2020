@@ -201,4 +201,11 @@ function createDateFromTimeString(time, day) {
   return createDate(day, hour, minutes);
 }
 
-export default {addCourse: addCourse, initCalendar: initCalendar}
+/**
+ * Clears the calendar of all schedules. 
+ */
+function clear() {
+  calendar.clear(true);
+}
+
+export default {addCourse: addCourse, initCalendar: initCalendar, clear: clear};

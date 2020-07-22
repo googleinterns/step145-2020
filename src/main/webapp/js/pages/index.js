@@ -21,6 +21,7 @@ window.addEventListener('load', () => {
 });
 
 document.querySelector('.course-list').addEventListener('click', () => {
+  Calendar.clear();
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
   selected.forEach(course => {
