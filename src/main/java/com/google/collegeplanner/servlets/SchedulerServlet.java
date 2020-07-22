@@ -14,11 +14,19 @@
 
 package com.google.collegeplanner.servlets;
 
+import com.google.collegeplanner.data.Section;
 import com.google.collegeplanner.data.SemesterScheduler;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -45,7 +53,7 @@ public class SchedulerServlet extends HttpServlet {
 
     prepareLists(selectedClasses);
 
-    JSONObject schedules = getSchedules();
+    JSONArray schedules = getSchedules();
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(schedules));
   }
@@ -62,24 +70,42 @@ public class SchedulerServlet extends HttpServlet {
   }
 
   private void prepareLists(JSONArray classes) {
+    String courseId;
+    URI uri;
+    JSONArray jsonArray;
+    ApiUtil apiUtil = new apiUtil();
+
     courseList = new ArrayList<String>();
     courses = new ArrayList<ArrayList<Section>>();
-    String courseId;
-    for(Object obj : classes) {
+    for(JSONArray obj : (JSONArray) classes.toArray()) {
       courseId = (String) ((JSONObject) obj).get("course_id");
       courseList.add(courseId);
-      courses.add(convertJSONArraytoArrayList(/**UMD API call for list of sections*/));
+      try {
+        uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
+      } catch (URISyntaxException e) {
+        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+        return;
+      }
+
+      jsonArray = apiUtil.getJsonArray(uri);
+      if (jsonArray == null) {
+        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+        return;
+      }
+      courses.add(convertJSONArraytoArrayList(jsonArray));
     }
   }
 
-  private JSONObject getSchedules() {
+  private JSONArray getSchedules() { 
     JSONArray schedulesJson = new JSONArray();
     SemesterScheduler scheduler = new scheduler(courses);
     ArrayList<Schedule> possibleSchedules = scheduler.getPossibleSchedules();
 
     for(Schedule schedule : possibleSchedules) {
-      schedulesJson.add(schedule);
+      schedulesJson.add(schedule.toJSON());
     }
+
+    return schedulesJson;
   }
 
   private ArrayList<Section> convertJSONArraytoArrayList(JSONArray json) {
