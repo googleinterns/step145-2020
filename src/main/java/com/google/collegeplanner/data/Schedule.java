@@ -51,6 +51,10 @@ public class Schedule {
     return false;
   }
 
+  public ArrayList<Section> getSections() {
+    return sections;
+  }
+
   @Override
   public String toString() {
     String toString = "Schedule\n";
@@ -66,6 +70,16 @@ public class Schedule {
   public boolean equals(Object other) {
     if (!(other instanceof Schedule)) {
       return false;
+    }
+
+    if(((Schedule) other).getSections().size() != sections.size()) {
+      return false;
+    }
+
+    for(Section section : ((Schedule) other).getSections()) {
+      if(!sections.contains(section)) {
+        return false;
+      }
     }
 
     return true;

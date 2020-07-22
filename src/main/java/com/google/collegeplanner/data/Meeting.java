@@ -68,6 +68,7 @@ public class Meeting {
     for (String day : other.getDays()) {
       if (days.contains(day)) {
         canSkip = false;
+        break;
       }
     }
 
@@ -76,11 +77,11 @@ public class Meeting {
     }
 
     if (startTime > other.getStartTime()) {
-      if (startTime > other.getEndTime()) {
+      if (startTime >= other.getEndTime()) {
         return false;
       }
     } else {
-      if (endTime < other.getStartTime()) {
+      if (endTime <= other.getStartTime()) {
         return false;
       }
     }
