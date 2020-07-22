@@ -49,21 +49,6 @@ const enumDays = {
   DATE_SATURDAY: 6,
 };
 
-<<<<<<< HEAD:src/main/webapp/js/calendar.js
-/**
- * Maps a course id to the array of the corresponding schedule ids on the
- * calendar. Note that a single course with 3 meeting days has 3 different
- * schedule ids. This is why we need an array to house them.
- * @type {{courseId: string}, {scheduleIds: array}}
- */
-let scheduleInfo = {};
-
-export const Calendar = (() => {
-  return {addCourse: addCourse, removeCourse: removeCourse, getCalendar, getCalendar};
-})();
-
-=======
->>>>>>> 398d528302227883fe4673a8dbc3902966f389e5:src/main/webapp/js/lib/calendar.js
 /**
  * Initializes the calendar and moves the view to a hardcoded date in the
  * past.
@@ -234,14 +219,4 @@ function createDateFromTimeString(time, day) {
   return createDate(day, hour, minutes);
 }
 
-<<<<<<< HEAD:src/main/webapp/js/calendar.js
-function getCalendar() {
-  return calendar;
-}
-
-window.addEventListener('load', () => {
-  initCalendar();
-});
-=======
 export default {addCourse: addCourse, initCalendar: initCalendar}
->>>>>>> 398d528302227883fe4673a8dbc3902966f389e5:src/main/webapp/js/lib/calendar.js
