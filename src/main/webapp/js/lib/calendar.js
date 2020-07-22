@@ -171,7 +171,7 @@ function createSchedule(course, startDate, endDate) {
     isReadOnly: true,
   }]);
   // Each schedule needs a unique ID. We'll start at 1 and go up from there.
-  if (scheduleInfo[course.course_id] == null) {
+  if (!(course.course_id in scheduleInfo)) {
     scheduleInfo[course.course_id] = [];
   }
   scheduleInfo[course.course_id].push(id++);
@@ -182,11 +182,11 @@ function createSchedule(course, startDate, endDate) {
  * @param {string} course_id The course_id of the course we want to remove.
  */
 function removeCourse(course_id) {
-  const scheduleIds = scheduleInfo[course_id];
-  if (scheduleIds == null) {
+  if (!(course_id in scheduleInfo)) {
     return;
   }
 
+  const scheduleIds = scheduleInfo[course_id];
   scheduleIds.forEach(scheduleId => {
     calendar.deleteSchedule(scheduleId.toString(), '1');
   });
