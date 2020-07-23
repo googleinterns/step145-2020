@@ -76,6 +76,12 @@ const ORIGINAL_COLORS = [
 let scheduleColors = [...ORIGINAL_COLORS];
 
 /**
+ * The default color the schedule is set to be when no color is provided.
+ * @type {string}
+ */
+const DEFAULT_SCHEDULE_COLOR = '#00a9ff';
+
+/**
  * Initializes the calendar and moves the view to a hardcoded date in the
  * past.
  */
@@ -184,7 +190,7 @@ function addCourseToCalendar(course, startTime, endTime, day, color) {
 function createSchedule(course, startDate, endDate, color) {
   // The default color is hard-coded to be blue;
   if (color == null) {
-    color = '#00a9ff';
+    color = DEFAULT_SCHEDULE_COLOR;
   }
   calendar.createSchedules([{
     id: id.toString(),
