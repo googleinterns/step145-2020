@@ -80,15 +80,14 @@ function initCalendar() {
  * Adds a course to the calendar.
  * @param {Object} course The JSON Object for the course.
  */
-async function addCourse(course) {
-  if (course == null) {
+async function addCourse(course, section) {
+  if (course == null || section == null) {
     return;
   }
-  const response = await fetch(
-      `/api/sections?course_id=${encodeURIComponent(course.course_id)}`);
+  const response = await fetch(`/api/sections?course_id=${
+      encodeURIComponent(course.course_id)}&section_id=${
+      encodeURIComponent(section.substr(section.length - 4))}`);
   const json = await response.json();
-
-  // For now, just choose the first section out of the available ones
   if (json.sections == null) {
     return;
   }
@@ -96,11 +95,20 @@ async function addCourse(course) {
   if (firstSection.meetings == null) {
     return;
   }
-  const firstMeetingInfo = firstSection.meetings[0];
-  const meetingDays = firstMeetingInfo.days;
+  firstSection.meetings.forEach(
+      meeting => decodeDayAndAddToCalendar(meeting, course));
+}
 
-  const startTime = firstMeetingInfo.start_time;
-  const endTime = firstMeetingInfo.end_time;
+/**
+ * Adds a course meeting to the calendar
+ * @param {Object} meeting The JSON Object for the meeting.
+ * @param {Object} course The JSON Object for the course.
+ */
+function decodeDayAndAddToCalendar(meeting, course) {
+  const meetingDays = meeting.days;
+
+  const startTime = meeting.start_time;
+  const endTime = meeting.end_time;
 
   if (meetingDays.includes('Su')) {
     addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
