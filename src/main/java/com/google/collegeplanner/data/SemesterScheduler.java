@@ -17,7 +17,7 @@ package com.google.collegeplanner.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/*
+/**
  * This class takes a 2D array of Section objects and returns a list of
  * Schedule objects that represent working schedules with no conflicts.
  */
@@ -48,7 +48,7 @@ public class SemesterScheduler {
     return possibleSchedules;
   }
 
-  /*
+  /**
    * This function is a recursivly nested for loop. 
    * @param sectionListIndex the counter for the nested for loops 
    * @param sectionListSizes the end case number for the nested for loops
