@@ -34,10 +34,40 @@ document.querySelector('.course-list').addEventListener('click', () => {
       course => {sections2[course] = courseInfo[course].sections[1]});
   const schedules = [sections1, sections2];
 
-  // TODO{ramyabuva}: add pagination for multiple schedules
   selected.forEach(course => {
     Calendar.addCourse(courseInfo[course], schedules[0][course]);
   });
+
+  // if more than 1 schedule returned, create pagination
+  if (schedules.length == 1) {
+    return;
+  }
+  const pageList = document.getElementById('calendar-pagination');
+  pageList.innerText = ''; // clear any existing children from the element
+  for (let i = 1; i <= schedules.length; i++) {
+    const nextPage = document.createElement('a');
+    nextPage.innerText = i;
+    // by default, set first page to active
+    if (i == 1) {
+      nextPage.setAttribute('class', 'active');
+    }
+    pageList.appendChild(nextPage);
+    const scheduleNum = schedules[i - 1];
+    nextPage.addEventListener('click', () => {
+      Calendar.clear();
+      // display the correct schedule depending on the button clicked
+      selected.forEach(course => {
+        Calendar.addCourse(courseInfo[course], scheduleNum[course]);
+      });
+      const a_elements = pageList.getElementsByTagName('a');
+      // remove active label from any other child element
+      for (var a = 0; a < a_elements.length; a++) {
+        a_elements[a].setAttribute('class', '');
+      }
+      // set current page to active
+      nextPage.setAttribute('class', 'active');
+    });
+  }
 });
 
 document.getElementById('add-selected').addEventListener('click', () => {
