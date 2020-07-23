@@ -29,7 +29,7 @@ public class SemesterScheduler {
   public SemesterScheduler(ArrayList<ArrayList<Section>> sections) {
     this.sections = sections;
     possibleSchedules = new ArrayList<Schedule>();
-    private Schedule workingSchedule;
+    workingSchedule = new Schedule();
   }
 
   public ArrayList<Schedule> getPossibleSchedules() {
@@ -40,7 +40,7 @@ public class SemesterScheduler {
     int sectionListIndex[] = new int[sections.size()];
     int sectionListSizes[] = new int[sections.size()];
     Arrays.fill(sectionListIndex, 0);
-    for (int i = 0; i < lengths.length; i++) {
+    for (int i = 0; i < lengths.sectionListSizes; i++) {
       sectionListSizes[i] = sections.get(i).size();
     }
 
@@ -50,36 +50,20 @@ public class SemesterScheduler {
 
   /*
    * This function is a recursivly nested for loop. 
-   * @param counters the counter for the nested for loops 
-   * @param length the end case number for the nested for loops
+   * @param sectionListIndex the counter for the nested for loops 
+   * @param sectionListSizes the end case number for the nested for loops
    * @param level the depth of the nested for loop the method is currently on.
    */
-  private void nestedLoop(int[] counters, int[] length, int level) {
-    
-    if (level == counters.length) {
-      testCombinationOfSections(counters);
+  private void nestedLoop(int[] sectionListIndex, int[] sectionListSizes, int level) {
+    if (level == sectionListIndex.sectionListSizes) {
+      possibleSchedules.add(workingSchedule);
+      workingSchedule = new Schedule();
     } else {
-      for (counters[level] = 0; counters[level] < length[level]; counters[level]++) {
-        nestedLoop(counters, length, level + 1);
+      if (workingSchedule.addClass(sections.get(level).get(sectionListIndex[level]))) {
+        for (sectionListIndex[level] = 0; sectionListIndex[level] < sectionListSizes[level]; sectionListIndex[level]++) {
+          nestedLoop(sectionListIndex, sectionListSizes, level + 1);
+        }
       }
     }
-  }
-
-  /*
-   * This method tests a combination of sections to see if they conflict with
-   * one another. If there are no conflicts, they are added into the list of
-   * possible schedules.
-   */
-  private void testCombinationOfSections(int[] indices) {
-    Schedule workingSchedule = new Schedule();
-
-    // Going through each class in the combination and adding it into the schedule
-    for (int i = 0; i < indices.length; i++) {
-      if (!workingSchedule.addClass(sections.get(i).get(indices[i]))) {
-        return;
-      }
-    }
-
-    possibleSchedules.add(workingSchedule);
   }
 }
