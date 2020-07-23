@@ -119,10 +119,7 @@ public class Meeting {
 
   @Override
   public String toString() {
-    String output = "";
-    for (DayOfWeek str : days) {
-      output += str + " ";
-    }
+    String output = String.join(" ", days);
 
     output += "From " + Integer.toString(startTime) + " to " + Integer.toString(endTime);
 

@@ -84,13 +84,16 @@ public class Schedule {
     return true;
   }
 
-  public JSONArray toJSON() {
-    JSONArray json = new JSONArray();
+  public JSONObject toJSON() {
+    JSONArray sectionsArray = new JSONArray();
+    JSONObject output = new JSONObject();
 
     for (Section section : sections) {
-      json.add(section.toJSON());
+      sectionsArray.add(section.toJSON());
     }
 
-    return json;
+    output.put("sections", sectionsArray);
+
+    return output;
   }
 }
