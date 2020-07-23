@@ -24,10 +24,12 @@ import java.util.Arrays;
 public class SemesterScheduler {
   private ArrayList<ArrayList<Section>> sections;
   private ArrayList<Schedule> possibleSchedules;
+  private Schedule workingSchedule;
 
   public SemesterScheduler(ArrayList<ArrayList<Section>> sections) {
     this.sections = sections;
     possibleSchedules = new ArrayList<Schedule>();
+    private Schedule workingSchedule;
   }
 
   public ArrayList<Schedule> getPossibleSchedules() {
@@ -53,6 +55,7 @@ public class SemesterScheduler {
    * @param level the depth of the nested for loop the method is currently on.
    */
   private void nestedLoop(int[] counters, int[] length, int level) {
+    
     if (level == counters.length) {
       testCombinationOfSections(counters);
     } else {
