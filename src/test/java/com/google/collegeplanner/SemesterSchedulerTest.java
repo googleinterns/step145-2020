@@ -14,6 +14,7 @@
 
 package com.google.collegeplanner.data;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public final class SemesterSchedulerTest {
   private ArrayList<Section> chemClasses;
   private ArrayList<ArrayList<Section>> allClasses;
   @Before
-  public void before() {
+  public void before() throws ParseException {
     int TIME_0900AM = 60 * 9;
     int TIME_1000AM = 60 * 10;
     int TIME_1100AM = 60 * 11;
@@ -179,14 +180,29 @@ public final class SemesterSchedulerTest {
 
     expectedSchedules.get(1).addClass(compSciClasses.get(1));
     expectedSchedules.get(1).addClass(englishClasses.get(0));
-    expectedSchedules.get(0).addClass(mathClasses.get(1));
-    expectedSchedules.get(0).addClass(chemClasses.get(0));
+    expectedSchedules.get(1).addClass(mathClasses.get(1));
+    expectedSchedules.get(1).addClass(chemClasses.get(0));
 
-    expectedSchedules.get(1).addClass(compSciClasses.get(1));
-    expectedSchedules.get(0).addClass(englishClasses.get(0));
-    expectedSchedules.get(0).addClass(mathClasses.get(0));
-    expectedSchedules.get(0).addClass(chemClasses.get(0));
+    expectedSchedules.get(2).addClass(compSciClasses.get(1));
+    expectedSchedules.get(2).addClass(englishClasses.get(0));
+    expectedSchedules.get(2).addClass(mathClasses.get(0));
+    expectedSchedules.get(2).addClass(chemClasses.get(0));
+    
+    assertEqualsLists(expectedSchedules, scheduler.getPossibleSchedules());
+  }
 
-    Assert.assertEquals(expectedSchedules, scheduler.getPossibleSchedules());
+  /*
+   * This function checks if two lists are the same (order does not matter)
+   */
+  public void assertEqualsLists(ArrayList<Schedule> expected, ArrayList<Schedule> actual) {
+    // Check to see if the two lists contain the same schedules
+    if(actual.size() != expected.size()) {
+      Assert.fail();
+    }
+    for(Schedule schedule : expected) {
+      if(!actual.contains(schedule)) {
+        Assert.fail();
+      }
+    }
   }
 }
