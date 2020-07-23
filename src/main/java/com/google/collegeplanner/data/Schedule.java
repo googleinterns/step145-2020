@@ -72,12 +72,12 @@ public class Schedule {
       return false;
     }
 
-    if(((Schedule) other).getSections().size() != sections.size()) {
+    if (((Schedule) other).getSections().size() != sections.size()) {
       return false;
     }
 
-    for(Section section : ((Schedule) other).getSections()) {
-      if(!sections.contains(section)) {
+    for (Section section : ((Schedule) other).getSections()) {
+      if (!sections.contains(section)) {
         return false;
       }
     }
@@ -89,10 +89,10 @@ public class Schedule {
     JSONObject json = new JSONObject();
     JSONArray array = new JSONArray();
 
-    for(Section section : sections) {
+    for (Section section : sections) {
       array.add(section.toJSON());
-    }    
-    
+    }
+
     json.add(array);
 
     return json;

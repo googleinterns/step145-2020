@@ -13,6 +13,7 @@
 // limitations under the License.package com.google.collegeplanner.data;
 
 package com.google.collegeplanner.data;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -37,12 +38,12 @@ public class Section {
   }
 
   public Section(JSONObject json) {
-    this((String) json.get("section_id"), (String) json.get("course_id"), (String) json.get("waitlist")
-        (int) json.get("open_seats"), (int) json.get("seats"), 
+    this((String) json.get("section_id"), (String) json.get("course_id"),
+        (String) json.get("waitlist")(int) json.get("open_seats"), (int) json.get("seats"),
         (String[]) ((JSONArray) json.get("instructors")).toArray(),
         new Meeting[((JSONArray) json.get("meetings")).toArray().length]);
-    
-    for(int i = 0; i < meetings.length; i++) {
+
+    for (int i = 0; i < meetings.length; i++) {
       meetings[i] = new Meeting((JSONObject) ((JSONArray) json.get("meetings")).toArray()[i]);
     }
   }
@@ -110,7 +111,7 @@ public class Section {
     JSONArray instructorsArray = new JSONArray();
     JSONArray meetingsArray = new JSONArray();
     instructorsArray.addAll(instructors);
-    for(Meeting meeting : meetings) {
+    for (Meeting meeting : meetings) {
       meetingsArray.add(meeting.toJSON());
     }
     json.put("section_id", sectionId);

@@ -28,8 +28,8 @@ public class Meeting {
   private int startTime;
   private int endTime;
 
-  public Meeting(String days, String room, String building, 
-  int startTime, int endTime) throws ParseException {
+  public Meeting(String days, String room, String building, int startTime, int endTime)
+      throws ParseException {
     this.days = new ArrayList<DayOfWeek>();
     this.room = room;
     this.building = building;
@@ -125,19 +125,19 @@ public class Meeting {
     JSONObject json = new JSONObject();
     String daysString = "";
 
-    if(days.contain(DayOfWeek.MONDAY)) {
+    if (days.contain(DayOfWeek.MONDAY)) {
       daysString += "M";
     }
-    if(days.contain(DayOfWeek.TUESDAY)) {
+    if (days.contain(DayOfWeek.TUESDAY)) {
       daysString += "TU";
     }
-    if(days.contain(DayOfWeek.WEDNESDAY)) {
+    if (days.contain(DayOfWeek.WEDNESDAY)) {
       daysString += "W";
     }
-    if(days.contain(DayOfWeek.THURSDAY)) {
+    if (days.contain(DayOfWeek.THURSDAY)) {
       daysString += "TH";
     }
-    if(days.contain(DayOfWeek.FRIDAY)) {
+    if (days.contain(DayOfWeek.FRIDAY)) {
       daysString += "F";
     }
 
