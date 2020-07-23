@@ -29,14 +29,29 @@ import java.net.URISyntaxException;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import java.io.IOException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-
-
-/** Provides an interface for making outside API calls. */
+/** Queries the UMD API and downloads the data to datastore. */
+@WebServlet("/api/download")
 public class DatastoreServlet extends BaseServlet {
-  public void downloadData() {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+  DatastoreService datastore;
+
+  public DatastoreServlet() {
+    this(DatastoreServiceFactory.getDatastoreService());
+  }
+
+  public DatastoreServlet(DatastoreService datastore) {
+    self.datastore = datastore;
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     int page = 0;
     while (true) {
       // loop through pages
@@ -67,7 +82,6 @@ public class DatastoreServlet extends BaseServlet {
 
       // we have a course
       JSONObject courseJson = (JSONObject) jsonObject;
-
       Course course = new Course(courseJson);
 
       Entity entity = new Entity("Course");
@@ -95,6 +109,7 @@ public class DatastoreServlet extends BaseServlet {
         return;
       }
       entity.setProperty("sections", sectionsArray);
+      // datastore.put(entity);
 
       // addSectionsToCourse(entity, sectionsArray);
     }

@@ -16,7 +16,6 @@ package com.google.collegeplanner.data;
 
 import java.text.ParseException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,14 +25,8 @@ import org.junit.runners.JUnit4;
 /** Tests Course */
 @RunWith(JUnit4.class)
 public final class CourseTest {
-  private String[] gradingSystem;
   private Course course;
   @Rule public ExpectedException exceptionRule = ExpectedException.none();
-
-  @Before
-  public void before() {
-    gradingSystem = new String[] {"Regular", "Pass-Fail"};
-  }
 
   /*
    * This method tests the getSemesterSeason() method of the Class class
@@ -41,7 +34,7 @@ public final class CourseTest {
   @Test
   public void getSemesterSeasonSuccess() throws Exception {
     course = new Course("CMSC101", "Introduction to Computer Science", "202008", 4, "CMSC",
-        "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
+        "Introductory class to Computer Science", null, null, null, null, null);
     Assert.assertEquals("Fall", course.getSemesterSeason());
   }
 
@@ -51,14 +44,14 @@ public final class CourseTest {
   @Test
   public void getSemesterYearSuccess() throws Exception {
     course = new Course("CMSC101", "Introduction to Computer Science", "202008", 4, "CMSC",
-        "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
+        "Introductory class to Computer Science", null, null, null, null, null);
     Assert.assertEquals(2020, course.getSemesterYear());
   }
 
   @Test
   public void invalidMonthNumber() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "202003", 4, "CMSC",
-        "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
+        "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
     exceptionRule.expectMessage("Invalid Start Month");
     course.getSemesterSeason();
@@ -67,7 +60,7 @@ public final class CourseTest {
   @Test
   public void invalidMonthFormat() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "2020f3", 4, "CMSC",
-        "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
+        "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
     exceptionRule.expectMessage("Invalid Start Month Format");
     course.getSemesterSeason();
@@ -76,7 +69,7 @@ public final class CourseTest {
   @Test
   public void invalidYearNumber() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "177608", 4, "CMSC",
-        "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
+        "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
     exceptionRule.expectMessage("Invalid Year. (Too far in the future or too far in the past)");
     course.getSemesterYear();
@@ -85,7 +78,7 @@ public final class CourseTest {
   @Test
   public void invalidYearFormat() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "r8e108", 4, "CMSC",
-        "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
+        "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
     exceptionRule.expectMessage("Invalid Semester Year Format");
     course.getSemesterYear();
@@ -94,7 +87,7 @@ public final class CourseTest {
   @Test
   public void invalidFormat() throws ParseException {
     course = new Course("CMSC101", "Introduction to Computer Science", "03", 4, "CMSC",
-        "Introductory class to Computer Science", gradingSystem, null, null, null, null, null);
+        "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
     exceptionRule.expectMessage("Invalid Semester Format");
     course.getSemesterYear();

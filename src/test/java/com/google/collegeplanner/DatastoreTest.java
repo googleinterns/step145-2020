@@ -42,6 +42,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /** Tests CourseListServlet */
 @RunWith(JUnit4.class)
@@ -54,24 +59,12 @@ public final class DatastoreTest {
 
   @Before
   public void before() throws Exception {
-    mockedResponse = mock(HttpServletResponse.class);
-    stringWriter = new StringWriter();
-    writer = new PrintWriter(stringWriter);
-    parser = new JSONParser();
-    when(mockedResponse.getWriter()).thenReturn(writer);
 
-    mockedRequest = mock(HttpServletRequest.class);
-    when(mockedRequest.getParameter("department")).thenReturn("AASP");
-  }
-
-  @After
-  public void after() {
-    writer.flush();
   }
 
   @Test
   public void servletResponseHasCourses() throws Exception {
     DatastoreServlet ds = new DatastoreServlet();
-    ds.downloadData();
+    ds.doGet(null, null);
   }
 }
