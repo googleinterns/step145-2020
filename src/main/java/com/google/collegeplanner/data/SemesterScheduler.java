@@ -17,7 +17,7 @@ package com.google.collegeplanner.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public final class SemesterScheduler {
+public class SemesterScheduler {
   private ArrayList<ArrayList<Section>> sections;
   private ArrayList<Schedule> possibleSchedules;
 
@@ -30,21 +30,26 @@ public final class SemesterScheduler {
     if (!possibleSchedules.isEmpty()) {
       return possibleSchedules;
     }
-    int counters[] = new int[sections.size()];
-    int lengths[] = new int[sections.size()];
-    Arrays.fill(counters, 0);
-    for (int i = 0; i < lengths.length; i++) {
-      lengths[i] = sections.get(i).size();
+    if(sections.size() == 0) {
+      return new ArrayList<Schedule>();
     }
-    nestedLoop(counters, lengths, 0);
+
+    int sectionListIndex[] = new int[sections.size()];
+    int sectionListSizes[] = new int[sections.size()];
+    Arrays.fill(sectionListIndex, 0);
+    for (int i = 0; i < lengths.length; i++) {
+      sectionListSizes[i] = sections.get(i).size();
+    }
+
+    nestedLoop(sectionListIndex, sectionListSizes, 0);
     return possibleSchedules;
   }
 
   /*
-   * This function is a recursivly nested for loop. counters[] represents the
-   * index which a for loop is on while length[] represents the end of each for
-   * loop. counters[] and length[] have the same length, which is the depth of
-   * the nested for loop. level is how deep the recursive for loop is in.
+   * This function is a recursivly nested for loop. 
+   * @param counters the counter for the nested for loops 
+   * @param length the end case number for the nested for loops
+   * @param level the depth of the nested for loop the method is currently on.
    */
   private void nestedLoop(int[] counters, int[] length, int level) {
     if (level == counters.length) {

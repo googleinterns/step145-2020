@@ -42,6 +42,7 @@ public final class SemesterSchedulerTest {
   private ArrayList<Section> mathClasses;
   private ArrayList<Section> chemClasses;
   private ArrayList<ArrayList<Section>> allClasses;
+  
   @Before
   public void before() throws ParseException {
     int TIME_0900AM = 60 * 9;
@@ -195,7 +196,6 @@ public final class SemesterSchedulerTest {
    * This function checks if two lists are the same (order does not matter)
    */
   public void assertEqualsLists(ArrayList<Schedule> expected, ArrayList<Schedule> actual) {
-    // Check to see if the two lists contain the same schedules
     if(actual.size() != expected.size()) {
       Assert.fail();
     }
