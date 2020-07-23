@@ -30,6 +30,9 @@ import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.gson.Gson;
+
+
 /** Provides an interface for making outside API calls. */
 public class DatastoreServlet extends BaseServlet {
   public void downloadData() {
@@ -64,6 +67,7 @@ public class DatastoreServlet extends BaseServlet {
 
       // we have a course
       JSONObject courseJson = (JSONObject) jsonObject;
+
       Course course = new Course(courseJson);
 
       Entity entity = new Entity("Course");
@@ -78,7 +82,6 @@ public class DatastoreServlet extends BaseServlet {
       entity.setProperty("restrictions", course.getRestrictions());
       entity.setProperty("additional_info", course.getAdditionalInfo());
       entity.setProperty("credit_granted_for", course.getCreditGrantedFor());
-      entity.setProperty("grading_method", course.getGradingMethod());
 
       URI uri;
       try {
@@ -105,7 +108,7 @@ public class DatastoreServlet extends BaseServlet {
     for (Object jsonObject : sectionsArray) {
       // loop through sections
       JSONObject sectionJson = (JSONObject) jsonObject;
-      entity.setProperty()
+
     }
   }
 }
