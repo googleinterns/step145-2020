@@ -100,7 +100,6 @@ function initCalendar() {
   // The hard coded date that all scheduled events should fall around
   // Date: Sunday January 2nd, 2000 @ 00:00 EST
   calendar.setDate(new Date('2000-01-02T00:00:00'));
-  randomizeColors();
 }
 
 /**
