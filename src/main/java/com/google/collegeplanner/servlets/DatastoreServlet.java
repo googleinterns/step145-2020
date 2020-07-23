@@ -19,25 +19,21 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
+import com.google.collegeplanner.data.Course;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import java.net.URI;
-import org.apache.http.client.utils.URIBuilder;
-import java.net.URISyntaxException;
 
 /** Provides an interface for making outside API calls. */
-public class DatastoreServlet {
- 
-  public void test() {
+public class DatastoreServlet extends BaseServlet {
+  public void downloadData() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    ApiUtil apiUtil = new ApiUtil();
-    JSONArray coursesArray;
-    Entity entity;
     int page = 0;
     while (true) {
       // loop through pages
@@ -49,12 +45,13 @@ public class DatastoreServlet {
       } catch (URISyntaxException e) {
         break;
       }
-      coursesArray = apiUtil.getJsonArray(uri);
+      JSONArray coursesArray = apiUtil.getJsonArray(uri);
       if (coursesArray == null) {
         break;
       }
-      
+
       addCourses(coursesArray);
+    }
   }
 
   private void addCourses(JSONArray coursesArray) {
@@ -62,55 +59,53 @@ public class DatastoreServlet {
       return;
     }
 
-
-    JSONObject courseJson;
-    Entity entity;
-    URI uri;
-    JSONArray sectionsArray;
-    for (int i = 0; i < coursesArray.size(); i++) {
+    for (Object jsonObject : coursesArray) {
       // loop through courses
 
       // we have a course
-      courseJson = coursesArray.getJSONObject(i);
+      JSONObject courseJson = (JSONObject) jsonObject;
       Course course = new Course(courseJson);
 
-      entity = new Entity("Course");
+      Entity entity = new Entity("Course");
       entity.setProperty("course_id", course.getCourseId());
       entity.setProperty("name", course.getName());
       entity.setProperty("semester", course.getSemester());
       entity.setProperty("credits", course.getCredits());
       entity.setProperty("department_id", course.getDepartmentId());
       entity.setProperty("description", course.getDescription());
-      entity.setProperty("coreqs", course.getCorequirements());
-      entity.setProperty("prereqs", course.getPrerequirements());
+      entity.setProperty("coreqs", course.getCorequisites());
+      entity.setProperty("prereqs", course.getCorequisites());
       entity.setProperty("restrictions", course.getRestrictions());
       entity.setProperty("additional_info", course.getAdditionalInfo());
       entity.setProperty("credit_granted_for", course.getCreditGrantedFor());
       entity.setProperty("grading_method", course.getGradingMethod());
 
+      URI uri;
       try {
         uri = new URI("https://api.umd.io/v1/courses/" + course.getCourseId() + "/sections");
       } catch (URISyntaxException e) {
         return;
       }
 
-      sectionsArray = apiUtil.getJsonArray(uri);
+      JSONArray sectionsArray = apiUtil.getJsonArray(uri);
       if (sectionsArray == null) {
         return;
       }
-      addSectionsToCourse(entity, sectionsArray);
+      entity.setProperty("sections", sectionsArray);
+
+      // addSectionsToCourse(entity, sectionsArray);
     }
-  } 
+  }
 
   private void addSectionsToCourse(Entity entity, JSONArray sectionsArray) {
     if (entity == null || sectionsArray == null) {
       return;
     }
 
-    for (int j = 0; j < sectionsArray.size(); j++) {
+    for (Object jsonObject : sectionsArray) {
       // loop through sections
-      JSONObject sectionJson = sectionsArray.getJSONObject(i);
+      JSONObject sectionJson = (JSONObject) jsonObject;
+      entity.setProperty()
     }
   }
-
 }

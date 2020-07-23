@@ -15,9 +15,11 @@
 package com.google.collegeplanner.data;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class Course {
   /*
@@ -50,11 +52,6 @@ public class Course {
    */
   private String description;
   /*
-   * gradingMethod represents the list of possible grading
-   * methods students can opt for. Example, regular, pass-fail.
-   */
-  private String[] gradingMethod;
-  /*
    * corequisites represents the corequisite classes for this
    * course. Example, BIO106 is the lab for BIO101 and
    * must be taken together
@@ -84,15 +81,14 @@ public class Course {
   private String creditGrantedFor;
 
   public Course(String courseId, String name, String semester, int credits, String departmentId,
-      String description, String[] gradingMethod, String corequisites, String prerequisites,
-      String restrictions, String additionalInfo, String creditGrantedFor) {
+      String description, String corequisites, String prerequisites, String restrictions,
+      String additionalInfo, String creditGrantedFor) {
     this.courseId = courseId;
     this.name = name;
     this.semester = semester;
     this.credits = credits;
     this.departmentId = departmentId;
     this.description = description;
-    this.gradingMethod = gradingMethod;
     this.corequisites = corequisites;
     this.prerequisites = prerequisites;
     this.restrictions = restrictions;
@@ -102,8 +98,8 @@ public class Course {
 
   public Course(JSONObject json) {
     this((String) json.get("course_id"), (String) json.get("name"), (String) json.get("semester"),
-        (int) json.get("credits"), (String) json.get("dept_id"), (String) json.get("description"),
-        (String[]) ((JSONArray) json.get("grading_method")).toArray(),
+        Integer.parseInt((String) json.get("credits")), (String) json.get("dept_id"),
+        (String) json.get("description"),
         (String) ((JSONObject) json.get("relationships")).get("coreqs"),
         (String) ((JSONObject) json.get("relationships")).get("prereqs"),
         (String) ((JSONObject) json.get("relationships")).get("restrictions"),
@@ -194,10 +190,6 @@ public class Course {
 
   public String getDescription() {
     return description;
-  }
-
-  public String[] getGradingMethod() {
-    return gradingMethod;
   }
 
   public String getCorequisites() {

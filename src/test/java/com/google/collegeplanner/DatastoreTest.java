@@ -71,8 +71,7 @@ public final class DatastoreTest {
 
   @Test
   public void servletResponseHasCourses() throws Exception {
-      DatastoreServlet ds = new DatastoreServlet();
-      ds.test();
+    DatastoreServlet ds = new DatastoreServlet();
+    ds.downloadData();
   }
-
 }
