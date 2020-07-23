@@ -16,7 +16,6 @@ package com.google.collegeplanner.data;
 
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class Schedule {
   private ArrayList<Section> sections;
@@ -44,7 +43,7 @@ public class Schedule {
   // Method is true if there is a conflict, false otherwise.
   private boolean conflictsWithSchedule(Section section) {
     for (Section scheduledSection : sections) {
-      if (scheduledSection.conflicts(section)) {
+      if (scheduledSection.conflictsWith(section)) {
         return true;
       }
     }
@@ -57,13 +56,13 @@ public class Schedule {
 
   @Override
   public String toString() {
-    String toString = "Schedule\n";
+    String output = "Schedule\n";
 
     for (Section section : sections) {
-      toString += section.toString() + "\n";
+      output += section.toString() + "\n";
     }
 
-    return toString;
+    return output;
   }
 
   @Override
@@ -72,12 +71,12 @@ public class Schedule {
       return false;
     }
 
-    if(((Schedule) other).getSections().size() != sections.size()) {
+    if (((Schedule) other).getSections().size() != sections.size()) {
       return false;
     }
 
-    for(Section section : ((Schedule) other).getSections()) {
-      if(!sections.contains(section)) {
+    for (Section section : ((Schedule) other).getSections()) {
+      if (!sections.contains(section)) {
         return false;
       }
     }
@@ -85,15 +84,12 @@ public class Schedule {
     return true;
   }
 
-  public JSONObject toJSON() {
-    JSONObject json = new JSONObject();
-    JSONArray array = new JSONArray();
+  public JSONArray toJSON() {
+    JSONArray json = new JSONArray();
 
-    for(Section section : sections) {
-      array.add(section.toJSON());
-    }    
-    
-    json.add(array);
+    for (Section section : sections) {
+      json.add(section.toJSON());
+    }
 
     return json;
   }

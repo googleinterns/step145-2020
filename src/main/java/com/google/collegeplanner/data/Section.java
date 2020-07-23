@@ -13,6 +13,8 @@
 // limitations under the License.package com.google.collegeplanner.data;
 
 package com.google.collegeplanner.data;
+
+import java.text.ParseException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -36,13 +38,13 @@ public class Section {
     this.meetings = meetings;
   }
 
-  public Section(JSONObject json) {
-    this((String) json.get("section_id"), (String) json.get("course_id"), (String) json.get("waitlist")
-        (int) json.get("open_seats"), (int) json.get("seats"), 
+  public Section(JSONObject json) throws ParseException {
+    this((String) json.get("section_id"), (String) json.get("course_id"),
+        (String) json.get("waitlist"), (int) json.get("open_seats"), (int) json.get("seats"),
         (String[]) ((JSONArray) json.get("instructors")).toArray(),
         new Meeting[((JSONArray) json.get("meetings")).toArray().length]);
-    
-    for(int i = 0; i < meetings.length; i++) {
+
+    for (int i = 0; i < meetings.length; i++) {
       meetings[i] = new Meeting((JSONObject) ((JSONArray) json.get("meetings")).toArray()[i]);
     }
   }
@@ -92,25 +94,27 @@ public class Section {
 
   @Override
   public String toString() {
-    String toString = "";
+    String output = "";
 
-    toString += sectionId;
+    output += sectionId;
 
-    toString += "\nMeetings\n";
+    output += "\nMeetings\n";
 
     for (Meeting meeting : meetings) {
-      toString += meeting.toString() + "\n";
+      output += meeting.toString() + "\n";
     }
 
-    return toString;
+    return output;
   }
 
   public JSONObject toJSON() {
     JSONObject json = new JSONObject();
     JSONArray instructorsArray = new JSONArray();
     JSONArray meetingsArray = new JSONArray();
-    instructorsArray.addAll(instructors);
-    for(Meeting meeting : meetings) {
+    for (String instructor : instructors) {
+      instructorsArray.add(instructor);
+    }
+    for (Meeting meeting : meetings) {
       meetingsArray.add(meeting.toJSON());
     }
     json.put("section_id", sectionId);
