@@ -84,12 +84,17 @@ public class Meeting {
       return false;
     }
 
+    // Checks to see if this meeting's start time happens after the other meeting's start time
     if (startTime > other.getStartTime()) {
+      // Checks to see if this meeting's start time happens after the other meeting's end time
       if (startTime >= other.getEndTime()) {
+        // Two meetings do not conflict as this meeting occurs after the other meeting
         return false;
       }
     } else {
+      // Checks to see if this meeting's end time happens before the other meeting's start time
       if (endTime <= other.getStartTime()) {
+        // Two meetings do not conflict as this meeting occurs before the other meetings
         return false;
       }
     }
@@ -119,7 +124,10 @@ public class Meeting {
 
   @Override
   public String toString() {
-    String output = String.join(" ", days);
+    String output = "";
+    for (DayOfWeek str : days) {
+      output += str + " ";
+    }
 
     output += "From " + Integer.toString(startTime) + " to " + Integer.toString(endTime);
 

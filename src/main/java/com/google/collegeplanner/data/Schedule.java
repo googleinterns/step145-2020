@@ -16,6 +16,7 @@ package com.google.collegeplanner.data;
 
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class Schedule {
   private ArrayList<Section> sections;
