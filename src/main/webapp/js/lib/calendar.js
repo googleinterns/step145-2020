@@ -49,9 +49,9 @@ const enumDays = {
 
 /**
  * The array of colors that a calendar schedule can have.
- * @type {array}
+ * @type {Array.<string>}
  */
-let scheduleColors = [
+const ORIGINAL_COLORS = [
   '#ff5f4a',
   '#b52310',
   '#f7b32a',
@@ -69,11 +69,11 @@ let scheduleColors = [
 ];
 
 /**
- * A duplicated version of the scheduleColors array. It's used to 'reset' the
- * scheduleColors array when a new course schedule is requested.
- * @type {array}
+ * A duplicated version of the ORIGINAL_COLORS array. This array gets 'reset' to
+ * the ORIGINAL_COLORS array every time a new course schedule is requested.
+ * @type {Array.<string>}
  */
-const originalColors = [...scheduleColors];
+let scheduleColors = [...ORIGINAL_COLORS];
 
 /**
  * Initializes the calendar and moves the view to a hardcoded date in the
@@ -243,9 +243,9 @@ function createDateFromTimeString(time, day) {
  */
 function clear() {
   calendar.clear(/*immediately=*/ true);
-  // Duplicate the originalColors array and rerandomize the potential schedule
+  // Duplicate the ORIGINAL_COLORS array and rerandomize the potential schedule
   // colors.
-  scheduleColors = [...originalColors];
+  scheduleColors = [...ORIGINAL_COLORS];
   randomizeColors();
 }
 
@@ -253,9 +253,12 @@ function clear() {
  * Randomizes the scheduleColors array.
  */
 function randomizeColors() {
-  scheduleColors.sort(() => {
-    return 0.5 - Math.random();
-  });
+  for (let i = scheduleColors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * i);
+    const temp = scheduleColors[i];
+    scheduleColors[i] = scheduleColors[j];
+    scheduleColors[j] = temp;
+  }
 }
 
 export default {addCourse: addCourse, initCalendar: initCalendar, clear: clear};
