@@ -14,6 +14,7 @@
 
 package com.google.collegeplanner.data;
 
+import java.text.ParseException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -37,9 +38,9 @@ public class Section {
     this.meetings = meetings;
   }
 
-  public Section(JSONObject json) {
+  public Section(JSONObject json) throws ParseException {
     this((String) json.get("section_id"), (String) json.get("course_id"),
-        (String) json.get("waitlist")(int) json.get("open_seats"), (int) json.get("seats"),
+        (String) json.get("waitlist"), (int) json.get("open_seats"), (int) json.get("seats"),
         (String[]) ((JSONArray) json.get("instructors")).toArray(),
         new Meeting[((JSONArray) json.get("meetings")).toArray().length]);
 
@@ -110,7 +111,9 @@ public class Section {
     JSONObject json = new JSONObject();
     JSONArray instructorsArray = new JSONArray();
     JSONArray meetingsArray = new JSONArray();
-    instructorsArray.addAll(instructors);
+    for (String instructor : instructors) {
+      instructorsArray.add(instructor);
+    }
     for (Meeting meeting : meetings) {
       meetingsArray.add(meeting.toJSON());
     }

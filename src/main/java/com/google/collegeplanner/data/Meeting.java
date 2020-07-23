@@ -46,13 +46,13 @@ public class Meeting {
       this.days.add(DayOfWeek.WEDNESDAY);
     }
     if (days.toUpperCase().contains("TH")) {
-      this.days.add(DayofWeek.THURSDAY);
+      this.days.add(DayOfWeek.THURSDAY);
     }
     if (days.toUpperCase().contains("F")) {
       this.days.add(DayOfWeek.FRIDAY);
     }
     if (days.toUpperCase().contains("SA") || days.toUpperCase().contains("SU")) {
-      throw new ParseException("Invalid Day, no Weekends on Academic Calendar");
+      throw new ParseException("Invalid Day, no Weekends on Academic Calendar", 0);
     }
   }
 
@@ -65,7 +65,7 @@ public class Meeting {
     // Checks to see if the two meetings occur on the same day
     // If not, no need to check the time as they cannot conflict
     boolean canSkip = true;
-    for (String day : other.getDays()) {
+    for (DayOfWeek day : other.getDays()) {
       if (days.contains(day)) {
         canSkip = false;
         break;
@@ -125,19 +125,19 @@ public class Meeting {
     JSONObject json = new JSONObject();
     String daysString = "";
 
-    if (days.contain(DayOfWeek.MONDAY)) {
+    if (days.contains(DayOfWeek.MONDAY)) {
       daysString += "M";
     }
-    if (days.contain(DayOfWeek.TUESDAY)) {
+    if (days.contains(DayOfWeek.TUESDAY)) {
       daysString += "TU";
     }
-    if (days.contain(DayOfWeek.WEDNESDAY)) {
+    if (days.contains(DayOfWeek.WEDNESDAY)) {
       daysString += "W";
     }
-    if (days.contain(DayOfWeek.THURSDAY)) {
+    if (days.contains(DayOfWeek.THURSDAY)) {
       daysString += "TH";
     }
-    if (days.contain(DayOfWeek.FRIDAY)) {
+    if (days.contains(DayOfWeek.FRIDAY)) {
       daysString += "F";
     }
 
