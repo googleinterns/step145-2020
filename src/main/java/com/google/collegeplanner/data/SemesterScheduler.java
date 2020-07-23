@@ -17,6 +17,10 @@ package com.google.collegeplanner.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/*
+ * This class takes a 2D array of Section objects and returns a list of
+ * Schedule objects that represent working schedules with no conflicts.
+ */
 public class SemesterScheduler {
   private ArrayList<ArrayList<Section>> sections;
   private ArrayList<Schedule> possibleSchedules;
