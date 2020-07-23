@@ -21,6 +21,13 @@ import java.util.Collections;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/*
+ * This Meeting class depicts a session a class takes place during. For example, a
+ * bio class can have a discussion on wednesday afternoons and also
+ * a seminar every weekday in the morning. Those sessions, the seminar and
+ * discussion, are two separate meetings for the same class.
+ */
+
 public class Meeting {
   private ArrayList<DayOfWeek> days;
   private String room;
@@ -52,6 +59,7 @@ public class Meeting {
       this.days.add(DayOfWeek.FRIDAY);
     }
     if (days.toUpperCase().contains("SA") || days.toUpperCase().contains("SU")) {
+      // Since this is an academic scheduler, meetings cannot happen on weekends.
       throw new ParseException("Invalid Day, no Weekends on Academic Calendar", 0);
     }
   }
@@ -140,6 +148,8 @@ public class Meeting {
     if (days.contains(DayOfWeek.FRIDAY)) {
       daysString += "F";
     }
+    // Do not need to check for Saturday or Sunday as the constructor throws an error
+    // if user tries to add those days into the list.
 
     json.put("days", daysString);
     json.put("room", room);
