@@ -111,14 +111,14 @@ public class Meeting {
 
   @Override
   public String toString() {
-    String toString = "";
+    String output = "";
     for (DayOfWeek str : days) {
-      toString += str + " ";
+      output += str + " ";
     }
 
-    toString += "From " + Integer.toString(startTime) + " to " + Integer.toString(endTime);
+    output += "From " + Integer.toString(startTime) + " to " + Integer.toString(endTime);
 
-    return toString;
+    return output;
   }
 
   public JSONObject toJSON() {
