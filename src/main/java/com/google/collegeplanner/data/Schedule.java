@@ -57,13 +57,13 @@ public class Schedule {
 
   @Override
   public String toString() {
-    String toString = "Schedule\n";
+    String output = "Schedule\n";
 
     for (Section section : sections) {
-      toString += section.toString() + "\n";
+      output += section.toString() + "\n";
     }
 
-    return toString;
+    return output;
   }
 
   @Override

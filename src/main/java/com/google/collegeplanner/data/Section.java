@@ -93,17 +93,17 @@ public class Section {
 
   @Override
   public String toString() {
-    String toString = "";
+    String output = "";
 
-    toString += sectionId;
+    output += sectionId;
 
-    toString += "\nMeetings\n";
+    output += "\nMeetings\n";
 
     for (Meeting meeting : meetings) {
-      toString += meeting.toString() + "\n";
+      output += meeting.toString() + "\n";
     }
 
-    return toString;
+    return output;
   }
 
   public JSONObject toJSON() {
