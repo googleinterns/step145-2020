@@ -31,11 +31,8 @@ public class SemesterScheduler {
   }
 
   public ArrayList<Schedule> getPossibleSchedules() {
-    if (!possibleSchedules.isEmpty()) {
+    if (!possibleSchedules.isEmpty() || sections.size() == 0) {
       return possibleSchedules;
-    }
-    if(sections.size() == 0) {
-      return new ArrayList<Schedule>();
     }
 
     int sectionListIndex[] = new int[sections.size()];
