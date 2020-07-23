@@ -1,4 +1,3 @@
-
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,10 +51,6 @@ const enumDays = {
 const scheduleColors = ['#C0392B', '##F5B7B1', '#F39C12', '#D35400', '#F1C40F', '##B7950B', 
 '#27AE60', '#2ECC71', '#1ABC9C', '#117A65', '#2980B9', '#1F618D', '#9B59B6', '#5B2C6F', '#34495E',
 '#1C2833', '#5D6D7E', '#5D6D7E'];
-
-export const Calendar = (() => {
-  return {addCourse: addCourse};
-})();
 
 /**
  * Initializes the calendar and moves the view to a hardcoded date in the
@@ -213,10 +208,11 @@ function createDateFromTimeString(time, day) {
   return createDate(day, hour, minutes);
 }
 
-window.addEventListener('load', () => {
-  initCalendar();
-  // Randomize the colors.
-  scheduleColors.sort(() => {
-    return 0.5 - Math.random();
-  });
-});
+/**
+ * Clears the calendar of all schedules.
+ */
+function clear() {
+  calendar.clear(/*immediately=*/ true);
+}
+
+export default {addCourse: addCourse, initCalendar: initCalendar, clear: clear};

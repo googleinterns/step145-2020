@@ -11,7 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import {CollegePlanner} from './courseSelector.js'
+
+import CollegePlanner from '../lib/courseSelector.js';
 
 /**
  * Gets results from /planner servlet to results
@@ -41,12 +42,16 @@ async function getPlan() {
   }
   if (response.ok) {
     const courseData = courseList.semester_plan;
+    const creditsData = courseList.semester_credits;
     if (!courseData.length) {
       CollegePlanner.createAlert(
           'These courses did not fit in the given number of semesters.',
           'primary', courseContainer);
+    } else if (courseData.length == creditsData.length) {
+      createTable(courseData, creditsData, courseContainer);
     } else {
-      CollegePlanner.createTable(courseData, courseContainer);
+      CollegePlanner.createAlert(
+          'An invalid response was recieved.', 'warning', courseContainer);
     }
   } else {
     CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);
@@ -67,9 +72,10 @@ function attachNewSpinner(courseContainer) {
 /**
  * Creates table from a 2D array
  * @param {Object} tableData 2D array with separation of courses
+ * @param {Object} creditsData Array with credits for each semester
  * @param {Element} courseContainer container for course list
  */
-function createTable(tableData, courseContainer) {
+function createTable(tableData, creditsData, courseContainer) {
   courseContainer.innerText = '';
   const table = document.createElement('table');
   const tableBody = document.createElement('tbody');
@@ -78,7 +84,7 @@ function createTable(tableData, courseContainer) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
     const semesterLabel = document.createElement('b');
-    semesterLabel.innerText = `Semester ${i + 1}:`;
+    semesterLabel.innerText = `Semester ${i + 1} (${creditsData[i]} Credits):`;
     cell.appendChild(semesterLabel);
     row.appendChild(cell);
 
@@ -97,4 +103,16 @@ function createTable(tableData, courseContainer) {
 
 document.getElementById('submit-plan').addEventListener('submit', () => {
   getPlan();
+});
+
+window.addEventListener('load', () => {
+  CollegePlanner.getDepartmentOptions();
+});
+
+document.getElementById('add-selected').addEventListener('click', () => {
+  CollegePlanner.addToSelected();
+});
+
+document.getElementById('departments').addEventListener('change', () => {
+  CollegePlanner.getCourseOptions();
 });
