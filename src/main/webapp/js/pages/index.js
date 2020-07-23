@@ -24,7 +24,7 @@ document.querySelector('.course-list').addEventListener('click', () => {
   Calendar.clear();
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
-  // TODO{naaoli}: connect to algorithm servlet
+  // TODO(naaoli): connect to algorithm servlet
   // hard code return from algorithm servlet
   const sections1 = {};
   selected.forEach(
