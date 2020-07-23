@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO(savsa): Add ability to remove courses from the calendar
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
@@ -48,9 +47,33 @@ const enumDays = {
   DATE_SATURDAY: 6,
 };
 
-const scheduleColors = ['#C0392B', '##F5B7B1', '#F39C12', '#D35400', '#F1C40F', '##B7950B', 
-'#27AE60', '#2ECC71', '#1ABC9C', '#117A65', '#2980B9', '#1F618D', '#9B59B6', '#5B2C6F', '#34495E',
-'#1C2833', '#5D6D7E', '#5D6D7E'];
+/**
+ * The array of colors that a calendar schedule can have.
+ * @type {array}
+ */
+let scheduleColors = [
+  '#ff5f4a',
+  '#b52310',
+  '#f7b32a',
+  '#dba100',
+  '#b3c42f',
+  '#6bd63a',
+  '#3ead0a',
+  '#34d17d',
+  '#009144',
+  '#38d1cc',
+  '#03638c',
+  '#2a2e82',
+  '#491f87',
+  '#8f1088',
+];
+
+/**
+ * A duplicated version of the scheduleColors array. It's used to 'reset' the
+ * scheduleColors array when a new course schedule is requested.
+ * @type {array}
+ */
+const originalColors = [...scheduleColors];
 
 /**
  * Initializes the calendar and moves the view to a hardcoded date in the
@@ -77,6 +100,7 @@ function initCalendar() {
   // The hard coded date that all scheduled events should fall around
   // Date: Sunday January 2nd, 2000 @ 00:00 EST
   calendar.setDate(new Date('2000-01-02T00:00:00'));
+  randomizeColors();
 }
 
 /**
@@ -108,25 +132,32 @@ async function addCourse(course) {
   const color = scheduleColors.pop();
 
   if (meetingDays.includes('Su')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY, color);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_SUNDAY, color);
   }
   if (meetingDays.includes('M')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY, color);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_MONDAY, color);
   }
   if (meetingDays.includes('Tu')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY, color);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_TUESDAY, color);
   }
   if (meetingDays.includes('W')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY, color);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_WEDNESDAY, color);
   }
   if (meetingDays.includes('Th')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY, color);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_THURSDAY, color);
   }
   if (meetingDays.includes('F')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY, color);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_FRIDAY, color);
   }
   if (meetingDays.includes('Sa')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY, color);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_SATURDAY, color);
   }
 }
 
@@ -213,6 +244,19 @@ function createDateFromTimeString(time, day) {
  */
 function clear() {
   calendar.clear(/*immediately=*/ true);
+  // Duplicate the originalColors array and rerandomize the potential schedule
+  // colors.
+  scheduleColors = [...originalColors];
+  randomizeColors();
+}
+
+/**
+ * Randomizes the scheduleColors array.
+ */
+function randomizeColors() {
+  scheduleColors.sort(() => {
+    return 0.5 - Math.random();
+  });
 }
 
 export default {addCourse: addCourse, initCalendar: initCalendar, clear: clear};
