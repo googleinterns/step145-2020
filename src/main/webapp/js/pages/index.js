@@ -59,10 +59,10 @@ document.querySelector('.course-list').addEventListener('click', () => {
       selected.forEach(course => {
         Calendar.addCourse(courseInfo[course], scheduleNum[course]);
       });
-      const a_elements = pageList.getElementsByTagName('a');
+      const aElements = pageList.getElementsByTagName('a');
       // remove active label from any other child element
-      for (var a = 0; a < a_elements.length; a++) {
-        a_elements[a].setAttribute('class', '');
+      for (var a = 0; a < aElements.length; a++) {
+        aElements[a].setAttribute('class', '');
       }
       // set current page to active
       nextPage.setAttribute('class', 'active');
