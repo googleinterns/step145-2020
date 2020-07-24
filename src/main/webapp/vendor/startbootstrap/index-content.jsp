@@ -3,7 +3,7 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4" id="alert-container">
     <h1 class="h3 mb-0 text-gray-800">Scheduler</h1>
   </div>
   <div class="row">
@@ -20,10 +20,16 @@
         <div class="card-body">
           <form onsubmit="return false">
             <div class="form-row">
-              <div class="form-group col-md-10">
+              <div class="form-group col-md-2">
+                <label for="semesters"><b>Department:</b></label>
+                <select id="departments" class="form-control"></select>
+              </div>
+              <div class="form-group col-md-8">
+                <label for="semesters"><b>Course:</b></label>
                 <select id="courses" class="form-control"></select>
               </div>
               <div class="form-group col-md-2 text-center">
+                <br>
                 <button
                   class="rounded-circle border-0 btn-lg"
                   id="add-selected"
@@ -47,7 +53,7 @@
         </div>
         <!-- Card Body -->
         <div class="card-body">
-          <form>
+          <form class="course-list">
             <ul class="list-group" id="selected-classes"></ul>
             <br />
             <a href="#" class="btn btn-primary btn-icon-split">

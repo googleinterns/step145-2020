@@ -26,34 +26,28 @@ import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns list of courses.*/
-@WebServlet("/api/courses")
-public class CourseListServlet extends BaseServlet {
-  public CourseListServlet() {
+/** Servlet that returns list of departments.*/
+@WebServlet("/api/departments")
+public class DepartmentServlet extends BaseServlet {
+  public DepartmentServlet() {
     super(new ApiUtil());
   }
 
-  public CourseListServlet(ApiUtil apiUtil) {
+  public DepartmentServlet(ApiUtil apiUtil) {
     super(apiUtil);
   }
 
   /**
-   * Reads from Datastore and returns response with course details
+   * Calls API and returns response with a list of all departments. This is not dependent on any
+   * input.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Create the URI and specify the parameters.
-    String department = request.getParameter("department");
-    if (department == null || department == "") {
-      respondWithError(
-          "Invalid or missing department.", HttpServletResponse.SC_BAD_REQUEST, response);
-      return;
-    }
     URI uri;
     try {
-      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
+      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses/departments");
       builder.setParameter("semester", "202008");
-      builder.setParameter("dept_id", department);
       uri = builder.build();
     } catch (URISyntaxException e) {
       respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
@@ -66,10 +60,10 @@ public class CourseListServlet extends BaseServlet {
       return;
     }
 
-    JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses", jsonArray);
+    JSONObject schoolDeptInfo = new JSONObject();
+    schoolDeptInfo.put("departments", jsonArray);
 
     response.setContentType("application/json;");
-    response.getWriter().println(schoolCourseInfo);
+    response.getWriter().println(schoolDeptInfo);
   }
 }
