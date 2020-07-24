@@ -268,7 +268,7 @@ function clear() {
 }
 
 /**
- * Randomizes the scheduleColors array.
+ * Randomizes the ORIGINAL_COLORS array.
  */
 function randomizeColors() {
   for (let i = ORIGINAL_COLORS.length - 1; i > 0; i--) {
