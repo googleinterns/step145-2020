@@ -62,6 +62,7 @@ public final class SectionTest {
 
     mockedRequest = mock(HttpServletRequest.class);
     when(mockedRequest.getParameter("course_id")).thenReturn("AASP100");
+    when(mockedRequest.getParameter("section_id")).thenReturn("0101");
   }
 
   @After
