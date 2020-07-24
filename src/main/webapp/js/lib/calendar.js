@@ -73,7 +73,14 @@ const ORIGINAL_COLORS = [
  * the ORIGINAL_COLORS array every time a new course schedule is requested.
  * @type {Array.<string>}
  */
-let scheduleColors = [...ORIGINAL_COLORS];
+let scheduleColors;
+
+/**
+ * The colors array should only be randomized once. isFirstSchedule keeps track of
+ * whether we're on the first iteration of the schedule and if we should randomize or not.
+ * @type {boolean}
+ */
+let isFirstSchedule = true;
 
 /**
  * The default color the schedule is set to be when no color is provided.
@@ -106,6 +113,9 @@ function initCalendar() {
   // The hard coded date that all scheduled events should fall around
   // Date: Sunday January 2nd, 2000 @ 00:00 EST
   calendar.setDate(new Date('2000-01-02T00:00:00'));
+
+  randomizeColors();
+  scheduleColors = [...ORIGINAL_COLORS];
 }
 
 /**
@@ -249,21 +259,23 @@ function createDateFromTimeString(time, day) {
  */
 function clear() {
   calendar.clear(/*immediately=*/ true);
-  // Duplicate the ORIGINAL_COLORS array and rerandomize the potential schedule
-  // colors.
-  scheduleColors = [...ORIGINAL_COLORS];
-  randomizeColors();
+  if (!isFirstSchedule) {
+    // Duplicate the ORIGINAL_COLORS array.
+    scheduleColors = [...ORIGINAL_COLORS];
+    return;
+  }
+  isFirstSchedule = false;
 }
 
 /**
  * Randomizes the scheduleColors array.
  */
 function randomizeColors() {
-  for (let i = scheduleColors.length - 1; i > 0; i--) {
+  for (let i = ORIGINAL_COLORS.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * i);
-    const temp = scheduleColors[i];
-    scheduleColors[i] = scheduleColors[j];
-    scheduleColors[j] = temp;
+    const temp = ORIGINAL_COLORS[i];
+    ORIGINAL_COLORS[i] = ORIGINAL_COLORS[j];
+    ORIGINAL_COLORS[j] = temp;
   }
 }
 
