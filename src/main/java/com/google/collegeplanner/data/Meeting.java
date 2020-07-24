@@ -27,7 +27,6 @@ import org.json.simple.JSONObject;
  * a seminar every weekday in the morning. Those sessions, the seminar and
  * discussion, are two separate meetings for the same class.
  */
-
 public class Meeting {
   private ArrayList<DayOfWeek> days;
   private String room;
