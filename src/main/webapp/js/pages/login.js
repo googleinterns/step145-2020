@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * Gets user information and populates the topbar with their image and name
+ * @param {GoogleUser} googleUser the currently logged in user
+ */
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
   // Add user name and photo to page
@@ -29,6 +33,9 @@ function onSignIn(googleUser) {
   document.getElementById('user-dropdown').hidden = false;
 }
 
+/**
+ * Signs out user and refreshes the page
+ */
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut().then(function() {

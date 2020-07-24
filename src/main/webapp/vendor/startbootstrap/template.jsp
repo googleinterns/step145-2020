@@ -192,7 +192,7 @@
     <!-- Our scripts -->
     <script type="module" src="js/courseSelector.js"></script>
     <script type="module" src="js/${param.scriptFile}.js"></script>
-    <script src="js/login.js"></script>
+    <script src="js/pages/login.js"></script>
 
   </body>
 
