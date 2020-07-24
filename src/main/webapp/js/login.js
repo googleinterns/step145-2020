@@ -1,0 +1,41 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  // Add user name and photo to page
+  const userInfo = document.getElementById('user-info');
+  const userName = document.createElement('span');
+  userName.setAttribute('class', 'mr-2 d-none d-lg-inline text-gray-600 small');
+  userName.innerText = profile.getName();
+  const userPhoto = document.createElement('img');
+  userPhoto.setAttribute('class', 'img-profile rounded-circle profile-image');
+  userPhoto.setAttribute('src', profile.getImageUrl());
+  userInfo.innerText = ''
+  userInfo.appendChild(userName);
+  userInfo.appendChild(userPhoto);
+  // make dropdown to sign out visible
+  document.getElementById('user-dropdown').hidden = false;
+}
+
+function signOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function() {
+    location.reload();
+  });
+}
+
+document.getElementById('signout-button').addEventListener('click', () => {
+  signOut();
+});

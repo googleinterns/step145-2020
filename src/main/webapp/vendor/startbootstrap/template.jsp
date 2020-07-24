@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="google-signin-client_id" content="267429534228-vvsi2uldmpji3rgs1qd3a41rceciaaaq.apps.googleusercontent.com">
 
     <title>Capstone-Filler</title>
 
@@ -103,22 +104,16 @@
             <ul class="navbar-nav ml-auto">  
               <div class="topbar-divider d-none d-sm-block"></div>
 
-              <!-- Nav Item - User Information -->
+               <!-- Nav Item - User Information -->
               <li class="nav-item dropdown no-arrow">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="mr-2 d-none d-lg-inline text-gray-600 small">User Name</span>
-                  <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                <a class="nav-link dropdown-toggle" href="#" id="user-info" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <div class="g-signin2" data-onsuccess="onSignIn"></div>
                 </a>
-                <!-- Dropdown - User Information -->
-                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                  <a class="dropdown-item" href="#">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
-                  </a>
-                  <div class="dropdown-divider"></div>
+                <!-- Dropdown - Logout Modal Trigger -->
+                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="user-info" id="user-dropdown" hidden>
                   <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
+                    Sign Out
                   </a>
                 </div>
               </li>
@@ -163,10 +158,10 @@
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">Select "Sign Out" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="#">Logout</a>
+            <a class="btn btn-primary" href="#" id="signout-button">Sign Out</a>
           </div>
         </div>
       </div>
@@ -191,9 +186,14 @@
     <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@1.24.1/build/global/luxon.min.js"></script>
 
+    <!-- Google OAuth Script -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
     <!-- Our scripts -->
     <script type="module" src="js/courseSelector.js"></script>
     <script type="module" src="js/${param.scriptFile}.js"></script>
+    <script src="js/login.js"></script>
+
   </body>
 
 </html>
