@@ -25,10 +25,13 @@ public class Schedule {
     sections = new ArrayList<Section>();
   }
 
-  // This method adds a section to the existing schedule of sections
-  // Returns true if there are no conflicts and the section has been added
-  // correctly. Returns false if there is a conflict and the section cannot
-  // be added into the schedule.
+  /**
+   * This method adds a section to the existing schedule of sections
+   * Returns true if there are no conflicts and the section has been added
+   * correctly. Returns false if there is a conflict and the section cannot
+   * be added into the schedule.
+   * @param section the new section to be added to sections
+   */
   public boolean addClass(Section section) {
     if (conflictsWithSchedule(section)) {
       return false;
@@ -39,9 +42,12 @@ public class Schedule {
     return true;
   }
 
-  // This method checks to see if the provided TimeRange object conflicts
-  // with the other TimeRange objects in the schedule ArrayList.
-  // Method is true if there is a conflict, false otherwise.
+  /**
+   * This method checks to see if the provided section object conflicts
+   * with the other section objects in the schedule ArrayList.
+   * Method is true if there is a conflict, false otherwise.
+   * @param section the other section this object is being compared with 
+   */
   private boolean conflictsWithSchedule(Section section) {
     for (Section scheduledSection : sections) {
       if (scheduledSection.conflictsWith(section)) {
