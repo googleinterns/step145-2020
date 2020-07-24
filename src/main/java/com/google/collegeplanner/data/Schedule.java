@@ -24,6 +24,13 @@ public class Schedule {
     sections = new ArrayList<Section>();
   }
 
+  public Schedule(Schedule copy) {
+    sections = new ArrayList<Section>();
+    for (Section section : copy.getSections()) {
+      sections.add(section);
+    }
+  }
+
   // This method adds a section to the existing schedule of sections
   // Returns true if there are no conflicts and the section has been added
   // correctly. Returns false if there is a conflict and the section cannot
@@ -52,6 +59,10 @@ public class Schedule {
 
   public ArrayList<Section> getSections() {
     return sections;
+  }
+
+  public void removeLastClass() {
+    sections.remove(sections.size() - 1);
   }
 
   @Override

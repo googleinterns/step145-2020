@@ -42,7 +42,7 @@ public final class SemesterSchedulerTest {
   private ArrayList<Section> mathClasses;
   private ArrayList<Section> chemClasses;
   private ArrayList<ArrayList<Section>> allClasses;
-  
+
   @Before
   public void before() throws ParseException {
     int TIME_0900AM = 60 * 9;
@@ -150,21 +150,21 @@ public final class SemesterSchedulerTest {
 
   @Test
   public void multipleMeetingsPerSectionMultiplePossibleSchedules() {
-    compSciClasses.add(new Section("CMSC101 (MWF Morning and Friday Afternoon)", "CMSC101", null,
+    compSciClasses.add(new Section("0CMSC101 (MWF Morning and Friday Afternoon)", "CMSC101", null,
         10, 30, null, new Meeting[] {MWFMorning, fridayOnlyAfternoon}));
 
-    compSciClasses.add(new Section("CMSC101 (TuThuLateAfternoon)", "CMSC101", null, 10, 30, null,
+    compSciClasses.add(new Section("1CMSC101 (TuThuLateAfternoon)", "CMSC101", null, 10, 30, null,
         new Meeting[] {TuThuLateAfternoon}));
 
-    englishClasses.add(new Section("ENGL101 (TuThu Morning, TuThuAfternoon)", "ENGL101", null, 10,
+    englishClasses.add(new Section("0ENGL101 (TuThu Morning, TuThuAfternoon)", "ENGL101", null, 10,
         30, null, new Meeting[] {TuThuMorning, TuThuAfternoon}));
 
-    mathClasses.add(new Section("MATH101 (MWF Late Morning)", "MATH101", null, 10, 30, null,
+    mathClasses.add(new Section("0MATH101 (MWF Late Morning)", "MATH101", null, 10, 30, null,
         new Meeting[] {MWFLateMorning}));
     mathClasses.add(new Section(
-        "MATH101 (MWF Afternoon)", "MATH101", null, 10, 30, null, new Meeting[] {MWFAfternoon}));
+        "1MATH101 (MWF Afternoon)", "MATH101", null, 10, 30, null, new Meeting[] {MWFAfternoon}));
 
-    chemClasses.add(new Section("CHEM101 (TuThu Late Morning)", "CHEM101", null, 10, 30, null,
+    chemClasses.add(new Section("0CHEM101 (TuThu Late Morning)", "CHEM101", null, 10, 30, null,
         new Meeting[] {TuThuLateMorning}));
 
     scheduler = new SemesterScheduler(allClasses);
@@ -188,7 +188,7 @@ public final class SemesterSchedulerTest {
     expectedSchedules.get(2).addClass(englishClasses.get(0));
     expectedSchedules.get(2).addClass(mathClasses.get(0));
     expectedSchedules.get(2).addClass(chemClasses.get(0));
-    
+
     assertEqualsLists(expectedSchedules, scheduler.getPossibleSchedules());
   }
 
@@ -198,11 +198,12 @@ public final class SemesterSchedulerTest {
    * @param actual the list of actual schedules
    */
   public void assertEqualsLists(ArrayList<Schedule> expected, ArrayList<Schedule> actual) {
-    if(actual.size() != expected.size()) {
+    if (actual.size() != expected.size()) {
+      System.out.print("Expected <" + expected + ">, but instead <" + actual + ">");
       Assert.fail("Expected a list of size " + expected.size() + " but instead " + actual.size());
     }
-    for(Schedule schedule : expected) {
-      if(!actual.contains(schedule)) {
+    for (Schedule schedule : expected) {
+      if (!actual.contains(schedule)) {
         Assert.fail("Expected " + schedule + " but is not present.");
       }
     }

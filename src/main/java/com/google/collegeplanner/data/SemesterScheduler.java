@@ -22,6 +22,11 @@ import java.util.Arrays;
  * Schedule objects that represent working schedules with no conflicts.
  */
 public class SemesterScheduler {
+  /**
+   * This variable represents the max number
+   * of schedules the scheduler will create.
+   */
+  private final int MAX_SCHEDULES = 10;
   private ArrayList<ArrayList<Section>> sections;
   private ArrayList<Schedule> possibleSchedules;
   private Schedule workingSchedule;
@@ -37,31 +42,31 @@ public class SemesterScheduler {
       return possibleSchedules;
     }
 
-    int sectionListIndex[] = new int[sections.size()];
     int sectionListSizes[] = new int[sections.size()];
-    Arrays.fill(sectionListIndex, 0);
-    for (int i = 0; i < lengths.sectionListSizes; i++) {
+    for (int i = 0; i < sectionListSizes.length; i++) {
       sectionListSizes[i] = sections.get(i).size();
     }
 
-    nestedLoop(sectionListIndex, sectionListSizes, 0);
+    nestedLoop(sectionListSizes, 0);
     return possibleSchedules;
   }
 
   /**
-   * This function is a recursivly nested for loop. 
-   * @param sectionListIndex the counter for the nested for loops 
+   * This function is a recursivly nested for loop.
    * @param sectionListSizes the end case number for the nested for loops
    * @param level the depth of the nested for loop the method is currently on.
    */
-  private void nestedLoop(int[] sectionListIndex, int[] sectionListSizes, int level) {
-    if (level == sectionListIndex.sectionListSizes) {
-      possibleSchedules.add(workingSchedule);
-      workingSchedule = new Schedule();
+  private void nestedLoop(int[] sectionListSizes, int level) {
+    if (possibleSchedules.size() >= MAX_SCHEDULES) {
+      return;
+    }
+    if (level == sectionListSizes.length) {
+      possibleSchedules.add(new Schedule(workingSchedule));
     } else {
-      if (workingSchedule.addClass(sections.get(level).get(sectionListIndex[level]))) {
-        for (sectionListIndex[level] = 0; sectionListIndex[level] < sectionListSizes[level]; sectionListIndex[level]++) {
-          nestedLoop(sectionListIndex, sectionListSizes, level + 1);
+      for (int i = 0; i < sectionListSizes[level]; i++) {
+        if (workingSchedule.addClass(sections.get(level).get(i))) {
+          nestedLoop(sectionListSizes, level + 1);
+          workingSchedule.removeLastClass();
         }
       }
     }
