@@ -192,7 +192,6 @@
     <script src="https://cdn.jsdelivr.net/npm/luxon@1.24.1/build/global/luxon.min.js"></script>
 
     <!-- Our scripts -->
-    <script type="module" src="js/courseSelector.js"></script>
     <script type="module" src="js/${param.scriptFile}.js"></script>
   </body>
 
