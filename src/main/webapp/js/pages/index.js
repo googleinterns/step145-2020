@@ -24,8 +24,19 @@ document.querySelector('.course-list').addEventListener('click', () => {
   Calendar.clear();
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
+  // TODO(naaoli): connect to algorithm servlet
+  // hard code return from algorithm servlet
+  const sections1 = {};
+  selected.forEach(
+      course => {sections1[course] = courseInfo[course].sections[0]});
+  const sections2 = {};
+  selected.forEach(
+      course => {sections2[course] = courseInfo[course].sections[1]});
+  const schedules = [sections1, sections2];
+
+  // TODO(ramyabuva): add pagination for multiple schedules
   selected.forEach(course => {
-    Calendar.addCourse(courseInfo[course]);
+    Calendar.addCourse(courseInfo[course], schedules[0][course]);
   });
 });
 
