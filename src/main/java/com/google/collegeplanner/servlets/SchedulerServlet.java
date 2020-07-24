@@ -35,7 +35,7 @@ import org.json.simple.JSONObject;
 public class SchedulerServlet extends HttpServlet {
   private ArrayList<String> courseList;
   private ArrayList<ArrayList<Section>> courses;
-  /*
+  /**
    * Organizes courses from POST request into a given number of semesters
    */
   @Override
@@ -68,7 +68,13 @@ public class SchedulerServlet extends HttpServlet {
     JSONParser parser = new JSONParser();
     return (JSONObject) parser.parse(strBody);
   }
-
+  
+  /**
+   * This method loads the courses and courseList ArrayLists with correct
+   * information. courses is loaded with the lists of sections for each
+   * course while courseList is loaded with the courseID's of the selected
+   * courses.
+   */
   private void prepareLists(JSONArray classes) {
     String courseId;
     URI uri;
@@ -95,7 +101,11 @@ public class SchedulerServlet extends HttpServlet {
       courses.add(convertJSONArraytoArrayList(jsonArray));
     }
   }
-
+  
+  /**
+   * Returns a JSONArray representing the schedules the
+   * SemesterScheduler returns.
+   */
   private JSONArray getSchedules() { 
     JSONArray schedulesJson = new JSONArray();
     SemesterScheduler scheduler = new scheduler(courses);
@@ -108,6 +118,10 @@ public class SchedulerServlet extends HttpServlet {
     return schedulesJson;
   }
 
+  /**
+   * Converts a given JSONArray of sections into an ArrayList of
+   * sections.
+   */
   private ArrayList<Section> convertJSONArraytoArrayList(JSONArray json) {
     ArrayList<Section> list = new ArrayList<Section>(); 
     for(Object obj : json) {
