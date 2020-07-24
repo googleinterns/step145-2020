@@ -76,13 +76,6 @@ const ORIGINAL_COLORS = [
 let scheduleColors;
 
 /**
- * The colors array should only be randomized once. isFirstSchedule keeps track of
- * whether we're on the first iteration of the schedule and if we should randomize or not.
- * @type {boolean}
- */
-let isFirstSchedule = true;
-
-/**
  * The default color the schedule is set to be when no color is provided.
  * @type {string}
  */
@@ -259,12 +252,7 @@ function createDateFromTimeString(time, day) {
  */
 function clear() {
   calendar.clear(/*immediately=*/ true);
-  if (!isFirstSchedule) {
-    // Duplicate the ORIGINAL_COLORS array.
-    scheduleColors = [...ORIGINAL_COLORS];
-    return;
-  }
-  isFirstSchedule = false;
+  scheduleColors = [...ORIGINAL_COLORS];
 }
 
 /**
