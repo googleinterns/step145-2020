@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 /** Queries the UMD API and downloads the data to datastore. */
 @WebServlet("/api/download")
 public class DatastoreServlet extends BaseServlet {
@@ -46,14 +47,15 @@ public class DatastoreServlet extends BaseServlet {
   }
 
   public DatastoreServlet(DatastoreService datastore) {
-    self.datastore = datastore;
+    this.datastore = datastore;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     int page = 0;
-    while (true) {
+    int count = 0;
+    while (count++ < 3) {
       // loop through pages
       URI uri;
       try {
@@ -111,7 +113,7 @@ public class DatastoreServlet extends BaseServlet {
       entity.setProperty("sections", sectionsArray);
       // datastore.put(entity);
 
-      // addSectionsToCourse(entity, sectionsArray);
+      addSectionsToCourse(entity, sectionsArray);
     }
   }
 

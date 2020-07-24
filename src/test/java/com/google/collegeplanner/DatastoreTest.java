@@ -47,6 +47,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 /** Tests CourseListServlet */
 @RunWith(JUnit4.class)
@@ -56,15 +58,25 @@ public final class DatastoreTest {
   StringWriter stringWriter;
   PrintWriter writer;
   JSONParser parser;
+  DatastoreService datastore;
+
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   @Before
-  public void before() throws Exception {
+  public void before() {
+    datastore = DatastoreServiceFactory.getDatastoreService();
+    helper.setUp();
+  }
 
+  @After
+  public void after() {
+    helper.tearDown();
   }
 
   @Test
   public void servletResponseHasCourses() throws Exception {
-    DatastoreServlet ds = new DatastoreServlet();
+    DatastoreServlet ds = new DatastoreServlet(datastore);
     ds.doGet(null, null);
   }
 }
