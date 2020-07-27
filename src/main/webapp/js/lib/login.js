@@ -43,4 +43,7 @@ function signOut() {
   });
 }
 
+// Set window onSignIn so the function is executed on login.
+window.onSignIn = onSignIn;
+
 export default {onSignIn: onSignIn, signOut: signOut};

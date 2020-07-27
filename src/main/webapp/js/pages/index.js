@@ -38,8 +38,6 @@ document.getElementById('departments').addEventListener('change', () => {
   CollegePlanner.getCourseOptions();
 });
 
-window.onSignIn = Auth.onSignIn;
-
 document.getElementById('signout-button').addEventListener('click', () => {
   Auth.signOut();
 });
