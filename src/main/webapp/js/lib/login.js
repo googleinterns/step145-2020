@@ -17,7 +17,7 @@
  * @param {GoogleUser} googleUser the currently logged in user
  */
 function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
+  const profile = googleUser.getBasicProfile();
   // Add user name and photo to page
   const userInfo = document.getElementById('user-info');
   const userName = document.createElement('span');
@@ -37,8 +37,8 @@ function onSignIn(googleUser) {
  * Signs out user and refreshes the page
  */
 function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  auth2.signOut().then(function() {
+  const auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(() => {
     location.reload();
   });
 }
