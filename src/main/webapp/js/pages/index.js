@@ -22,7 +22,6 @@ window.addEventListener('load', () => {
 
 document.querySelector('.course-list').addEventListener('click', () => {
   const MAX_PAGINATION_SCHEDULES = 15;
-  Calendar.clear();
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
   // TODO(naaoli): connect to algorithm servlet
@@ -35,9 +34,14 @@ document.querySelector('.course-list').addEventListener('click', () => {
       course => {sections2[course] = courseInfo[course].sections[1]});
   const schedules = [sections1, sections2];
 
-  selected.forEach(course => {
-    Calendar.addCourse(courseInfo[course], schedules[0][course]);
-  });
+  function addScheduleToCalendar(schedule){
+    Calendar.clear();
+    selected.forEach(course => {
+      Calendar.addCourse(courseInfo[course], schedule[course]);
+    });
+  }
+
+  addScheduleToCalendar(schedules[0]);
 
   // if more than 1 schedule returned, create pagination
   if (schedules.length == 1) {
@@ -53,13 +57,9 @@ document.querySelector('.course-list').addEventListener('click', () => {
       nextPage.setAttribute('class', 'active');
     }
     pageList.appendChild(nextPage);
-    const scheduleNum = schedules[i - 1];
+    const NumSchedule = schedules[i - 1];
     nextPage.addEventListener('click', () => {
-      Calendar.clear();
-      // display the correct schedule depending on the button clicked
-      selected.forEach(course => {
-        Calendar.addCourse(courseInfo[course], scheduleNum[course]);
-      });
+      addScheduleToCalendar(NumSchedule);
       const aElements = pageList.getElementsByTagName('li');
       // remove active label from any other child element
       for (const element of aElements) {
