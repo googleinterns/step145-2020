@@ -43,6 +43,4 @@ function signOut() {
   });
 }
 
-document.getElementById('signout-button').addEventListener('click', () => {
-  signOut();
-});
+export default {onSignIn: onSignIn, signOut: signOut};

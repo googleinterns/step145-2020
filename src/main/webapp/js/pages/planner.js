@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import CollegePlanner from '../lib/courseSelector.js';
+import Auth from '../lib/login.js';
 
 /**
  * Gets results from /planner servlet to results
@@ -115,4 +116,10 @@ document.getElementById('add-selected').addEventListener('click', () => {
 
 document.getElementById('departments').addEventListener('change', () => {
   CollegePlanner.getCourseOptions();
+});
+
+window.onSignIn = Auth.onSignIn;
+
+document.getElementById('signout-button').addEventListener('click', () => {
+  Auth.signOut();
 });

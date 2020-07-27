@@ -190,9 +190,7 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <!-- Our scripts -->
-    <script type="module" src="js/courseSelector.js"></script>
     <script type="module" src="js/${param.scriptFile}.js"></script>
-    <script src="js/pages/login.js"></script>
 
   </body>
 
