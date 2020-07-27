@@ -34,6 +34,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 
 
 /** Queries the UMD API and downloads the data to datastore. */
@@ -52,26 +54,25 @@ public class DatastoreServlet extends BaseServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    // Loop through the pages.
     int page = 0;
-    int count = 0;
-    while (count++ < 3) {
-      // loop through pages
+    do {
       URI uri;
       try {
         URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
         builder.setParameter("page", Integer.toString(page++));
         uri = builder.build();
       } catch (URISyntaxException e) {
-        break;
+        return;
       }
       JSONArray coursesArray = apiUtil.getJsonArray(uri);
-      if (coursesArray == null) {
-        break;
+      if (coursesArray == null || coursesArray.size() == 0) {
+        // We don't know how many pages there are beforehand. We stop looping when the new page
+        // doesn't have any results.
+        return;
       }
-
       addCourses(coursesArray);
-    }
+    } while(true);
   }
 
   private void addCourses(JSONArray coursesArray) {
@@ -79,10 +80,8 @@ public class DatastoreServlet extends BaseServlet {
       return;
     }
 
+    // Loop through each page's courses.
     for (Object jsonObject : coursesArray) {
-      // loop through courses
-
-      // we have a course
       JSONObject courseJson = (JSONObject) jsonObject;
       Course course = new Course(courseJson);
 
@@ -107,12 +106,6 @@ public class DatastoreServlet extends BaseServlet {
       }
 
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
-      if (sectionsArray == null) {
-        return;
-      }
-      entity.setProperty("sections", sectionsArray);
-      // datastore.put(entity);
-
       addSectionsToCourse(entity, sectionsArray);
     }
   }
@@ -122,10 +115,15 @@ public class DatastoreServlet extends BaseServlet {
       return;
     }
 
+    // Loop through each course's sections.
+    ArrayList<EmbeddedEntity> sectionEntities = new ArrayList<EmbeddedEntity>();
     for (Object jsonObject : sectionsArray) {
-      // loop through sections
       JSONObject sectionJson = (JSONObject) jsonObject;
-
+      EmbeddedEntity sectionEntity = new EmbeddedEntity();
+      sectionEntity.setProperty("section_id", (String)sectionJson.get("section_id"));
+      array.add(sectionEntity);
     }
+    entity.setProperty("sections", array);
+    datastore.put(entity);
   }
 }
