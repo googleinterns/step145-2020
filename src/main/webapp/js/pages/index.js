@@ -22,6 +22,20 @@ window.addEventListener('load', () => {
   CollegePlanner.getDepartmentOptions();
 });
 
+/**
+ * Renders the specified schedule on the calendar
+ * @param {Object} schedule JSON object mapping course to the section id
+ * @param {Object} courseInfo JSON object mapping course to course details
+ * @param {Object} selected Array containing all of the course_ids selected by
+ *     the user
+ */
+function addScheduleToCalendar(schedule, courseInfo, selected) {
+  Calendar.clear();
+  selected.forEach(course => {
+    Calendar.addCourse(courseInfo[course], schedule[course]);
+  });
+}
+
 document.querySelector('.course-list').addEventListener('click', () => {
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
@@ -35,22 +49,15 @@ document.querySelector('.course-list').addEventListener('click', () => {
       course => {sections2[course] = courseInfo[course].sections[1]});
   const schedules = [sections1, sections2];
 
-  function addScheduleToCalendar(schedule){
-    Calendar.clear();
-    selected.forEach(course => {
-      Calendar.addCourse(courseInfo[course], schedule[course]);
-    });
-  }
-
   // by default, add the first schedule to the calendar after response received
-  addScheduleToCalendar(schedules[0]);
+  addScheduleToCalendar(schedules[0], courseInfo, selected);
 
   // if more than 1 schedule returned, create pagination
   if (schedules.length == 1) {
     return;
   }
   const pageList = document.getElementById('calendar-pagination');
-  pageList.innerText = ''; // clear any existing children from the element
+  pageList.innerText = '';  // clear any existing children from the element
   for (let i = 1; i <= schedules.length && i <= MAX_PAGINATION_SCHEDULES; i++) {
     const nextPage = document.createElement('li');
     nextPage.innerText = i;
@@ -61,7 +68,7 @@ document.querySelector('.course-list').addEventListener('click', () => {
     pageList.appendChild(nextPage);
     const schedule = schedules[i - 1];
     nextPage.addEventListener('click', () => {
-      addScheduleToCalendar(schedule);
+      addScheduleToCalendar(schedule, courseInfo, selected);
       const aElements = pageList.getElementsByTagName('li');
       // remove active label from any other child element
       for (const element of aElements) {
