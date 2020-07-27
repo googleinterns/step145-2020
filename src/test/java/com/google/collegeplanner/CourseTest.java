@@ -19,16 +19,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.rules.ExpectedException;
 
 /** Tests Course */
 @RunWith(JUnit4.class)
 public final class CourseTest {
   private String[] gradingSystem;
   private Course course;
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
+  @Rule
+  public ExpectedException exceptionRule = ExpectedException.none();
 
   @Before
   public void before() {
@@ -71,7 +72,7 @@ public final class CourseTest {
     exceptionRule.expect(ParseException.class);
     exceptionRule.expectMessage("Invalid Start Month Format");
     course.getSemesterSeason();
-  }
+}
 
   @Test
   public void invalidYearNumber() throws ParseException {
