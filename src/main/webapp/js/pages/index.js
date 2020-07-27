@@ -15,13 +15,14 @@
 import Calendar from '../lib/calendar.js';
 import CollegePlanner from '../lib/courseSelector.js';
 
+const MAX_PAGINATION_SCHEDULES = 15;
+
 window.addEventListener('load', () => {
   Calendar.initCalendar();
   CollegePlanner.getDepartmentOptions();
 });
 
 document.querySelector('.course-list').addEventListener('click', () => {
-  const MAX_PAGINATION_SCHEDULES = 15;
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
   // TODO(naaoli): connect to algorithm servlet
@@ -41,6 +42,7 @@ document.querySelector('.course-list').addEventListener('click', () => {
     });
   }
 
+  // by default, add the first schedule to the calendar after response received
   addScheduleToCalendar(schedules[0]);
 
   // if more than 1 schedule returned, create pagination
@@ -57,9 +59,9 @@ document.querySelector('.course-list').addEventListener('click', () => {
       nextPage.setAttribute('class', 'active');
     }
     pageList.appendChild(nextPage);
-    const NumSchedule = schedules[i - 1];
+    const schedule = schedules[i - 1];
     nextPage.addEventListener('click', () => {
-      addScheduleToCalendar(NumSchedule);
+      addScheduleToCalendar(schedule);
       const aElements = pageList.getElementsByTagName('li');
       // remove active label from any other child element
       for (const element of aElements) {
