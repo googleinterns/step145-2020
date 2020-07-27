@@ -24,11 +24,9 @@ public class Schedule {
     sections = new ArrayList<Section>();
   }
 
-  public Schedule(Schedule copy) {
+  public Schedule(Schedule schedule) {
     sections = new ArrayList<Section>();
-    for (Section section : copy.getSections()) {
-      sections.add(section);
-    }
+    Collections.copy(schedule.getSections(), sections)
   }
 
   // This method adds a section to the existing schedule of sections
