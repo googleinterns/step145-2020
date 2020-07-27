@@ -21,6 +21,7 @@ window.addEventListener('load', () => {
 });
 
 document.querySelector('.course-list').addEventListener('click', () => {
+  const MAX_PAGINATION_SCHEDULES = 15;
   Calendar.clear();
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
@@ -44,8 +45,8 @@ document.querySelector('.course-list').addEventListener('click', () => {
   }
   const pageList = document.getElementById('calendar-pagination');
   pageList.innerText = ''; // clear any existing children from the element
-  for (let i = 1; i <= schedules.length; i++) {
-    const nextPage = document.createElement('a');
+  for (let i = 1; i <= schedules.length && i <= MAX_PAGINATION_SCHEDULES; i++) {
+    const nextPage = document.createElement('li');
     nextPage.innerText = i;
     // by default, set first page to active
     if (i == 1) {
@@ -59,13 +60,13 @@ document.querySelector('.course-list').addEventListener('click', () => {
       selected.forEach(course => {
         Calendar.addCourse(courseInfo[course], scheduleNum[course]);
       });
-      const aElements = pageList.getElementsByTagName('a');
+      const aElements = pageList.getElementsByTagName('li');
       // remove active label from any other child element
-      for (var a = 0; a < aElements.length; a++) {
-        aElements[a].setAttribute('class', '');
+      for (const element of aElements) {
+        element.classList.remove('active');
       }
       // set current page to active
-      nextPage.setAttribute('class', 'active');
+      nextPage.classList.add('active');
     });
   }
 });
