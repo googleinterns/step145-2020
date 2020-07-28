@@ -43,7 +43,10 @@ function signOut() {
   });
 }
 
-// Set window onSignIn so the function is executed on login.
+/**
+ * Set window onSignIn so the function is executed on login.
+ * Exported so that the function can be used on all pages of site.
+ */
 window.onSignIn = onSignIn;
 
 export default {onSignIn: onSignIn, signOut: signOut};
