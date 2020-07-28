@@ -97,14 +97,33 @@ public class Course {
   }
 
   public Course(JSONObject json) {
-    this((String) json.get("course_id"), (String) json.get("name"), (String) json.get("semester"),
-        Integer.parseInt((String) json.get("credits")), (String) json.get("dept_id"),
-        (String) json.get("description"),
-        (String) ((JSONObject) json.get("relationships")).get("coreqs"),
-        (String) ((JSONObject) json.get("relationships")).get("prereqs"),
-        (String) ((JSONObject) json.get("relationships")).get("restrictions"),
-        (String) ((JSONObject) json.get("relationships")).get("additional_info"),
-        (String) ((JSONObject) json.get("relationships")).get("credit_granted_for"));
+    try {
+      this.credits = Integer.parseInt((String) json.get("credits"));
+    } catch (Exception e) {
+      this.credits = 0;
+    }
+
+    this.courseId = (String) json.get("course_id");
+    this.name = (String) json.get("name");
+    this.semester = (String) json.get("semester");
+    this.departmentId = (String) json.get("department_id");
+    this.description = (String) json.get("description");
+
+    JSONObject relationships = (JSONObject) json.get("relationships");
+    if (relationships == null) {
+      this.corequisites = null;
+      this.prerequisites = null;
+      this.restrictions = null;
+      this.additionalInfo = null;
+      this.creditGrantedFor = null;
+      return;
+    }
+
+    this.corequisites = (String) relationships.get("coreqs");
+    this.prerequisites = (String) relationships.get("prereqs");
+    this.restrictions = (String) relationships.get("restrictions");
+    this.additionalInfo = (String) relationships.get("additional_info");
+    this.creditGrantedFor = (String) relationships.get("credit_granted_for");
   }
 
   /*
