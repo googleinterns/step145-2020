@@ -76,6 +76,11 @@ public class DatastoreServlet extends BaseServlet {
     } while (true);
   }
 
+  /**
+   * Creates a Course object from a JSONArray.
+   * @param coursesArray The course json from the UMD API.
+   * @param response The HttpServletResponse object.
+   */
   private void addCourses(JSONArray coursesArray, HttpServletResponse response) throws IOException {
     if (coursesArray == null) {
       return;
@@ -87,18 +92,6 @@ public class DatastoreServlet extends BaseServlet {
 
       // Create a Course object from the JSONObject for parsing.
       Course course = new Course(courseJson);
-      Entity entity = new Entity("Course");
-      entity.setProperty("course_id", course.getCourseId());
-      entity.setProperty("name", course.getName());
-      entity.setProperty("semester", course.getSemester());
-      entity.setProperty("credits", course.getCredits());
-      entity.setProperty("department_id", course.getDepartmentId());
-      entity.setProperty("description", course.getDescription());
-      entity.setProperty("coreqs", course.getCorequisites());
-      entity.setProperty("prereqs", course.getCorequisites());
-      entity.setProperty("restrictions", course.getRestrictions());
-      entity.setProperty("additional_info", course.getAdditionalInfo());
-      entity.setProperty("credit_granted_for", course.getCreditGrantedFor());
 
       URI uri;
       try {
@@ -108,12 +101,17 @@ public class DatastoreServlet extends BaseServlet {
         return;
       }
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
-      addSectionsToCourse(entity, sectionsArray);
+      addSectionsToCourse(sectionsArray, course);
     }
   }
 
-  private void addSectionsToCourse(Entity entity, JSONArray sectionsArray) {
-    if (entity == null || sectionsArray == null) {
+  /**
+   * Adds the Course and Section to datastore.
+   * @param sectionsArray The section json from the UMD API.
+   * @param course The Course object.
+   */
+  private void addSectionsToCourse(JSONArray sectionsArray, Course course) {
+    if (sectionsArray == null || course == null) {
       return;
     }
 
@@ -127,7 +125,21 @@ public class DatastoreServlet extends BaseServlet {
       sectionEntity.setProperty("section_id", (String) sectionJson.get("section_id"));
       sectionEntities.add(sectionEntity);
     }
+
+    Entity entity = new Entity("Course");
+    entity.setProperty("course_id", course.getCourseId());
+    entity.setProperty("name", course.getName());
+    entity.setProperty("semester", course.getSemester());
+    entity.setProperty("credits", course.getCredits());
+    entity.setProperty("department_id", course.getDepartmentId());
+    entity.setProperty("description", course.getDescription());
+    entity.setProperty("coreqs", course.getCorequisites());
+    entity.setProperty("prereqs", course.getCorequisites());
+    entity.setProperty("restrictions", course.getRestrictions());
+    entity.setProperty("additional_info", course.getAdditionalInfo());
+    entity.setProperty("credit_granted_for", course.getCreditGrantedFor());
     entity.setProperty("sections", sectionEntities);
+
     datastore.put(entity);
   }
 }
