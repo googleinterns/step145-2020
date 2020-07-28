@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that renders the /planner page.*/
+/** Servlet that renders the / page.*/
 @WebServlet("/")
 public class IndexPageServlet extends HttpServlet {
   /**
