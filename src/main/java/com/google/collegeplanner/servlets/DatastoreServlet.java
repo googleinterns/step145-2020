@@ -48,6 +48,8 @@ public class DatastoreServlet extends BaseServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Loop through the pages.
+    // We don't know how many pages there are beforehand. We stop looping when the new page
+    // doesn't have any results.
     int page = 0;
     do {
       URI uri;
@@ -64,14 +66,11 @@ public class DatastoreServlet extends BaseServlet {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       } else if (coursesArray.size() == 0) {
-        // We don't know how many pages there are beforehand. We stop looping when the new page
-        // doesn't have any results.
         respondWithError(HttpServletResponse.SC_OK, response);
         return;
       }
       addCourses(coursesArray, response);
-      count++;
-    } while (count < 2);
+    } while (true);
   }
 
   private void addCourses(JSONArray coursesArray, HttpServletResponse response) throws IOException {
@@ -105,10 +104,8 @@ public class DatastoreServlet extends BaseServlet {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       }
-
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
       addSectionsToCourse(entity, sectionsArray);
-      return;
     }
   }
 
@@ -120,7 +117,7 @@ public class DatastoreServlet extends BaseServlet {
     // Loop through each course's sections.
     ArrayList<EmbeddedEntity> sectionEntities = new ArrayList<EmbeddedEntity>();
     for (Object jsonObject : sectionsArray) {
-      // TODO(savsa): create Section class to handle json object parsing.
+      // TODO(savsa): create Section class to handle JSON object parsing.
       // For now, just store the section id.
       JSONObject sectionJson = (JSONObject) jsonObject;
       EmbeddedEntity sectionEntity = new EmbeddedEntity();

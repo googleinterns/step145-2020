@@ -79,6 +79,7 @@ public final class DatastoreTest {
     helper.tearDown();
   }
 
+  /* Run this test twice to prove we're not leaking any state across tests. */
   @Test
   public void testDatastoreInsertion1() {
     doTest();
@@ -163,13 +164,12 @@ public final class DatastoreTest {
     when(apiUtil.getJsonArray(any(URI.class))).thenReturn(coursesJson, sectionsJson, emptyJson);
 
     DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
-    ds.doGet(null, response);
+    ds.doPost(null, response);
 
     Assert.assertEquals(1, datastore.prepare(new Query("Course")).countEntities());
   }
 
-  // Run this test twice to prove we're not leaking any state across tests.
-  private void doTest() {
+  private void insertionTest() {
     Assert.assertEquals(0, datastore.prepare(new Query("Course")).countEntities());
     datastore.put(new Entity("Course"));
     datastore.put(new Entity("Course"));

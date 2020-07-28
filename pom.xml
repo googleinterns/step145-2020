@@ -77,7 +77,6 @@
       <version>1.9.60</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
