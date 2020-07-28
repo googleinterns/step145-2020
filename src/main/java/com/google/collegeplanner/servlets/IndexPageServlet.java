@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/")
 public class IndexPageServlet extends HttpServlet {
   /**
-   * Renders planner.jsp
+   * Renders index.jsp
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
