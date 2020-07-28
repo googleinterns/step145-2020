@@ -83,12 +83,12 @@ public final class DatastoreTest {
   /* Run this test twice to prove we're not leaking any state across tests. */
   @Test
   public void testDatastoreInsertion1() {
-    doTest();
+    insertionTest();
   }
 
   @Test
   public void testDatastoreInsertion2() {
-    doTest();
+    insertionTest();
   }
 
   @Test
