@@ -42,15 +42,21 @@ public class SectionServlet extends BaseServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String courseId = request.getParameter("course_id");
+    String sectionId = request.getParameter("section_id");
     if (courseId == null || courseId == "") {
       respondWithError(
           "Invalid or missing course id.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
+    if (sectionId == null || sectionId == "") {
+      respondWithError(
+          "Invalid or missing section id.", HttpServletResponse.SC_BAD_REQUEST, response);
+      return;
+    }
 
     URI uri;
     try {
-      uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
+      uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections/" + sectionId);
     } catch (URISyntaxException e) {
       respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;

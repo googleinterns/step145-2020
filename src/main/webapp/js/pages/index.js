@@ -16,18 +16,70 @@ import Calendar from '../lib/calendar.js';
 import CollegePlanner from '../lib/courseSelector.js';
 import Auth from '../lib/login.js';
 
+const MAX_PAGINATION_SCHEDULES = 15;
+
 window.addEventListener('load', () => {
   Calendar.initCalendar();
   CollegePlanner.getDepartmentOptions();
 });
 
-document.querySelector('.course-list').addEventListener('click', () => {
+/**
+ * Renders the specified schedule on the calendar.
+ * @param {Object} schedule JSON object mapping course to the section id
+ * @param {Object} courseInfo JSON object mapping course to course details
+ * @param {Array.<string>} selected Array containing all of the course_ids
+ *     selected by the user
+ */
+function addScheduleToCalendar(schedule, courseInfo, selected) {
   Calendar.clear();
+  selected.forEach(course => {
+    Calendar.addCourse(courseInfo[course], schedule[course]);
+  });
+}
+
+document.querySelector('.course-list').addEventListener('click', () => {
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
-  selected.forEach(course => {
-    Calendar.addCourse(courseInfo[course]);
-  });
+  // TODO(naaoli): Connect to algorithm servlet.
+  // Hard code return from algorithm servlet.
+  const sections1 = {};
+  selected.forEach(
+      course => {sections1[course] = courseInfo[course].sections[0]});
+  const sections2 = {};
+  selected.forEach(
+      course => {sections2[course] = courseInfo[course].sections[1]});
+  const schedules = [sections1, sections2];
+
+  // By default, add the first schedule to the calendar after response is
+  // received.
+  addScheduleToCalendar(schedules[0], courseInfo, selected);
+
+  // If more than 1 schedule returned, create pagination.
+  if (schedules.length == 1) {
+    return;
+  }
+  const pageList = document.getElementById('calendar-pagination');
+  pageList.innerText = '';  // Clear any existing children from the element.
+  for (let i = 1; i <= schedules.length && i <= MAX_PAGINATION_SCHEDULES; i++) {
+    const nextPage = document.createElement('li');
+    nextPage.innerText = i;
+    // By default, set first page to active.
+    if (i == 1) {
+      nextPage.setAttribute('class', 'active');
+    }
+    pageList.appendChild(nextPage);
+    const schedule = schedules[i - 1];
+    nextPage.addEventListener('click', () => {
+      addScheduleToCalendar(schedule, courseInfo, selected);
+      const aElements = pageList.getElementsByTagName('li');
+      // Remove active label from any other child element.
+      for (const element of aElements) {
+        element.classList.remove('active');
+      }
+      // Set current page to active.
+      nextPage.classList.add('active');
+    });
+  }
 });
 
 document.getElementById('add-selected').addEventListener('click', () => {

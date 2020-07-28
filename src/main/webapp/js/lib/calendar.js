@@ -1,4 +1,3 @@
-
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO(savsa): Add ability to remove courses from the calendar
 // TODO(#34): Add ability to choose which section the user wants, not just
 //  automatically choosing the first section
 
@@ -50,6 +48,40 @@ const enumDays = {
 };
 
 /**
+ * The array of colors that a calendar schedule can have.
+ * @type {Array.<string>}
+ */
+const ORIGINAL_COLORS = [
+  '#ff5f4a',
+  '#b52310',
+  '#f7b32a',
+  '#dba100',
+  '#b3c42f',
+  '#6bd63a',
+  '#3ead0a',
+  '#34d17d',
+  '#009144',
+  '#38d1cc',
+  '#03638c',
+  '#2a2e82',
+  '#491f87',
+  '#8f1088',
+];
+
+/**
+ * A duplicated version of the ORIGINAL_COLORS array. This array gets 'reset' to
+ * the ORIGINAL_COLORS array every time a new course schedule is requested.
+ * @type {Array.<string>}
+ */
+let scheduleColors;
+
+/**
+ * The default color the schedule is set to be when no color is provided.
+ * @type {string}
+ */
+const DEFAULT_SCHEDULE_COLOR = '#00a9ff';
+
+/**
  * Initializes the calendar and moves the view to a hardcoded date in the
  * past.
  */
@@ -74,21 +106,23 @@ function initCalendar() {
   // The hard coded date that all scheduled events should fall around
   // Date: Sunday January 2nd, 2000 @ 00:00 EST
   calendar.setDate(new Date('2000-01-02T00:00:00'));
+
+  randomizeColors();
+  scheduleColors = [...ORIGINAL_COLORS];
 }
 
 /**
  * Adds a course to the calendar.
  * @param {Object} course The JSON Object for the course.
  */
-async function addCourse(course) {
-  if (course == null) {
+async function addCourse(course, section) {
+  if (course == null || section == null) {
     return;
   }
-  const response = await fetch(
-      `/api/sections?course_id=${encodeURIComponent(course.course_id)}`);
+  const response = await fetch(`/api/sections?course_id=${
+      encodeURIComponent(course.course_id)}&section_id=${
+      encodeURIComponent(section.substr(section.length - 4))}`);
   const json = await response.json();
-
-  // For now, just choose the first section out of the available ones
   if (json.sections == null) {
     return;
   }
@@ -96,32 +130,50 @@ async function addCourse(course) {
   if (firstSection.meetings == null) {
     return;
   }
-  const firstMeetingInfo = firstSection.meetings[0];
-  const meetingDays = firstMeetingInfo.days;
+  firstSection.meetings.forEach(
+      meeting => decodeDayAndAddToCalendar(meeting, course));
+}
 
-  const startTime = firstMeetingInfo.start_time;
-  const endTime = firstMeetingInfo.end_time;
+/**
+ * Adds a course meeting to the calendar
+ * @param {Object} meeting The JSON Object for the meeting.
+ * @param {Object} course The JSON Object for the course.
+ */
+function decodeDayAndAddToCalendar(meeting, course) {
+  const meetingDays = meeting.days;
+
+  const startTime = meeting.start_time;
+  const endTime = meeting.end_time;
+
+  const color = scheduleColors.pop();
 
   if (meetingDays.includes('Su')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SUNDAY);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_SUNDAY, color);
   }
   if (meetingDays.includes('M')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_MONDAY);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_MONDAY, color);
   }
   if (meetingDays.includes('Tu')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_TUESDAY);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_TUESDAY, color);
   }
   if (meetingDays.includes('W')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_WEDNESDAY);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_WEDNESDAY, color);
   }
   if (meetingDays.includes('Th')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_THURSDAY);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_THURSDAY, color);
   }
   if (meetingDays.includes('F')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_FRIDAY);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_FRIDAY, color);
   }
   if (meetingDays.includes('Sa')) {
-    addCourseToCalendar(course, startTime, endTime, enumDays.DATE_SATURDAY);
+    addCourseToCalendar(
+        course, startTime, endTime, enumDays.DATE_SATURDAY, color);
   }
 }
 
@@ -134,10 +186,10 @@ async function addCourse(course) {
  *     time eg. 8:30pm.
  * @param {enumDays} day The day that the course falls on.
  */
-function addCourseToCalendar(course, startTime, endTime, day) {
+function addCourseToCalendar(course, startTime, endTime, day, color) {
   const startDate = createDateFromTimeString(startTime, day);
   const endDate = createDateFromTimeString(endTime, day);
-  createSchedule(course, startDate, endDate);
+  createSchedule(course, startDate, endDate, color);
 }
 
 /**
@@ -146,14 +198,16 @@ function addCourseToCalendar(course, startTime, endTime, day) {
  * @param {DateTime} startDate The DateTime object of the start time.
  * @param {DateTime} endDate The DateTime object of the end time.
  */
-function createSchedule(course, startDate, endDate) {
-  // TODO(savsa): Have each schedule be a different color. The color is
-  // currently hard coded to be blue so all schedules look the same.
+function createSchedule(course, startDate, endDate, color) {
+  // The default color is hard-coded to be blue;
+  if (color == null) {
+    color = DEFAULT_SCHEDULE_COLOR;
+  }
   calendar.createSchedules([{
     id: id.toString(),
     color: '#ffffff',
-    bgColor: '#00a9ff',
-    borderColor: '#00a9ff',
+    bgColor: color,
+    borderColor: color,
     calendarId: '1',
     title: course.name,
     category: 'time',
@@ -206,6 +260,19 @@ function createDateFromTimeString(time, day) {
  */
 function clear() {
   calendar.clear(/*immediately=*/ true);
+  scheduleColors = [...ORIGINAL_COLORS];
+}
+
+/**
+ * Randomizes the ORIGINAL_COLORS array.
+ */
+function randomizeColors() {
+  for (let i = ORIGINAL_COLORS.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * i);
+    const temp = ORIGINAL_COLORS[i];
+    ORIGINAL_COLORS[i] = ORIGINAL_COLORS[j];
+    ORIGINAL_COLORS[j] = temp;
+  }
 }
 
 export default {addCourse: addCourse, initCalendar: initCalendar, clear: clear};
