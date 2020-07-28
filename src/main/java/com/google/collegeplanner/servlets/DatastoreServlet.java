@@ -34,6 +34,9 @@ import org.json.simple.JSONObject;
 /** Queries the UMD API and downloads the data to datastore. */
 @WebServlet("/api/download")
 public class DatastoreServlet extends BaseServlet {
+
+  final int PAGE_LIMIT = 200;
+
   DatastoreService datastore;
 
   public DatastoreServlet() {
@@ -53,12 +56,12 @@ public class DatastoreServlet extends BaseServlet {
     // Loop through the pages.
     // We don't know how many pages there are beforehand. We stop looping when the new page
     // doesn't have any results.
-    int page = 0;
+    int page = 1;
     do {
       URI uri;
       try {
         URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
-        builder.setParameter("page", Integer.toString(page++));
+        builder.setParameter("page", Integer.toString(page));
         uri = builder.build();
       } catch (URISyntaxException e) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
@@ -69,11 +72,11 @@ public class DatastoreServlet extends BaseServlet {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       } else if (coursesArray.size() == 0) {
-        respondWithError(HttpServletResponse.SC_OK, response);
+        // Successful. The default status code response is 200.
         return;
       }
       addCourses(coursesArray, response);
-    } while (true);
+    } while (page++ < PAGE_LIMIT);
   }
 
   /**
