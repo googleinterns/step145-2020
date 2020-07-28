@@ -45,6 +45,9 @@ public class DatastoreServlet extends BaseServlet {
     this.datastore = datastore;
   }
 
+  /*
+   * Downloads all course data to datastore.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Loop through the pages.

@@ -52,7 +52,7 @@ import org.junit.runners.JUnit4;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-/** Tests CourseListServlet */
+/** Tests DatastoreServlet */
 @RunWith(JUnit4.class)
 public final class DatastoreTest {
   HttpServletResponse response;
