@@ -14,6 +14,7 @@
 
 import Calendar from '../lib/calendar.js';
 import CollegePlanner from '../lib/courseSelector.js';
+import Auth from '../lib/login.js';
 
 const MAX_PAGINATION_SCHEDULES = 15;
 
@@ -87,4 +88,8 @@ document.getElementById('add-selected').addEventListener('click', () => {
 
 document.getElementById('departments').addEventListener('change', () => {
   CollegePlanner.getCourseOptions();
+});
+
+document.getElementById('signout-button').addEventListener('click', () => {
+  Auth.signOut();
 });
