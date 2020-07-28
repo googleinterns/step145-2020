@@ -70,6 +70,7 @@ public final class DatastoreTest {
     response = mock(HttpServletResponse.class);
     stringWriter = new StringWriter();
     writer = new PrintWriter(stringWriter);
+    parser = new JSONParser();
     when(response.getWriter()).thenReturn(writer);
     helper.setUp();
   }
@@ -93,7 +94,6 @@ public final class DatastoreTest {
   @Test
   public void servletAddsObjectToDatastore() throws Exception {
     ApiUtil apiUtil = mock(ApiUtil.class);
-    JSONParser parser = new JSONParser();
 
     String courses = "[{"
         + "\"course_id\":\"AASP100\","
@@ -161,6 +161,8 @@ public final class DatastoreTest {
     JSONArray sectionsJson = (JSONArray) parser.parse(sections);
     JSONArray emptyJson = (JSONArray) parser.parse("[]");
 
+    // We're simulating having one course and one section. After they're added to datastore, return
+    // a blank array to signal that there are no more courses left.
     when(apiUtil.getJsonArray(any(URI.class))).thenReturn(coursesJson, sectionsJson, emptyJson);
 
     DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
