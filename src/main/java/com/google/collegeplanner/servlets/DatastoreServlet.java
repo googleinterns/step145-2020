@@ -20,8 +20,11 @@ import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.collegeplanner.data.Course;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,7 +37,6 @@ import org.json.simple.JSONObject;
 /** Queries the UMD API and downloads the data to datastore. */
 @WebServlet("/api/download")
 public class DatastoreServlet extends BaseServlet {
-
   final int PAGE_LIMIT = 200;
 
   DatastoreService datastore;
@@ -98,8 +100,10 @@ public class DatastoreServlet extends BaseServlet {
 
       URI uri;
       try {
-        uri = new URI("https://api.umd.io/v1/courses/" + course.getCourseId() + "/sections");
-      } catch (URISyntaxException e) {
+        uri = new URI("https://api.umd.io/v1/courses/"
+            + URLEncoder.encode(course.getCourseId(), StandardCharsets.UTF_8.toString())
+            + "/sections");
+      } catch (URISyntaxException | UnsupportedEncodingException e) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       }

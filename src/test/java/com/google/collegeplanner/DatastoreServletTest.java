@@ -202,7 +202,8 @@ public final class DatastoreServletTest {
   public void servletAddsObjectToDatastore() throws Exception {
     // We're simulating having one course and one section. After they're added to datastore, return
     // a blank array to signal that there are no more courses left.
-    when(apiUtil.getJsonArray(any(URI.class))).thenReturn(firstCourseJson, firstSectionJson, emptyJson);
+    when(apiUtil.getJsonArray(any(URI.class)))
+        .thenReturn(firstCourseJson, firstSectionJson, emptyJson);
     DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
     ds.doPost(null, response);
 

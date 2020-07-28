@@ -98,7 +98,7 @@ public class Course {
   public Course(JSONObject json) {
     try {
       this.credits = Integer.parseInt((String) json.get("credits"));
-    } catch (Exception e) {
+    } catch (NumberFormatException e) {
       this.credits = 0;
     }
 
