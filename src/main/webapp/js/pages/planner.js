@@ -28,9 +28,15 @@ async function getPlan() {
     selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
   };
-  courseContainer.innerText = '';  // Clears card body to get rid of spinner
+  courseContainer.innerText = '';  // Clears card body to get rid of spinner.
   let response;
   let courseList;
+  // Clear save button from header.
+  document.getElementById('plan-header').innerText = '';
+  // Replace form to clear all event listeners so it doesn't save old schedules.
+  const oldNameForm = document.getElementById('plan-name');
+  const newNameForm = oldNameForm.cloneNode(true);
+  oldNameForm.parentNode.replaceChild(newNameForm, oldNameForm);
   try {
     response = await fetch('/api/planner', {
       method: 'POST',
@@ -50,6 +56,10 @@ async function getPlan() {
           'primary', courseContainer);
     } else if (courseData.length == creditsData.length) {
       createTable(courseData, creditsData, courseContainer);
+      attachSaveButton(document.getElementById('plan-header'));
+      document.getElementById('plan-name').addEventListener('submit', () => {
+        savePlan(courseList);
+      });
     } else {
       CollegePlanner.createAlert(
           'An invalid response was recieved.', 'warning', courseContainer);
@@ -57,6 +67,42 @@ async function getPlan() {
   } else {
     CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);
   }
+}
+
+function savePlan(courseList) {
+  // TODO(ramyabuva): Send tokens to servlet to save plans in Datastore.
+  console.log(courseList);
+}
+
+/**
+ * Creates save button for plan.
+ * @param {Element} headerContainer Container for header for proposed plan.
+ */
+function attachSaveButton(headerContainer) {
+  const button = document.createElement('button');
+  button.setAttribute('type', 'submit');
+  button.setAttribute('href', '#');
+  button.setAttribute('class', 'btn btn-secondary btn-icon-split float:right');
+  button.setAttribute('id', 'save-plan-prompt');
+  const icon = document.createElement('span');
+  icon.setAttribute('class', 'icon text-white-50')
+  const fabIcon = document.createElement('i');
+  fabIcon.setAttribute('class', 'fa fa-star');
+  icon.appendChild(fabIcon);
+  button.appendChild(icon);
+  const text = document.createElement('span');
+  text.setAttribute('class', 'text');
+  text.innerText = 'Save Plan';
+  button.appendChild(text);
+  // If user isn't signed in, prompt them to sign in.
+  button.addEventListener('click', () => {
+    if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+      $('#savePlanModal').modal();
+    } else {
+      $('#signInModal').modal();
+    }
+  });
+  headerContainer.appendChild(button);
 }
 
 /**
