@@ -104,7 +104,7 @@ public class Course {
 
     this.courseId = (String) json.get("course_id");
     if (this.courseId == null) {
-      throw new Exception("Null course_id.");
+      throw new ParseException("Null course_id.", 0);
     }
     this.name = (String) json.get("name");
     this.semester = (String) json.get("semester");

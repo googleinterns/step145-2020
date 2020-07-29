@@ -20,7 +20,6 @@ import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -44,6 +43,10 @@ import org.json.simple.JSONObject;
 /** Queries the UMD API and downloads the data to datastore. */
 @WebServlet("/api/download")
 public class DatastoreServlet extends BaseServlet {
+  /*
+   * The UMD API only gives back 30 courses max per request. To see more results, we have to
+   * cycle through the "pages". There's about 150 pages, so 200 is a safe maximum for us.
+   */
   final int PAGE_LIMIT = 200;
 
   DatastoreService datastore;
