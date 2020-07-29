@@ -16,9 +16,13 @@ package com.google.collegeplanner.servlets;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /** Provides an interface for shared logic between the servlets. */
 public abstract class BaseServlet extends HttpServlet {
@@ -81,5 +85,16 @@ public abstract class BaseServlet extends HttpServlet {
     response.setStatus(status);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(jsonObject));
+  }
+
+  /**
+   * Gets the JSON Representation of the body of the POST request
+   */
+  public JSONObject getBody(HttpServletRequest request)
+      throws IOException, ParseException, NullPointerException {
+    String strBody =
+        request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+    JSONParser parser = new JSONParser();
+    return (JSONObject) parser.parse(strBody);
   }
 }

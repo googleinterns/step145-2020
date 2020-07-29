@@ -138,17 +138,6 @@ public class PlannerServlet extends BaseServlet {
   }
 
   /**
-   * Gets the JSON Representation of the body of the POST request
-   */
-  private JSONObject getBody(HttpServletRequest request)
-      throws IOException, ParseException, NullPointerException {
-    String strBody =
-        request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-    JSONParser parser = new JSONParser();
-    return (JSONObject) parser.parse(strBody);
-  }
-
-  /**
    * Creates the representation for the graph and reads/stores necessary information from
    * selectedClasses
    * @param selectedClasses JSONArray that contains details for all of the courses selected by the

@@ -74,9 +74,27 @@ async function getPlan() {
  * @param {Object} courseList JSON Object containing the courseplan returned by
  *     the servlet.
  */
-function savePlan(courseList) {
-  // TODO(#77): Send tokens to servlet to save plans in Datastore.
-  console.log(courseList);
+async function savePlan(courseList) {
+  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    return;
+  }
+  const data = {
+    idToken: gapi.auth2.getAuthInstance()
+                 .currentUser.get()
+                 .getAuthResponse()
+                 .id_token,
+    plan: courseList,
+    planName: document.getElementById('save-plan-as').value
+  };
+  try {
+    await fetch('/api/planner/save', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    $('#savePlanModal').modal('hide');
+  } catch (err) {
+    return;
+  }
 }
 
 /**

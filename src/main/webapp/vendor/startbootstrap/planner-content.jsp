@@ -109,7 +109,7 @@
       </div>
       <div class="modal-body">
         <form id="plan-name" onsubmit="return false">
-          <input type="text" class="form-control" placeholder="Type name here" required></input>
+          <input type="text" class="form-control" placeholder="Type name here" id="save-plan-as" required></input>
         </form>
       </div>
       <div class="modal-footer">
