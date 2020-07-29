@@ -69,8 +69,13 @@ async function getPlan() {
   }
 }
 
+/**
+ * Sends user id token to backend and saves plans in Datastore.
+ * @param {Object} courseList JSON Object containing the courseplan returned by
+ *     the servlet.
+ */
 function savePlan(courseList) {
-  // TODO(ramyabuva): Send tokens to servlet to save plans in Datastore.
+  // TODO(#77): Send tokens to servlet to save plans in Datastore.
   console.log(courseList);
 }
 
