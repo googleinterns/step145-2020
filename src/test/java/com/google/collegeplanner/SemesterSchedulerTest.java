@@ -189,23 +189,8 @@ public final class SemesterSchedulerTest {
     expectedSchedules.get(2).addClass(mathClasses.get(0));
     expectedSchedules.get(2).addClass(chemClasses.get(0));
 
-    assertEqualsLists(expectedSchedules, scheduler.getPossibleSchedules());
-  }
-
-  /**
-   * This function checks if two lists are the same (order does not matter)
-   * @param expected the list of expected schedules
-   * @param actual the list of actual schedules
-   */
-  public void assertEqualsLists(ArrayList<Schedule> expected, ArrayList<Schedule> actual) {
-    if (actual.size() != expected.size()) {
-      System.out.print("Expected <" + expected + ">, but instead <" + actual + ">");
-      Assert.fail("Expected a list of size " + expected.size() + " but instead " + actual.size());
-    }
-    for (Schedule schedule : expected) {
-      if (!actual.contains(schedule)) {
-        Assert.fail("Expected " + schedule + " but is not present.");
-      }
-    }
+    ArrayList<Schedule> actualSchedules = scheduler.getPossibleSchedules();
+    Assert.assertTrue(expectedSchedules.containsAll(actualSchedules) && 
+                    expectedSchedules.size() == actualSchedules.size());
   }
 }
