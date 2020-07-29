@@ -19,10 +19,14 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,17 +43,24 @@ public class SavePlanServlet
                            * Reads from Datastore and returns response with section details
                            */
   GoogleIdTokenVerifier verifier;
+  DatastoreService datastore;
 
   public SavePlanServlet() {
-    this(
+    this(DatastoreServiceFactory.getDatastoreService(),
         new GoogleIdTokenVerifier.Builder(UrlFetchTransport.getDefaultInstance(), new GsonFactory())
             .setAudience(Collections.singletonList(
                 "267429534228-vvsi2uldmpji3rgs1qd3a41rceciaaaq.apps.googleusercontent.com"))
             .build());
   }
 
-  public SavePlanServlet(GoogleIdTokenVerifier verifier) {
+  public SavePlanServlet(DatastoreService datastore, GoogleIdTokenVerifier verifier) {
     this.verifier = verifier;
+    this.datastore = datastore;
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // TODO(ramyabuva): Get users saved plans.
   }
 
   @Override
@@ -72,17 +83,27 @@ public class SavePlanServlet
     GoogleIdToken idToken;
     try {
       idToken = verifier.verify(idTokenStr);
-    } catch (Throwable e) {
+    } catch (GeneralSecurityException e) {
       return;
     }
 
     if (idToken != null) {
       Payload payload = idToken.getPayload();
-      String email = payload.getEmail();
-      System.out.println(email);
+      addToDatastore(payload.getEmail(), plan, planName);
     } else {
       respondWithError("Invalid user.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
+  }
+
+  private void addToDatastore(String email, String plan, String planName) {
+    long timestamp = System.currentTimeMillis();
+    Entity planEntity = new Entity("Plan");
+    planEntity.setProperty("plan", plan);
+    planEntity.setProperty("planName", planName);
+    planEntity.setProperty("timestamp", timestamp);
+    planEntity.setProperty("user", email);
+
+    datastore.put(planEntity);
   }
 }
