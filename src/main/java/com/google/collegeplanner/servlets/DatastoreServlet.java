@@ -96,7 +96,13 @@ public class DatastoreServlet extends BaseServlet {
       JSONObject courseJson = (JSONObject) jsonObject;
 
       // Create a Course object from the JSONObject for parsing.
-      Course course = new Course(courseJson);
+      Course course;
+      try {
+        course = new Course(courseJson);
+      } catch (Exception e) {
+        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+        return;
+      }
 
       URI uri;
       try {
