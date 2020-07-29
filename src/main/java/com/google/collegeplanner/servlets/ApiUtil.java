@@ -40,7 +40,6 @@ import org.json.simple.parser.ParseException;
 public class ApiUtil {
   /**
    * Returns a json array given a URI.
-   *
    * @param uri The endpoint that will be requested
    */
   public JSONArray getJsonArray(URI uri) {
@@ -57,7 +56,6 @@ public class ApiUtil {
 
   /**
    * Returns a json object given a URI.
-   *
    * @param uri The endpoint that will be requested
    */
   public JSONObject getJsonObject(URI uri) {
@@ -74,7 +72,6 @@ public class ApiUtil {
 
   /**
    * Makes a GET request and returns the reponse json.
-   *
    * @param uri The endpoint that will be requested
    */
   private String requestApi(URI uri) {

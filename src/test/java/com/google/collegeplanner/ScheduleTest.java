@@ -78,9 +78,7 @@ public final class ScheduleTest {
     sections.add(mathClass2);
 
     for (Section section : sections) {
-      if (!schedule.addClass(section)) {
-        Assert.fail();
-      }
+      Assert.assertTrue(schedule.addClass(section));
     }
   }
 
@@ -92,9 +90,7 @@ public final class ScheduleTest {
     sections.add(chemClass);
     sections.add(englishClass);
     for (Section section : sections) {
-      if (!schedule.addClass(section)) {
-        Assert.fail();
-      }
+      Assert.assertTrue(schedule.addClass(section));
     }
     Assert.assertFalse(schedule.addClass(mathClass));
   }

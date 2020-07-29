@@ -18,6 +18,9 @@ import java.text.ParseException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/*
+ * This class represents a section of a course.
+ */
 public class Section {
   private String sectionId;
   private String courseId;
