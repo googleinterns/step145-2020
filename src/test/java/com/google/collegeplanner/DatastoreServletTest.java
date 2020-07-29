@@ -218,6 +218,19 @@ public final class DatastoreServletTest {
     DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
     ds.doPost(null, response);
 
+    // Assert that the courses on both pages were inserted.
     Assert.assertEquals(2, datastore.prepare(new Query("Course")).countEntities());
+  }
+
+  @Test
+  public void doesNotInsertDuplicateEntities() throws Exception {
+    when(apiUtil.getJsonArray(any(URI.class)))
+        .thenReturn(
+            firstCourseJson, firstSectionJson, firstCourseJson, firstSectionJson, emptyJson);
+    DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
+    ds.doPost(null, response);
+
+    // Assert that the entity is inserted the first time but not the second time.
+    Assert.assertEquals(1, datastore.prepare(new Query("Course")).countEntities());
   }
 }

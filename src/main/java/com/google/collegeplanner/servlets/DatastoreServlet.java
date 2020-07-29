@@ -18,6 +18,12 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.collegeplanner.data.Course;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -26,6 +32,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -104,6 +111,20 @@ public class DatastoreServlet extends BaseServlet {
         return;
       }
 
+      // Check if the entity already exists in datastore, and modify it if it does.
+      Query query = new Query("Course").setFilter(
+          new FilterPredicate("course_id", FilterOperator.EQUAL, course.getCourseId()));
+      PreparedQuery preparedQuery = datastore.prepare(query);
+      List<Entity> limitedResults = preparedQuery.asList(FetchOptions.Builder.withLimit(1));
+      Entity courseEntity;
+      if (limitedResults.size() == 0) {
+        // The entity doesn't exist - create a new one.
+        courseEntity = new Entity("Course");
+      } else {
+        // The entity already exists - modify it instead.
+        courseEntity = limitedResults.get(0);
+      }
+
       URI uri;
       try {
         uri = new URI("https://api.umd.io/v1/courses/"
@@ -114,7 +135,7 @@ public class DatastoreServlet extends BaseServlet {
         return;
       }
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
-      addSectionsToCourse(sectionsArray, course);
+      addSectionsToCourse(sectionsArray, course, courseEntity);
     }
   }
 
@@ -122,9 +143,10 @@ public class DatastoreServlet extends BaseServlet {
    * Adds the Course and Section to datastore.
    * @param sectionsArray The section json from the UMD API.
    * @param course The Course object.
+   * @param courseEntity The Entity object that we want to add to datastore.
    */
-  private void addSectionsToCourse(JSONArray sectionsArray, Course course) {
-    if (sectionsArray == null || course == null) {
+  private void addSectionsToCourse(JSONArray sectionsArray, Course course, Entity courseEntity) {
+    if (sectionsArray == null || course == null || courseEntity == null) {
       return;
     }
 
@@ -139,20 +161,19 @@ public class DatastoreServlet extends BaseServlet {
       sectionEntities.add(sectionEntity);
     }
 
-    Entity entity = new Entity("Course");
-    entity.setProperty("course_id", course.getCourseId());
-    entity.setProperty("name", course.getName());
-    entity.setProperty("semester", course.getSemester());
-    entity.setProperty("credits", course.getCredits());
-    entity.setProperty("department_id", course.getDepartmentId());
-    entity.setProperty("description", course.getDescription());
-    entity.setProperty("coreqs", course.getCorequisites());
-    entity.setProperty("prereqs", course.getCorequisites());
-    entity.setProperty("restrictions", course.getRestrictions());
-    entity.setProperty("additional_info", course.getAdditionalInfo());
-    entity.setProperty("credit_granted_for", course.getCreditGrantedFor());
-    entity.setProperty("sections", sectionEntities);
+    courseEntity.setProperty("course_id", course.getCourseId());
+    courseEntity.setProperty("name", course.getName());
+    courseEntity.setProperty("semester", course.getSemester());
+    courseEntity.setProperty("credits", course.getCredits());
+    courseEntity.setProperty("department_id", course.getDepartmentId());
+    courseEntity.setProperty("description", course.getDescription());
+    courseEntity.setProperty("coreqs", course.getCorequisites());
+    courseEntity.setProperty("prereqs", course.getCorequisites());
+    courseEntity.setProperty("restrictions", course.getRestrictions());
+    courseEntity.setProperty("additional_info", course.getAdditionalInfo());
+    courseEntity.setProperty("credit_granted_for", course.getCreditGrantedFor());
+    courseEntity.setProperty("sections", sectionEntities);
 
-    datastore.put(entity);
+    datastore.put(courseEntity);
   }
 }
