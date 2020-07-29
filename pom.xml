@@ -75,6 +75,12 @@
       <artifactId>google-http-client-gson</artifactId>
       <version>1.23.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-testing</artifactId>
+      <version>1.9.64</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
