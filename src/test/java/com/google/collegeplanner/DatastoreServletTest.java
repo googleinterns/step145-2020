@@ -58,6 +58,7 @@ public final class DatastoreServletTest {
   ApiUtil apiUtil;
 
   JSONArray firstCourseJson;
+  JSONArray firstCourseLowerCaseJson;
   JSONArray firstSectionJson;
   JSONArray secondCourseJson;
   JSONArray secondSectionJson;
@@ -65,6 +66,37 @@ public final class DatastoreServletTest {
 
   String firstCourse = "[{"
       + "\"course_id\":\"AASP100\","
+      + "\"core\":[\"SH\",\"D\"],"
+      + "\"relationships\":{"
+      + "  \"coreqs\":null,"
+      + "  \"additional_info\":null,"
+      + "  \"restrictions\":null,"
+      + "  \"credit_granted_for\":null,"
+      + "  \"also_offered_as\":null,"
+      + "  \"formerly\":null,"
+      + "  \"prereqs\":null"
+      + "},"
+      + "\"credits\":\"3\","
+      + "\"name\":\"Introduction to African American Studies\","
+      + "\"description\":\"Significant aspects of the history of African Americans.\","
+      + "\"semester\":\"202008\","
+      + "\"gen_ed\":[[\"DSHS\",\"DVUP\"]],"
+      + "\"dept_id\":\"AASP\","
+      + "\"department\":\"African American Studies\","
+      + "\"grading_method\":[\"Regular\",\"Pass-Fail\",\"Audit\"],"
+      + "\"sections\":["
+      + "  \"AASP100-0101\","
+      + "  \"AASP100-0201\","
+      + "  \"AASP100-0301\","
+      + "  \"AASP100-0401\","
+      + "  \"AASP100-0501\","
+      + "  \"AASP100-0601\","
+      + "  \"AASP100-0701\""
+      + "]"
+      + "}]";
+
+  String firstCourseLowerCase = "[{"
+      + "\"course_id\":\"Aasp100\","
       + "\"core\":[\"SH\",\"D\"],"
       + "\"relationships\":{"
       + "  \"coreqs\":null,"
@@ -185,6 +217,7 @@ public final class DatastoreServletTest {
     when(response.getWriter()).thenReturn(writer);
 
     firstCourseJson = (JSONArray) parser.parse(firstCourse);
+    firstCourseLowerCaseJson = (JSONArray) parser.parse(firstCourseLowerCase);
     firstSectionJson = (JSONArray) parser.parse(firstSection);
     secondCourseJson = (JSONArray) parser.parse(secondCourse);
     secondSectionJson = (JSONArray) parser.parse(secondSection);
@@ -231,6 +264,20 @@ public final class DatastoreServletTest {
     ds.doPost(null, response);
 
     // Assert that the entity is inserted the first time but not the second time.
+    Assert.assertEquals(1, datastore.prepare(new Query("Course")).countEntities());
+  }
+
+  @Test
+  public void ignoresCaseForCourseId() throws Exception {
+    when(apiUtil.getJsonArray(any(URI.class)))
+        .thenReturn(firstCourseJson, firstSectionJson, firstCourseLowerCaseJson, firstSectionJson,
+            emptyJson);
+    DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
+    ds.doPost(null, response);
+
+    // Assert that lower case / upper case has no effect on the course_id that becomes the key.
+    // The course_ids are considered the same, even though their cases are different, so we should
+    // only have one entity after the two attempted additions.
     Assert.assertEquals(1, datastore.prepare(new Query("Course")).countEntities());
   }
 }
