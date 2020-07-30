@@ -14,16 +14,16 @@
 
 package com.google.collegeplanner.data;
 
+import org.json.simple.JSONObject;
+
 public class Plan {
   private final long id;
-  private final String plan;
+  private final JSONObject plan;
   private final String planName;
-  private final String timestamp;
 
-  public Plan(long id, String plan, String planName, String timestamp) {
+  public Plan(long id, JSONObject plan, String planName) {
     this.id = id;
     this.plan = plan;
     this.planName = planName;
-    this.timestamp = timestamp;
   }
 }

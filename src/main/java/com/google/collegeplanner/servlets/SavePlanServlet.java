@@ -43,13 +43,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /** Servlet that saves and returns a users plans.*/
 @WebServlet("/api/planner/save")
-public class SavePlanServlet
-    extends BaseServlet { 
-
+public class SavePlanServlet extends BaseServlet {
   GoogleIdTokenVerifier verifier;
   DatastoreService datastore;
 
@@ -89,12 +88,18 @@ public class SavePlanServlet
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
 
     ArrayList<Plan> plans = new ArrayList<>();
+    JSONParser parser = new JSONParser();
     for (Entity entity : results) {
-      long id = entity.getKey().getId();
-      String plan = (String) entity.getProperty("plan");
-      String planName = (String) entity.getProperty("planName");
-      String timestamp = (String) entity.getProperty("timestamp");
-      plans.add(new Plan(id, plan, planName, timestamp));
+      try {
+        long id = entity.getKey().getId();
+        JSONObject plan = (JSONObject) parser.parse((String) entity.getProperty("plan"));
+        String planName = (String) entity.getProperty("planName");
+        plans.add(new Plan(id, plan, planName));
+      } catch (ParseException e) {
+        respondWithError(
+            "Returned plans are invalid.", HttpServletResponse.SC_BAD_REQUEST, response);
+        return;
+      }
     }
     JSONObject plansJson = new JSONObject();
     plansJson.put("plans", new Gson().toJson(plans));
