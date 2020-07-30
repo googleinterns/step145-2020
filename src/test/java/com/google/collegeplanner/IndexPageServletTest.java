@@ -11,12 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package com.google.collegeplanner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.collegeplanner.servlets.PlannerPageServlet;
+import com.google.collegeplanner.servlets.IndexPageServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,16 +31,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests PlannerPageServlet */
+/** Tests IndexPageServlet */
 @RunWith(JUnit4.class)
-public final class PlannerPageTest {
+public final class IndexPageServletTest {
   @Test
   public void servletResponseIsCorrect() throws IOException, ServletException {
     RequestDispatcher mockRequestDispatcher = mock(RequestDispatcher.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
-    when(mockedRequest.getRequestDispatcher("planner.jsp")).thenReturn(mockRequestDispatcher);
+    when(mockedRequest.getRequestDispatcher("index.jsp")).thenReturn(mockRequestDispatcher);
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
-    PlannerPageServlet servlet = new PlannerPageServlet();
+    IndexPageServlet servlet = new IndexPageServlet();
     servlet.doGet(mockedRequest, mockedResponse);
   }
 }
