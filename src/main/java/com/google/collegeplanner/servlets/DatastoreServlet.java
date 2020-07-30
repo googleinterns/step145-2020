@@ -122,7 +122,7 @@ public class DatastoreServlet extends BaseServlet {
       Entity courseEntity;
       if (limitedResults.size() == 0) {
         // The entity doesn't exist - create a new one.
-        courseEntity = new Entity("Course");
+        courseEntity = new Entity("Course", course.getCourseId());
       } else {
         // The entity already exists - modify it instead.
         courseEntity = limitedResults.get(0);
