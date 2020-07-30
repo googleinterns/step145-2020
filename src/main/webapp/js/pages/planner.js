@@ -93,6 +93,9 @@ async function savePlan(courseList) {
     });
     $('#savePlanModal').modal('hide');
   } catch (err) {
+    CollegePlanner.createAlert(
+        'Could not save this plan', 'warning',
+        document.getElementById('plan-name'));
     return;
   }
 }

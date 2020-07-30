@@ -49,7 +49,11 @@ import org.json.simple.parser.ParseException;
 /** Servlet that saves and returns a users plans.*/
 @WebServlet("/api/planner/save")
 public class SavePlanServlet extends BaseServlet {
-  GoogleIdTokenVerifier verifier;
+  /**
+   * Verifier for Google OAuth that validates tokens and ensures the source of the token is
+   * acceptable according to the client ID.
+   */
+  final GoogleIdTokenVerifier verifier;
   DatastoreService datastore;
 
   public SavePlanServlet() {
@@ -76,15 +80,32 @@ public class SavePlanServlet extends BaseServlet {
     }
 
     if (idToken == null) {
-      respondWithError("Invalid user.", HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError("Invalid user.", HttpServletResponse.SC_UNAUTHORIZED, response);
       return;
     }
+    ArrayList<Plan> plans = getPlans(idToken, response);
+    if (plans == null) {
+      return; // Error has already been written.
+    }
+    JSONObject plansJson = new JSONObject();
+    plansJson.put("plans", new Gson().toJson(plans));
+    plansJson.put("user", idToken.getPayload().getEmail());
+    response.setContentType("application/json");
+    response.getWriter().println(new Gson().toJson(plansJson));
+  }
 
+  /**
+   * Returns a list of plans associated with the user idToken.
+   * @param idToken The GoogleIdToken you are trying to retreive plans for.
+   * @param response the HttpServletResponse to write to in case of error.
+   */
+  private ArrayList<Plan> getPlans(GoogleIdToken idToken, HttpServletResponse response)
+      throws IOException {
     Payload payload = idToken.getPayload();
-    Query query =
-        new Query("Plan")
-            .setFilter(new FilterPredicate("user", FilterOperator.EQUAL, payload.getEmail()))
-            .addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query("Plan")
+                      .setFilter(new FilterPredicate(
+                          "user", FilterOperator.EQUAL, payload.getEmail().toLowerCase()))
+                      .addSort("timestamp", SortDirection.DESCENDING);
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
 
     ArrayList<Plan> plans = new ArrayList<>();
@@ -97,15 +118,11 @@ public class SavePlanServlet extends BaseServlet {
         plans.add(new Plan(id, plan, planName));
       } catch (ParseException e) {
         respondWithError(
-            "Returned plans are invalid.", HttpServletResponse.SC_BAD_REQUEST, response);
-        return;
+            "Returned plans are invalid.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+        return null;
       }
     }
-    JSONObject plansJson = new JSONObject();
-    plansJson.put("plans", new Gson().toJson(plans));
-    plansJson.put("user", payload.getEmail());
-    response.setContentType("application/json");
-    response.getWriter().println(new Gson().toJson(plansJson));
+    return plans;
   }
 
   @Override
@@ -134,7 +151,7 @@ public class SavePlanServlet extends BaseServlet {
     }
 
     if (idToken == null) {
-      respondWithError("Invalid user.", HttpServletResponse.SC_BAD_REQUEST, response);
+      respondWithError("Invalid user.", HttpServletResponse.SC_UNAUTHORIZED, response);
       return;
     }
 
@@ -145,7 +162,7 @@ public class SavePlanServlet extends BaseServlet {
   /**
    * Writes the saved plan to datastore.
    * @param email The email associated with the plan.
-   * @param plan The plan that was saved.
+   * @param plan The stringified json plan that was saved.
    * @param planName the name the user tried to save their plan with.
    */
   private void addToDatastore(String email, String plan, String planName) {
@@ -154,7 +171,7 @@ public class SavePlanServlet extends BaseServlet {
     planEntity.setProperty("plan", plan);
     planEntity.setProperty("planName", planName);
     planEntity.setProperty("timestamp", timestamp);
-    planEntity.setProperty("user", email);
+    planEntity.setProperty("user", email.toLowerCase());
 
     datastore.put(planEntity);
   }

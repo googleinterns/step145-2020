@@ -16,6 +16,7 @@ package com.google.collegeplanner.data;
 
 import org.json.simple.JSONObject;
 
+/** This class represents a multi-semester plan. */
 public class Plan {
   private final long id;
   private final JSONObject plan;

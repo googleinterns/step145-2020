@@ -121,8 +121,8 @@ public final class SavePlanTest {
     when(request.getReader()).thenReturn(reader);
     when(verifier.verify("PERSON_A")).thenReturn(null);
     servlet.doPost(request, response);
-    verify(response, times(1)).setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    verify(response, never()).setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
+    verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    verify(response, never()).setStatus(not(eq(HttpServletResponse.SC_UNAUTHORIZED)));
     // Check whether the string output is correct.
     JSONAssert.assertEquals(stringWriter.toString(),
         "{\"message\":\"Invalid user.\",\"status\":\"error\"}", JSONCompareMode.STRICT);
@@ -193,8 +193,8 @@ public final class SavePlanTest {
     when(request.getParameter("idToken")).thenReturn("PERSON_A");
     when(verifier.verify("PERSON_A")).thenReturn(null);
     servlet.doGet(request, response);
-    verify(response, times(1)).setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    verify(response, never()).setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
+    verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    verify(response, never()).setStatus(not(eq(HttpServletResponse.SC_UNAUTHORIZED)));
     // Check whether the string output is correct.
     JSONAssert.assertEquals(stringWriter.toString(),
         "{\"message\":\"Invalid user.\",\"status\":\"error\"}", JSONCompareMode.STRICT);
