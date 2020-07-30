@@ -127,4 +127,23 @@ public final class ScheduleTest {
     schedule.addClass(englishClass2);
     Assert.assertTrue(schedule.addClass(compSciClass));
   }
+
+  @Test
+  public void removeClass() {
+    Schedule actual = new Schedule();
+    Assert.assertTrue(actual.addClass(compSciClass));
+    Assert.assertTrue(actual.addClass(englishClass));
+    actual.removeLastClass();
+    
+    Schedule expected = new Schedule();
+    Assert.assertTrue(expected.addClass(compSciClass));
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void removeSizeZero() {
+    Schedule schedule = new Schedule();
+    schedule.removeLastClass();
+    Assert.assertTrue(schedule.getSections().isEmpty());
+  }
 }

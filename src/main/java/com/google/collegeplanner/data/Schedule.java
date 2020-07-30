@@ -25,6 +25,9 @@ public class Schedule {
     sections = new ArrayList<Section>();
   }
 
+  public Schedule(Schedule schedule) {
+    sections = new ArrayList<>(schedule.getSections());
+  }
   /**
    * This method adds a section to the existing schedule of sections
    * Returns true if there are no conflicts and the section has been added
@@ -46,7 +49,7 @@ public class Schedule {
    * This method checks to see if the provided section object conflicts
    * with the other section objects in the schedule ArrayList.
    * Method is true if there is a conflict, false otherwise.
-   * @param section the other section this object is being compared with 
+   * @param section the other section this object is being compared with
    */
   private boolean conflictsWithSchedule(Section section) {
     for (Section scheduledSection : sections) {
@@ -59,6 +62,15 @@ public class Schedule {
 
   public ArrayList<Section> getSections() {
     return sections;
+  }
+
+  /**
+   * Removes the class that was last added to the schedule
+   */
+  public void removeLastClass() {
+    if (sections.size() > 0) {
+      sections.remove(sections.size() - 1);
+    }
   }
 
   @Override
