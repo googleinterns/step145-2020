@@ -22,39 +22,41 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns list of courses.*/
-@WebServlet("/api/courses")
-public class CourseListServlet extends BaseServlet {
-  public CourseListServlet() {
+/** Servlet that returns list of course sections.*/
+@WebServlet("/api/sections")
+public class SectionServlet extends BaseServlet {
+  public SectionServlet() {
     super(new ApiUtil());
   }
 
-  public CourseListServlet(ApiUtil apiUtil) {
+  public SectionServlet(ApiUtil apiUtil) {
     super(apiUtil);
   }
 
   /**
-   * Reads from Datastore and returns response with course details
+   * Reads from Datastore and returns response with section details
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Create the URI and specify the parameters.
-    String department = request.getParameter("department");
-    if (department == null || department == "") {
+    String courseId = request.getParameter("course_id");
+    String sectionId = request.getParameter("section_id");
+    if (courseId == null || courseId == "") {
       respondWithError(
-          "Invalid or missing department.", HttpServletResponse.SC_BAD_REQUEST, response);
+          "Invalid or missing course id.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
+    if (sectionId == null || sectionId == "") {
+      respondWithError(
+          "Invalid or missing section id.", HttpServletResponse.SC_BAD_REQUEST, response);
+      return;
+    }
+
     URI uri;
     try {
-      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
-      builder.setParameter("semester", "202008");
-      builder.setParameter("dept_id", department);
-      uri = builder.build();
+      uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections/" + sectionId);
     } catch (URISyntaxException e) {
       respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
@@ -66,10 +68,10 @@ public class CourseListServlet extends BaseServlet {
       return;
     }
 
-    JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses", jsonArray);
+    JSONObject sectionsInfo = new JSONObject();
+    sectionsInfo.put("sections", jsonArray);
 
     response.setContentType("application/json;");
-    response.getWriter().println(schoolCourseInfo);
+    response.getWriter().println(sectionsInfo);
   }
 }
