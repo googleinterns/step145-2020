@@ -16,11 +16,13 @@ package com.google.collegeplanner.data;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import static com.google.common.truth.Truth.assertThat;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
 
 /** Tests SemesterScheduler */
 @RunWith(JUnit4.class)
@@ -189,8 +191,6 @@ public final class SemesterSchedulerTest {
     expectedSchedules.get(2).addClass(mathClasses.get(0));
     expectedSchedules.get(2).addClass(chemClasses.get(0));
 
-    ArrayList<Schedule> actualSchedules = scheduler.getPossibleSchedules();
-    Assert.assertTrue(expectedSchedules.containsAll(actualSchedules) && 
-                    expectedSchedules.size() == actualSchedules.size());
+    assertThat(expectedSchedules).containsExactlyElementsIn(scheduler.getPossibleSchedules());
   }
 }
