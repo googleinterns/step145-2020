@@ -58,7 +58,10 @@ public class SemesterScheduler {
    */
   private void nestedLoop(int[] sectionListSizes, int level) {
     if (possibleSchedules.size() >= MAX_SCHEDULES) {
+<<<<<<< HEAD
       System.out.println("too big");
+=======
+>>>>>>> 3bf2c6f53608bbc2563157fa08ea4535afc4bec2
       return;
     }
     if (level == sectionListSizes.length) {
@@ -67,6 +70,7 @@ public class SemesterScheduler {
       for (int i = 0; i < sectionListSizes[level]; i++) {
         if (workingSchedule.addClass(sections.get(level).get(i))) {
           nestedLoop(sectionListSizes, level + 1);
+          // Removes sections.get(level).get(i) as it was just previously added
           workingSchedule.removeLastClass();
         }
       }

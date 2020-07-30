@@ -14,15 +14,15 @@
 
 package com.google.collegeplanner.data;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.text.ParseException;
 import java.util.ArrayList;
-import static com.google.common.truth.Truth.assertThat;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 
 /** Tests SemesterScheduler */
 @RunWith(JUnit4.class)

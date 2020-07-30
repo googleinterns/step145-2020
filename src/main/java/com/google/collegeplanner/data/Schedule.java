@@ -64,8 +64,13 @@ public class Schedule {
     return sections;
   }
 
+  /**
+   * Removes the class that was last added to the schedule
+   */
   public void removeLastClass() {
-    sections.remove(sections.size() - 1);
+    if (sections.size() > 0) {
+      sections.remove(sections.size() - 1);
+    }
   }
 
   @Override
