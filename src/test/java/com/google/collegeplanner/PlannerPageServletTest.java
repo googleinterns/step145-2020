@@ -33,7 +33,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests PlannerPageServlet */
 @RunWith(JUnit4.class)
-public final class PlannerPageTest {
+public final class PlannerPageServletTest {
   @Test
   public void servletResponseIsCorrect() throws IOException, ServletException {
     RequestDispatcher mockRequestDispatcher = mock(RequestDispatcher.class);
