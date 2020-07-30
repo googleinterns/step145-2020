@@ -6,3 +6,22 @@
   color: #858796;
   font-size: 15px;
 }
+
+.profile-image {
+  height: 50px;
+  width: 50px;
+}
+
+.pagination li {
+  color: black;
+  padding: 8px 16px;
+}
+
+.pagination li.active {
+  background-color: #3d64d3;
+  color: white;
+}
+
+.pagination li:hover:not(.active) {
+  background-color: #ddd;
+}
