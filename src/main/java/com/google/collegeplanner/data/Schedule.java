@@ -49,7 +49,7 @@ public class Schedule {
    * This method checks to see if the provided section object conflicts
    * with the other section objects in the schedule ArrayList.
    * Method is true if there is a conflict, false otherwise.
-   * @param section the other section this object is being compared with 
+   * @param section the other section this object is being compared with
    */
   private boolean conflictsWithSchedule(Section section) {
     for (Section scheduledSection : sections) {
@@ -68,7 +68,7 @@ public class Schedule {
    * Removes the class that was last added to the schedule
    */
   public void removeLastClass() {
-    if(sections.size() > 0) {
+    if (sections.size() > 0) {
       sections.remove(sections.size() - 1);
     }
   }
