@@ -58,7 +58,6 @@ public class SemesterScheduler {
    */
   private void nestedLoop(int[] sectionListSizes, int level) {
     if (possibleSchedules.size() >= MAX_SCHEDULES) {
-      System.out.println("too big");
       return;
     }
     if (level == sectionListSizes.length) {
