@@ -209,7 +209,6 @@ public final class PlannerTest {
     servlet.doPost(mockedRequest, mockedResponse);
     // Check whether the string output is correct
     JSONAssert.assertEquals(stringWriter.toString(),
-
         "{\"semester_plan\":[], \"semester_credits\":[]}", JSONCompareMode.STRICT);
   }
 

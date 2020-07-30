@@ -25,6 +25,9 @@ public class Schedule {
     sections = new ArrayList<Section>();
   }
 
+  public Schedule(Schedule schedule) {
+    sections = new ArrayList<>(schedule.getSections());
+  }
   /**
    * This method adds a section to the existing schedule of sections
    * Returns true if there are no conflicts and the section has been added
@@ -59,6 +62,15 @@ public class Schedule {
 
   public ArrayList<Section> getSections() {
     return sections;
+  }
+
+  /**
+   * Removes the class that was last added to the schedule
+   */
+  public void removeLastClass() {
+    if (sections.size() > 0) {
+      sections.remove(sections.size() - 1);
+    }
   }
 
   @Override
