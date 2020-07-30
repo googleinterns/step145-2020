@@ -66,6 +66,7 @@ public class SemesterScheduler {
       for (int i = 0; i < sectionListSizes[level]; i++) {
         if (workingSchedule.addClass(sections.get(level).get(i))) {
           nestedLoop(sectionListSizes, level + 1);
+          // Removes sections.get(level).get(i) as it was just previously added
           workingSchedule.removeLastClass();
         }
       }
