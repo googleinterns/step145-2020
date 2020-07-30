@@ -48,6 +48,8 @@
           class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
         >
           <h6 class="m-0 font-weight-bold text-primary">Proposed Plan:</h6>
+          <div id="plan-header">
+          </div>
         </div>
         <!-- Card Body -->
         <div class="card-body">
@@ -94,6 +96,43 @@
             </button>
           </form>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Save Planner Modal-->
+<div class="modal fade" id="savePlanModal" tabindex="-1" role="dialog" aria-labelledby="savePlanModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="savePlanModalLabel">Save this plan:</h5>
+      </div>
+      <div class="modal-body">
+        <form id="plan-name" onsubmit="return false">
+          <input type="text" class="form-control" placeholder="Type name here" required></input>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" type="submit" form="plan-name">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Sign in Prompt Modal -->
+<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="signInModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signInModalLabel">Please sign in to save a schedule.</h5>
+      </div>
+      <div class="modal-body">
+        <center>
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        </center>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
       </div>
     </div>
   </div>
