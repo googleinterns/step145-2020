@@ -49,7 +49,7 @@ public final class CourseTest {
   }
 
   @Test
-  public void invalidMonthNumber() throws ParseException {
+  public void invalidMonthNumber() throws Exception {
     course = new Course("CMSC101", "Introduction to Computer Science", "202003", 4, "CMSC",
         "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
@@ -58,7 +58,7 @@ public final class CourseTest {
   }
 
   @Test
-  public void invalidMonthFormat() throws ParseException {
+  public void invalidMonthFormat() throws Exception {
     course = new Course("CMSC101", "Introduction to Computer Science", "2020f3", 4, "CMSC",
         "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
@@ -67,7 +67,7 @@ public final class CourseTest {
   }
 
   @Test
-  public void invalidYearNumber() throws ParseException {
+  public void invalidYearNumber() throws Exception {
     course = new Course("CMSC101", "Introduction to Computer Science", "177608", 4, "CMSC",
         "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
@@ -76,7 +76,7 @@ public final class CourseTest {
   }
 
   @Test
-  public void invalidYearFormat() throws ParseException {
+  public void invalidYearFormat() throws Exception {
     course = new Course("CMSC101", "Introduction to Computer Science", "r8e108", 4, "CMSC",
         "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);
@@ -85,7 +85,7 @@ public final class CourseTest {
   }
 
   @Test
-  public void invalidFormat() throws ParseException {
+  public void invalidFormat() throws Exception {
     course = new Course("CMSC101", "Introduction to Computer Science", "03", 4, "CMSC",
         "Introductory class to Computer Science", null, null, null, null, null);
     exceptionRule.expect(ParseException.class);

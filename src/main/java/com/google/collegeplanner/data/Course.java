@@ -81,7 +81,7 @@ public class Course {
 
   public Course(String courseId, String name, String semester, int credits, String departmentId,
       String description, String corequisites, String prerequisites, String restrictions,
-      String additionalInfo, String creditGrantedFor) {
+      String additionalInfo, String creditGrantedFor) throws Exception {
     this.courseId = courseId;
     this.name = name;
     this.semester = semester;
@@ -93,9 +93,11 @@ public class Course {
     this.restrictions = restrictions;
     this.additionalInfo = additionalInfo;
     this.creditGrantedFor = creditGrantedFor;
+
+    validate();
   }
 
-  public Course(JSONObject json) throws Exception {
+  public Course(JSONObject json) throws ParseException {
     try {
       this.credits = Integer.parseInt((String) json.get("credits"));
     } catch (NumberFormatException e) {
@@ -103,11 +105,6 @@ public class Course {
     }
 
     this.courseId = (String) json.get("course_id");
-    if (this.courseId == null) {
-      throw new ParseException("Null course_id.", 0);
-    }
-    this.courseId = this.courseId.toUpperCase();
-
     this.name = (String) json.get("name");
     this.semester = (String) json.get("semester");
     this.departmentId = (String) json.get("department_id");
@@ -128,6 +125,18 @@ public class Course {
     this.restrictions = (String) relationships.get("restrictions");
     this.additionalInfo = (String) relationships.get("additional_info");
     this.creditGrantedFor = (String) relationships.get("credit_granted_for");
+
+    validate();
+  }
+
+  /*
+   * Validates the courseId parameter that is passed into the constructors.
+   */
+  private void validate() throws ParseException {
+    if (this.courseId == null) {
+      throw new ParseException("Null course_id.", 0);
+    }
+    this.courseId = this.courseId.toUpperCase();
   }
 
   /*
