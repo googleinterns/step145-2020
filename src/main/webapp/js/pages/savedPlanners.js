@@ -34,7 +34,6 @@ async function getSavedPlans() {
         document.getElementById('alert-container'));
     return;
   }
-  console.log(plans);
   if (plans.user ==
       gapi.auth2.getAuthInstance()
           .currentUser.get()
