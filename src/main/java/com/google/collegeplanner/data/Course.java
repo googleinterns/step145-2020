@@ -106,6 +106,8 @@ public class Course {
     if (this.courseId == null) {
       throw new ParseException("Null course_id.", 0);
     }
+    this.courseId = this.courseId.toUpperCase();
+
     this.name = (String) json.get("name");
     this.semester = (String) json.get("semester");
     this.departmentId = (String) json.get("department_id");
