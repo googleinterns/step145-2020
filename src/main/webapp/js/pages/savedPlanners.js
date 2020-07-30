@@ -1,0 +1,121 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import CollegePlanner from '../lib/courseSelector.js';
+import Auth from '../lib/login.js';
+
+async function getSavedPlans() {
+  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    return;
+  }
+  let response;
+  let plans;
+  try {
+    response = await fetch(`/api/planner/save?idToken=${
+        encodeURIComponent(gapi.auth2.getAuthInstance()
+                               .currentUser.get()
+                               .getAuthResponse()
+                               .id_token)}`);
+    plans = await response.json();
+  } catch (err) {
+    createAlert(
+        'An error occurred', 'danger',
+        document.getElementById('alert-container'));
+    return;
+  }
+  console.log(plans);
+  if (plans.user ==
+      gapi.auth2.getAuthInstance()
+          .currentUser.get()
+          .getBasicProfile()
+          .getEmail()) {
+    const planList = JSON.parse(plans.plans);
+    planList.forEach(
+        planInfo => createCard(
+            planInfo.planName, planInfo.plan.semester_plan,
+            planInfo.plan.semester_credits));
+  }
+}
+
+/**
+ * Creates card for the plan and appends it to the page
+ * @param {String} planName the name of the plan
+ * @param {Object} tableData 2D array with separation of courses
+ * @param {Object} creditsData Array with credits for each semester
+ */
+function createCard(planName, tableData, creditsData) {
+  const card = document.createElement('div');
+  card.setAttribute('class', 'card shadow mb-4');
+  const header = document.createElement('div');
+  header.setAttribute(
+      'class',
+      'card-header py-3 d-flex flex-row align-items-center justify-content-between');
+  const title = document.createElement('h6');
+  title.setAttribute('class', 'm-0 font-weight-bold text-primary');
+  title.innerText = planName;
+  header.appendChild(title);
+  card.appendChild(header);
+  const body = document.createElement('div');
+  body.setAttribute('class', 'card-body');
+  const table = document.createElement('center');
+  createTable(tableData, creditsData, table);
+  body.appendChild(table);
+  card.appendChild(body);
+  document.getElementById('plan-column').appendChild(card);
+}
+
+
+/**
+ * Creates table from a 2D array
+ * @param {Object} tableData 2D array with separation of courses
+ * @param {Object} creditsData Array with credits for each semester
+ * @param {Element} courseContainer container for course list
+ */
+function createTable(tableData, creditsData, courseContainer) {
+  courseContainer.innerText = '';
+  const table = document.createElement('table');
+  const tableBody = document.createElement('tbody');
+  table.setAttribute('class', 'table table-hover mb-0;');
+  tableData.forEach((rowData, i) => {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    const semesterLabel = document.createElement('b');
+    semesterLabel.innerText = `Semester ${i + 1} (${creditsData[i]} Credits):`;
+    cell.appendChild(semesterLabel);
+    row.appendChild(cell);
+
+    rowData.forEach((cellData) => {
+      const cell = document.createElement('td');
+      cell.appendChild(document.createTextNode(cellData));
+      row.appendChild(cell);
+    });
+
+    tableBody.appendChild(row);
+  });
+
+  table.appendChild(tableBody);
+  courseContainer.appendChild(table);
+}
+
+window.addEventListener('load', () => {
+  function onSignIn(googleuser) {
+    Auth.onSignIn(googleuser);
+    getSavedPlans();
+  }
+  window.onSignIn = onSignIn;
+});
+
+document.getElementById('signout-button').addEventListener('click', () => {
+  Auth.signOut();
+});
