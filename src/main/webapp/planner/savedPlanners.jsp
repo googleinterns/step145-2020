@@ -15,6 +15,7 @@ limitations under the License.
 --%>
 
 <jsp:include page="/vendor/startbootstrap/template.jsp">
+  <jsp:param name="directory" value="../"/>
   <jsp:param name="activePlanner" value="active"/>
   <jsp:param name="content" value="saved-planner-content"/>
   <jsp:param name="scriptFile" value="pages/savedPlanners"/>

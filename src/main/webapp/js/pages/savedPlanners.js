@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import CollegePlanner from '../lib/courseSelector.js';
 import Auth from '../lib/login.js';
+import CollegePlanner from '../lib/courseSelector.js';
+import Util from '../lib/utils.js';
 
 async function getSavedPlans() {
   if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
@@ -29,7 +30,7 @@ async function getSavedPlans() {
                                .id_token)}`);
     plans = await response.json();
   } catch (err) {
-    createAlert(
+    Util.createAlert(
         'An error occurred', 'danger',
         document.getElementById('alert-container'));
     return;
@@ -40,6 +41,8 @@ async function getSavedPlans() {
           .getBasicProfile()
           .getEmail()) {
     const planList = JSON.parse(plans.plans);
+    document.getElementById('plan-column').innerText =
+        '';  // Clear the sign in prompt.
     planList.forEach(
         planInfo => createCard(
             planInfo.planName, planInfo.plan.semester_plan,
@@ -68,43 +71,10 @@ function createCard(planName, tableData, creditsData) {
   const body = document.createElement('div');
   body.setAttribute('class', 'card-body');
   const table = document.createElement('center');
-  createTable(tableData, creditsData, table);
+  Util.createTable(tableData, creditsData, table);
   body.appendChild(table);
   card.appendChild(body);
   document.getElementById('plan-column').appendChild(card);
-}
-
-
-/**
- * Creates table from a 2D array
- * @param {Object} tableData 2D array with separation of courses
- * @param {Object} creditsData Array with credits for each semester
- * @param {Element} courseContainer container for course list
- */
-function createTable(tableData, creditsData, courseContainer) {
-  courseContainer.innerText = '';
-  const table = document.createElement('table');
-  const tableBody = document.createElement('tbody');
-  table.setAttribute('class', 'table table-hover mb-0;');
-  tableData.forEach((rowData, i) => {
-    const row = document.createElement('tr');
-    const cell = document.createElement('td');
-    const semesterLabel = document.createElement('b');
-    semesterLabel.innerText = `Semester ${i + 1} (${creditsData[i]} Credits):`;
-    cell.appendChild(semesterLabel);
-    row.appendChild(cell);
-
-    rowData.forEach((cellData) => {
-      const cell = document.createElement('td');
-      cell.appendChild(document.createTextNode(cellData));
-      row.appendChild(cell);
-    });
-
-    tableBody.appendChild(row);
-  });
-
-  table.appendChild(tableBody);
-  courseContainer.appendChild(table);
 }
 
 window.addEventListener('load', () => {

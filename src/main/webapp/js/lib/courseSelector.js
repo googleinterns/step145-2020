@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import Util from '../lib/utils.js';
+
 let selected = [];  // Courses selected by the user
 let courses = [];   // List with all courses
 /**
@@ -29,7 +31,7 @@ async function getDepartmentOptions() {
     response = await fetch('/api/departments');
     departmentList = await response.json();
   } catch (err) {
-    createAlert(
+    Util.createAlert(
         'An error occurred', 'danger',
         document.getElementById('alert-container'));
     return;
@@ -77,7 +79,7 @@ async function getCourseOptions() {
         `/api/courses?department=${encodeURIComponent(selectedDepartment)}`);
     courseList = await response.json();
   } catch (err) {
-    createAlert(
+    Util.createAlert(
         'An error occurred', 'danger',
         document.getElementById('alert-container'));
     return;
@@ -154,21 +156,6 @@ function createCourseListElement(course) {
   return liElement;
 }
 
-/**
- * Creates an alert with the specified message in the container
- * @param {string} message The message string you want to be displayed
- * @param {string} type type of alert you want to display (primary, secondary,
- *     success, warning, danger)
- * @param {Element} container the container you want to display the alert in
- */
-function createAlert(message, type, container) {
-  const alert = document.createElement('div');
-  alert.setAttribute('class', `alert alert-${type}`);
-  alert.setAttribute('role', 'alert');
-  alert.appendChild(document.createTextNode(message));
-  container.appendChild(alert);
-}
-
 function getSelected() {
   return selected;
 }
@@ -185,7 +172,6 @@ export default {
   getSelected: getSelected,
   getCourses: getCourses,
   getCourseInfo: getCourseInfo,
-  createAlert: createAlert,
   getDepartmentOptions: getDepartmentOptions,
   getCourseOptions: getCourseOptions,
   addToSelected: addToSelected,

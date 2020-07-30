@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that renders the /savedplanners page.*/
-@WebServlet("/savedplanners")
+@WebServlet("/planner/saved")
 public class SavedPlansPageServlet extends HttpServlet {
   /**
    * Renders savedPlanners.jsp
