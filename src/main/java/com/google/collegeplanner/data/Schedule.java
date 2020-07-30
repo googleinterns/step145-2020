@@ -98,8 +98,6 @@ public class Schedule {
       output.put(section.getCourseId(), section.getSectionId());
     }
 
-    output.put("sections", sectionsArray);
-
     return output;
   }
 }
