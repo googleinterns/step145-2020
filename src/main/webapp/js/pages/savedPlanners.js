@@ -16,18 +16,12 @@ import CollegePlanner from '../lib/courseSelector.js';
 import Auth from '../lib/login.js';
 import {Util} from '../lib/utils.js';
 
-async function getSavedPlans() {
-  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-    return;
-  }
+async function getSavedPlans(googleUser) {
   let response;
   let plans;
   try {
     response = await fetch(`/api/planner/save?idToken=${
-        encodeURIComponent(gapi.auth2.getAuthInstance()
-                               .currentUser.get()
-                               .getAuthResponse()
-                               .id_token)}`);
+        encodeURIComponent(googleUser.getAuthResponse().id_token)}`);
     plans = await response.json();
   } catch (err) {
     Util.createAlert(
@@ -35,11 +29,7 @@ async function getSavedPlans() {
         document.getElementById('alert-container'));
     return;
   }
-  if (plans.user ==
-      gapi.auth2.getAuthInstance()
-          .currentUser.get()
-          .getBasicProfile()
-          .getEmail()) {
+  if (plans.user == googleUser.getBasicProfile().getEmail()) {
     const planList = JSON.parse(plans.plans);
     document.getElementById('plan-column').innerText =
         '';  // Clear the sign in prompt.
@@ -77,13 +67,7 @@ function createCard(planName, tableData, creditsData) {
   document.getElementById('plan-column').appendChild(card);
 }
 
-window.addEventListener('load', () => {
-  function onSignIn(googleuser) {
-    Auth.onSignIn(googleuser);
-    getSavedPlans();
-  }
-  window.onSignIn = onSignIn;
-});
+Auth.registerPostSignInHandler(getSavedPlans);
 
 document.getElementById('signout-button').addEventListener('click', () => {
   Auth.signOut();
