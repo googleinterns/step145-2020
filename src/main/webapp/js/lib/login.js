@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * Array of functions to execute after signing in in addition to onSignIn
+ * @type {!Array<function>}
+ */
 const postSignInHandlers = [];
 
 /**
