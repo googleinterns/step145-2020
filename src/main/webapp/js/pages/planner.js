@@ -156,6 +156,14 @@ document.getElementById('see-saved').addEventListener('click', () => {
   }
 });
 
+document.getElementById('see-saved').addEventListener('click', () => {
+  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    window.location.href = 'planner/saved';
+  } else {
+    $('#signInModal').modal();
+  }
+});
+
 document.getElementById('signout-button').addEventListener('click', () => {
   Auth.signOut();
 });

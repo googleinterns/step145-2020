@@ -13,12 +13,18 @@
 // limitations under the License.
 
 /**
+ * Array of functions to execute after signing in in addition to onSignIn
+ * @type {!Array<function>}
+ */
+const postSignInHandlers = [];
+
+/**
  * Gets user information and populates the topbar with their image and name
  * @param {GoogleUser} googleUser the currently logged in user
  */
 function onSignIn(googleUser) {
   const profile = googleUser.getBasicProfile();
-  // Add user name and photo to page
+  // Add user name and photo to page.
   const userInfo = document.getElementById('user-info');
   const userName = document.createElement('span');
   userName.setAttribute('class', 'mr-2 d-none d-lg-inline text-gray-600 small');
@@ -29,8 +35,10 @@ function onSignIn(googleUser) {
   userInfo.innerText = ''
   userInfo.appendChild(userName);
   userInfo.appendChild(userPhoto);
-  // make dropdown to sign out visible
+  // Make dropdown to sign out visible.
   document.getElementById('user-dropdown').hidden = false;
+  // Execute each postSignInHandler
+  postSignInHandlers.forEach(func => func(googleUser));
 }
 
 /**
@@ -43,6 +51,10 @@ function signOut() {
   });
 }
 
+function registerPostSignInHandler(handler) {
+  postSignInHandlers.push(handler);
+}
+
 /**
  * Set window onSignIn so the function is executed on login.
  * Exported so that the function can be used on all pages of site.
@@ -51,5 +63,6 @@ window.onSignIn = onSignIn;
 
 export const Auth = {
   onSignIn: onSignIn,
-  signOut: signOut
+  signOut: signOut,
+  registerPostSignInHandler: registerPostSignInHandler
 };
