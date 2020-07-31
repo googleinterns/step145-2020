@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import java.time.format.DateTimeParseException;
 
 /*
  * This Meeting class depicts a session a class takes place during. For example, a
@@ -69,9 +70,16 @@ public class Meeting {
     time = time.toUpperCase();
 
     // Parse the 24-hour time to get the hours and minutes
-    LocalTime localTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("h:mma"));
-    int hours = localTime.get(ChronoField.CLOCK_HOUR_OF_DAY);
-    int minutes = localTime.get(ChronoField.MINUTE_OF_HOUR);
+    LocalTime localTime;
+    int hours;
+    int minutes;
+    try {
+      localTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("h:mma"));
+      hours = localTime.get(ChronoField.CLOCK_HOUR_OF_DAY);
+      minutes = localTime.get(ChronoField.MINUTE_OF_HOUR);
+    } catch (DateTimeParseException e) {
+      throw new ParseException("Invalid time format.", 0);
+    }
 
     // Convert the hours and minutes into just minutes
     return 60 * hours + minutes;
