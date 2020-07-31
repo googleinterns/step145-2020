@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {CourseSelector} from '../lib/courseSelector.js';
 import {Auth} from '../lib/auth.js';
+import {CourseSelector} from '../lib/courseSelector.js';
 import {Util} from '../lib/util.js';
 
 /**

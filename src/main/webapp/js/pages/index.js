@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {Auth} from '../lib/auth.js';
 import {Calendar} from '../lib/calendar.js';
 import {CourseSelector} from '../lib/courseSelector.js';
-import {Auth} from '../lib/auth.js';
 
 const MAX_PAGINATION_SCHEDULES = 15;
 
