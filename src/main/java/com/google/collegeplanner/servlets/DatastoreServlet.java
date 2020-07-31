@@ -90,18 +90,23 @@ public class DatastoreServlet extends BaseServlet {
         // Successful. The default status code response is 200.
         return;
       }
-      addCourses(coursesArray, response);
+
+      try {
+        addCourses(coursesArray);
+      } catch (IllegalArgumentException e) {
+        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+        return;
+      }
     } while (page++ < PAGE_LIMIT);
   }
 
   /**
    * Creates a Course object from a JSONArray.
    * @param coursesArray The course json from the UMD API.
-   * @param response The HttpServletResponse object.
    */
-  private void addCourses(JSONArray coursesArray, HttpServletResponse response) throws IOException {
+  private void addCourses(JSONArray coursesArray) throws IllegalArgumentException {
     if (coursesArray == null) {
-      return;
+      throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
     // Loop through each page's courses.
@@ -113,8 +118,7 @@ public class DatastoreServlet extends BaseServlet {
       try {
         course = new Course(courseJson);
       } catch (Exception e) {
-        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        continue;
       }
 
       // Check if the entity already exists in datastore, and modify it if it does.
@@ -137,11 +141,10 @@ public class DatastoreServlet extends BaseServlet {
             + URLEncoder.encode(course.getCourseId(), StandardCharsets.UTF_8.toString())
             + "/sections");
       } catch (URISyntaxException | UnsupportedEncodingException e) {
-        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        continue;
       }
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
-      addSectionsToCourse(sectionsArray, course, courseEntity, response);
+      addSectionsToCourse(sectionsArray, course, courseEntity);
     }
   }
 
@@ -150,13 +153,11 @@ public class DatastoreServlet extends BaseServlet {
    * @param sectionsArray The section json from the UMD API.
    * @param course The Course object.
    * @param courseEntity The Entity object that we want to add to datastore.
-   * @param response The HttpServletResponse object.
    */
-  private void addSectionsToCourse(JSONArray sectionsArray, Course course, Entity courseEntity,
-      HttpServletResponse response) throws IOException {
-    if (sectionsArray == null || course == null || courseEntity == null || response == null) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
+  private void addSectionsToCourse(JSONArray sectionsArray, Course course, Entity courseEntity)
+      throws IllegalArgumentException {
+    if (sectionsArray == null || course == null || courseEntity == null) {
+      throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
     // Loop through each course's sections.
@@ -167,8 +168,7 @@ public class DatastoreServlet extends BaseServlet {
       try {
         section = new Section(sectionJson);
       } catch (Exception e) {
-        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        continue;
       }
 
       // Create a Section embedded entity.
@@ -182,7 +182,7 @@ public class DatastoreServlet extends BaseServlet {
 
       // Convert Meetings to Meeting embedded entities.
       ArrayList<EmbeddedEntity> meetingEntities = new ArrayList<EmbeddedEntity>();
-      addToMeetingEntities(meetingEntities, section.getMeetings(), response);
+      addToMeetingEntities(meetingEntities, section.getMeetings());
 
       // Add the Meeting embedded entities to the Section entity.
       sectionEntity.setProperty("meetings", meetingEntities);
@@ -211,11 +211,10 @@ public class DatastoreServlet extends BaseServlet {
    * @param meetingEntities The ArrayList of Meeting entities.
    * @param meetings The Array of Meeting objects.
    */
-  private void addToMeetingEntities(ArrayList<EmbeddedEntity> meetingEntities, Meeting[] meetings,
-      HttpServletResponse response) throws IOException {
+  private void addToMeetingEntities(ArrayList<EmbeddedEntity> meetingEntities, Meeting[] meetings)
+      throws IllegalArgumentException {
     if (meetingEntities == null || meetings == null) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
+      throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
     for (Meeting meeting : meetings) {
