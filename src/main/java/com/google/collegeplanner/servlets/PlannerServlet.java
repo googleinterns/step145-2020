@@ -54,7 +54,7 @@ public class PlannerServlet extends BaseServlet {
     int numSemesters;
     JSONArray selectedClasses;
     try {
-      body = getBody(request);
+      body = getPostRequestBody(request);
       numSemesters = Integer.parseInt((String) body.get("semesters"));
       selectedClasses = (JSONArray) body.get("selectedClasses");
     } catch (NumberFormatException | ClassCastException | ParseException | NullPointerException e) {
@@ -135,17 +135,6 @@ public class PlannerServlet extends BaseServlet {
       }
     }
     return true;
-  }
-
-  /**
-   * Gets the JSON Representation of the body of the POST request
-   */
-  private JSONObject getBody(HttpServletRequest request)
-      throws IOException, ParseException, NullPointerException {
-    String strBody =
-        request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-    JSONParser parser = new JSONParser();
-    return (JSONObject) parser.parse(strBody);
   }
 
   /**

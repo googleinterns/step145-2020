@@ -43,7 +43,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /** Tests PlannerServlet */
 @RunWith(JUnit4.class)
-public final class PlannerTest {
+public final class PlannerServletTest {
   HttpServletRequest mockedRequest;
   HttpServletResponse mockedResponse;
   StringWriter stringWriter;
