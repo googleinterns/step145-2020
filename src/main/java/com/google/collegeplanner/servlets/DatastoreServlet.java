@@ -32,6 +32,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,8 +95,7 @@ public class DatastoreServlet extends BaseServlet {
       try {
         addCourses(coursesArray);
       } catch (IllegalArgumentException e) {
-        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        continue;
       }
     } while (page++ < PAGE_LIMIT);
   }
@@ -117,7 +117,7 @@ public class DatastoreServlet extends BaseServlet {
       Course course;
       try {
         course = new Course(courseJson);
-      } catch (Exception e) {
+      } catch (ParseException e) {
         continue;
       }
 
@@ -167,7 +167,7 @@ public class DatastoreServlet extends BaseServlet {
       Section section;
       try {
         section = new Section(sectionJson);
-      } catch (Exception e) {
+      } catch (ParseException e) {
         continue;
       }
 
