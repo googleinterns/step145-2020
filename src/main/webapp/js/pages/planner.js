@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import CollegePlanner from '../lib/courseSelector.js';
-import Auth from '../lib/login.js';
-import {Util} from '../lib/utils.js';
+import {Auth} from '../lib/auth.js';
+import {CourseSelector} from '../lib/courseSelector.js';
+import {Util} from '../lib/util.js';
 
 /**
  * Gets results from /planner servlet to results
@@ -23,8 +23,8 @@ async function getPlan() {
   const courseContainer = document.getElementById('order-area');
   Util.attachNewSpinner(courseContainer);
   const selectedClasses = []
-  CollegePlanner.getSelected().forEach(
-      course => selectedClasses.push(CollegePlanner.getCourseInfo()[course]));
+  CourseSelector.getSelected().forEach(
+      course => selectedClasses.push(CourseSelector.getCourseInfo()[course]));
   const data = {
     selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
@@ -94,7 +94,7 @@ async function savePlan(courseList) {
     });
     $('#savePlanModal').modal('hide');
   } catch (err) {
-    CollegePlanner.createAlert(
+    CourseSelector.createAlert(
         'Could not save this plan', 'warning',
         document.getElementById('plan-name'));
     return;
@@ -137,15 +137,23 @@ document.getElementById('submit-plan').addEventListener('submit', () => {
 });
 
 window.addEventListener('load', () => {
-  CollegePlanner.getDepartmentOptions();
+  CourseSelector.getDepartmentOptions();
 });
 
 document.getElementById('add-selected').addEventListener('click', () => {
-  CollegePlanner.addToSelected();
+  CourseSelector.addToSelected();
 });
 
 document.getElementById('departments').addEventListener('change', () => {
-  CollegePlanner.getCourseOptions();
+  CourseSelector.getCourseOptions();
+});
+
+document.getElementById('see-saved').addEventListener('click', () => {
+  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    window.location.href = 'planner/saved';
+  } else {
+    $('#signInModal').modal();
+  }
 });
 
 document.getElementById('see-saved').addEventListener('click', () => {

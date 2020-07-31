@@ -61,7 +61,7 @@ function registerPostSignInHandler(handler) {
  */
 window.onSignIn = onSignIn;
 
-export default {
+export const Auth = {
   onSignIn: onSignIn,
   signOut: signOut,
   registerPostSignInHandler: registerPostSignInHandler

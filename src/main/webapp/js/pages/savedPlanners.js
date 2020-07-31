@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import CollegePlanner from '../lib/courseSelector.js';
-import Auth from '../lib/login.js';
-import {Util} from '../lib/utils.js';
+import {Auth} from '../lib/auth.js';
+import {Util} from '../lib/util.js';
 
 async function getSavedPlans(googleUser) {
   let response;

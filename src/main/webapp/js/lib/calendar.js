@@ -275,4 +275,8 @@ function randomizeColors() {
   }
 }
 
-export default {addCourse: addCourse, initCalendar: initCalendar, clear: clear};
+export const Calendar = {
+  addCourse: addCourse,
+  initCalendar: initCalendar,
+  clear: clear
+};
