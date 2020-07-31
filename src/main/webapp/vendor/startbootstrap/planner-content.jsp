@@ -5,6 +5,16 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4" id="alert-container">
     <h1 class="h3 mb-0 text-gray-800">Planner</h1>
+    <button
+        href="#"
+        class="btn btn-primary btn-icon-split"
+        id="see-saved"
+    >
+      <span class="icon text-white-50">
+        <i class="fas fa-star"></i>
+      </span>
+      <span class="text">See Saved Plans</span>
+    </button>
   </div>
   <div class="row">
     <!-- Course Selection Area -->
