@@ -206,6 +206,11 @@ public class DatastoreServlet extends BaseServlet {
     datastore.put(courseEntity);
   }
 
+  /**
+   * Converts Meeting objects into Meeting entities and then adds them to the meetingEntities array.
+   * @param meetingEntities The ArrayList of Meeting entities.
+   * @param meetings The Array of Meeting objects.
+   */
   private void addToMeetingEntities(ArrayList<EmbeddedEntity> meetingEntities, Meeting[] meetings,
       HttpServletResponse response) throws IOException {
     if (meetingEntities == null || meetings == null) {
