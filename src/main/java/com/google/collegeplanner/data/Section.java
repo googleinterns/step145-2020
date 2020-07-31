@@ -66,11 +66,6 @@ public class Section {
       instructors.add((String) jsonObject);
     }
     this.instructors = instructors.toArray(new String[0]);
-    // this.instructors = instructors;
-    // JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
-    // JSONArray coursesDetailed = (JSONArray) responseObj.get("courses");
-
-    // this.meetings = meetings;
 
     JSONArray meetingsArray = (JSONArray) json.get("meetings");
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
@@ -80,20 +75,12 @@ public class Section {
       meetings.add(meeting);
     }
     this.meetings = meetings.toArray(new Meeting[0]);
-    // this((String) json.get("section_id"), (String) json.get("course_id"),
-    //     (String) json.get("waitlist"), (int) json.get("open_seats"), (int) json.get("seats"),
-    //     (String[]) ((JSONArray) json.get("instructors")).toArray(),
-    //     new Meeting[((JSONArray) json.get("meetings")).toArray().length]);
-
-    // for (int i = 0; i < meetings.length; i++) {
-    //   meetings[i] = new Meeting((JSONObject) ((JSONArray) json.get("meetings")).toArray()[i]);
-    // }
 
     validate();
   }
 
   /*
-   * Validates the courseId parameter that is passed into the constructors.
+   * Validates the sectionId parameter that is passed into the constructors.
    */
   private void validate() throws ParseException {
     if (this.sectionId == null) {

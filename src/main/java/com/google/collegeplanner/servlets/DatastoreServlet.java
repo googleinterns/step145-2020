@@ -167,8 +167,6 @@ public class DatastoreServlet extends BaseServlet {
       try {
         section = new Section(sectionJson);
       } catch (Exception e) {
-        System.out.println("PARSE EXCEPTION!!!!");
-        System.out.println(e.getMessage());
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       }
@@ -205,7 +203,6 @@ public class DatastoreServlet extends BaseServlet {
     courseEntity.setProperty("credit_granted_for", course.getCreditGrantedFor());
     courseEntity.setProperty("sections", sectionEntities);
 
-    System.out.println("Entity put");
     datastore.put(courseEntity);
   }
 

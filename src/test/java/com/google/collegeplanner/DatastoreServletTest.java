@@ -292,9 +292,6 @@ public final class DatastoreServletTest {
     DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
     ds.doPost(null, response);
 
-    // Assert that lower case / upper case has no effect on the course_id that becomes the key.
-    // The course_ids are considered the same, even though their cases are different, so we should
-    // only have one entity after the two attempted additions.
     Assert.assertEquals(0, datastore.prepare(new Query("Course")).countEntities());
   }
 

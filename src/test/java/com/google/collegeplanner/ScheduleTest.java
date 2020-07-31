@@ -134,7 +134,7 @@ public final class ScheduleTest {
     Assert.assertTrue(actual.addClass(compSciClass));
     Assert.assertTrue(actual.addClass(englishClass));
     actual.removeLastClass();
-    
+
     Schedule expected = new Schedule();
     Assert.assertTrue(expected.addClass(compSciClass));
     Assert.assertEquals(expected, actual);
