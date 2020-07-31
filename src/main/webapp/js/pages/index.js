@@ -13,14 +13,14 @@
 // limitations under the License.
 
 import {Calendar} from '../lib/calendar.js';
-import {CollegePlanner} from '../lib/courseSelector.js';
-import {Auth} from '../lib/login.js';
+import {CourseSelector} from '../lib/courseSelector.js';
+import {Auth} from '../lib/auth.js';
 
 const MAX_PAGINATION_SCHEDULES = 15;
 
 window.addEventListener('load', () => {
   Calendar.initCalendar();
-  CollegePlanner.getDepartmentOptions();
+  CourseSelector.getDepartmentOptions();
 });
 
 /**
@@ -38,8 +38,8 @@ function addScheduleToCalendar(schedule, courseInfo, selected) {
 }
 
 document.querySelector('.course-list').addEventListener('click', () => {
-  const selected = CollegePlanner.getSelected();
-  const courseInfo = CollegePlanner.getCourseInfo();
+  const selected = CourseSelector.getSelected();
+  const courseInfo = CourseSelector.getCourseInfo();
   // TODO(naaoli): Connect to algorithm servlet.
   // Hard code return from algorithm servlet.
   const sections1 = {};
@@ -83,11 +83,11 @@ document.querySelector('.course-list').addEventListener('click', () => {
 });
 
 document.getElementById('add-selected').addEventListener('click', () => {
-  CollegePlanner.addToSelected();
+  CourseSelector.addToSelected();
 });
 
 document.getElementById('departments').addEventListener('change', () => {
-  CollegePlanner.getCourseOptions();
+  CourseSelector.getCourseOptions();
 });
 
 document.getElementById('signout-button').addEventListener('click', () => {
