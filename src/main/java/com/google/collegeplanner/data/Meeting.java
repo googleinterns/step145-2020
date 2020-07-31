@@ -16,6 +16,9 @@ package com.google.collegeplanner.data;
 
 import java.text.ParseException;
 import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.json.simple.JSONArray;
@@ -42,6 +45,43 @@ public class Meeting {
     this.startTime = startTime;
     this.endTime = endTime;
 
+    assignDays(days);
+  }
+
+  public Meeting(JSONObject json) throws ParseException {
+    this.days = new ArrayList<DayOfWeek>();
+    this.startTime = parseTime((String) json.get("start_time"));
+    this.endTime = parseTime((String) json.get("end_time"));
+    this.room = (String) json.get("room");
+    this.building = (String) json.get("building");
+
+    assignDays((String) json.get("days"));
+  }
+
+  /**
+   * Convert 12-hour time to just minutes as an int.
+   * @param time The 12-hour time string eg. 12:30pm.
+   */
+  private int parseTime(String time) throws ParseException {
+    if (time == null || time == "") {
+      throw new ParseException("Invalid time format.", 0);
+    }
+    time = time.toUpperCase();
+
+    // Parse the 24-hour time to get the hours and minutes
+    LocalTime localTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("h:mma"));
+    int hours = localTime.get(ChronoField.CLOCK_HOUR_OF_DAY);
+    int minutes = localTime.get(ChronoField.MINUTE_OF_HOUR);
+
+    // Convert the hours and minutes into just minutes
+    return 60 * hours + minutes;
+  }
+
+  /**
+   * Parses a string indicating which days have meetings and assigns the result to 'days'.
+   * @param days The string containing the days that have meetings.
+   */
+  private void assignDays(String days) throws ParseException {
     if (days.toUpperCase().contains("M")) {
       this.days.add(DayOfWeek.MONDAY);
     }
@@ -61,11 +101,6 @@ public class Meeting {
       // Since this is an academic scheduler, meetings cannot happen on weekends.
       throw new ParseException("Invalid Day, no Weekends on Academic Calendar", 0);
     }
-  }
-
-  public Meeting(JSONObject json) throws ParseException {
-    this((String) json.get("days"), (String) json.get("room"), (String) json.get("building"),
-        (int) json.get("start_time"), (int) json.get("end_time"));
   }
 
   public boolean conflictsWith(Meeting other) {
@@ -135,8 +170,18 @@ public class Meeting {
 
   public JSONObject toJSON() {
     JSONObject json = new JSONObject();
-    String daysString = "";
+    String daysString = getDaysAsString();
 
+    json.put("days", daysString);
+    json.put("room", room);
+    json.put("building", building);
+    json.put("start_time", startTime);
+    json.put("end_time", endTime);
+    return json;
+  }
+
+  public String getDaysAsString() {
+    String daysString = "";
     if (days.contains(DayOfWeek.MONDAY)) {
       daysString += "M";
     }
@@ -154,12 +199,6 @@ public class Meeting {
     }
     // Do not need to check for Saturday or Sunday as the constructor throws an error
     // if user tries to add those days into the list.
-
-    json.put("days", daysString);
-    json.put("room", room);
-    json.put("building", building);
-    json.put("start_time", startTime);
-    json.put("end_time", endTime);
-    return json;
+    return daysString;
   }
 }
