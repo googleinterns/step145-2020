@@ -60,7 +60,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /** Test SavePlanServlet */
 @RunWith(JUnit4.class)
-public final class SavePlanTest {
+public final class SavePlanServletTest {
   HttpServletResponse response;
   HttpServletRequest request;
   StringWriter stringWriter;

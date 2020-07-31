@@ -88,9 +88,14 @@ public class SavePlanServlet extends BaseServlet {
       respondWithError("Invalid user.", HttpServletResponse.SC_UNAUTHORIZED, response);
       return;
     }
-    ArrayList<Plan> plans = getPlans(idToken, response);
-    if (plans == null) {
-      return; // Error has already been written.
+
+    ArrayList<Plan> plans;
+    try {
+      plans = getPlans(idToken);
+    } catch (ParseException e) {
+      respondWithError(
+          "Returned plans are invalid.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      return;
     }
     JSONObject plansJson = new JSONObject();
     plansJson.put("plans", new Gson().toJson(plans));
@@ -104,8 +109,7 @@ public class SavePlanServlet extends BaseServlet {
    * @param idToken The GoogleIdToken you are trying to retreive plans for.
    * @param response the HttpServletResponse to write to in case of error.
    */
-  private ArrayList<Plan> getPlans(GoogleIdToken idToken, HttpServletResponse response)
-      throws IOException {
+  private ArrayList<Plan> getPlans(GoogleIdToken idToken) throws IOException, ParseException {
     Payload payload = idToken.getPayload();
     Query query = new Query("Plan")
                       .setFilter(new FilterPredicate(
@@ -116,16 +120,10 @@ public class SavePlanServlet extends BaseServlet {
     ArrayList<Plan> plans = new ArrayList<>();
     JSONParser parser = new JSONParser();
     for (Entity entity : results) {
-      try {
-        long id = entity.getKey().getId();
-        JSONObject plan = (JSONObject) parser.parse((String) entity.getProperty("plan"));
-        String planName = (String) entity.getProperty("planName");
-        plans.add(new Plan(id, plan, planName));
-      } catch (ParseException e) {
-        respondWithError(
-            "Returned plans are invalid.", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return null;
-      }
+      long id = entity.getKey().getId();
+      JSONObject plan = (JSONObject) parser.parse((String) entity.getProperty("plan"));
+      String planName = (String) entity.getProperty("planName");
+      plans.add(new Plan(id, plan, planName));
     }
     return plans;
   }
