@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 --%>
 <jsp:include page="vendor/startbootstrap/template.jsp">
+  <jsp:param name="activePlanner" value="active"/>
   <jsp:param name="content" value="planner-content"/>
   <jsp:param name="scriptFile" value="pages/planner"/>
 </jsp:include>

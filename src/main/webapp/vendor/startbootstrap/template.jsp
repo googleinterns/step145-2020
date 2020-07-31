@@ -52,14 +52,14 @@
         </div>
 
         <!-- Nav Item - Scheduler -->
-        <li class="nav-item">
+        <li class="nav-item ${param.activeScheduler}">
           <a class="nav-link" href="/">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Scheduler</span></a>
         </li>
 
         <!-- Nav Item - 4 Year Planner -->
-        <li class="nav-item">
+        <li class="nav-item ${param.activePlanner}">
           <a class="nav-link" href="/planner">
             <i class="fas fa-fw fa-book"></i>
             <span>Planner</span></a>
