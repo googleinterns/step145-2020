@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Auth from '../lib/login.js';
 import CollegePlanner from '../lib/courseSelector.js';
-import Util from '../lib/utils.js';
+import Auth from '../lib/login.js';
+import {Util} from '../lib/utils.js';
 
 async function getSavedPlans() {
   if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
@@ -71,7 +71,7 @@ function createCard(planName, tableData, creditsData) {
   const body = document.createElement('div');
   body.setAttribute('class', 'card-body');
   const table = document.createElement('center');
-  Util.createTable(tableData, creditsData, table);
+  Util.createPlanTable(tableData, creditsData, table);
   body.appendChild(table);
   card.appendChild(body);
   document.getElementById('plan-column').appendChild(card);

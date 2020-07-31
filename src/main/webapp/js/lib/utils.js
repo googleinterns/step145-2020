@@ -24,12 +24,12 @@ function attachNewSpinner(courseContainer) {
 }
 
 /**
- * Creates table from a 2D array
+ * Creates planner table from a 2D array
  * @param {Object} tableData 2D array with separation of courses
  * @param {Object} creditsData Array with credits for each semester
  * @param {Element} courseContainer container for course list
  */
-function createTable(tableData, creditsData, courseContainer) {
+function createPlanTable(tableData, creditsData, courseContainer) {
   courseContainer.innerText = '';
   const table = document.createElement('table');
   const tableBody = document.createElement('tbody');
@@ -70,8 +70,8 @@ function createAlert(message, type, container) {
   container.appendChild(alert);
 }
 
-export default {
+export const Util = {
   attachNewSpinner: attachNewSpinner,
-  createTable: createTable,
+  createPlanTable: createPlanTable,
   createAlert: createAlert
 };

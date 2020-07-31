@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Util from '../lib/utils.js';
+import {Util} from '../lib/utils.js';
 
 let selected = [];  // Courses selected by the user
 let courses = [];   // List with all courses

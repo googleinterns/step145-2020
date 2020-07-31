@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Auth from '../lib/login.js';
 import CollegePlanner from '../lib/courseSelector.js';
-import Util from '../lib/utils.js';
+import Auth from '../lib/login.js';
+import {Util} from '../lib/utils.js';
 
 /**
  * Gets results from /planner servlet to results
@@ -56,7 +56,7 @@ async function getPlan() {
           'These courses did not fit in the given number of semesters.',
           'primary', courseContainer);
     } else if (courseData.length == creditsData.length) {
-      Util.createTable(courseData, creditsData, courseContainer);
+      Util.createPlanTable(courseData, creditsData, courseContainer);
       attachSaveButton(document.getElementById('plan-header'));
       document.getElementById('plan-name').addEventListener('submit', () => {
         savePlan(courseList);

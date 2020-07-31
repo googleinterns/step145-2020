@@ -8,7 +8,7 @@
   </div>
   <div class="row">
     <!-- Course Selection Area -->
-    <div class="col-xl-12 col-lg-7" id= "plan-column">
+    <div class="col-xl-12" id= "plan-column">
         To view your saved plans, please sign in. 
     </div>
   </div>
