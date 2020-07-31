@@ -44,7 +44,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /** Tests DepartmentServlet */
 @RunWith(JUnit4.class)
-public final class DepartmentTest {
+public final class DepartmentServletTest {
   HttpServletResponse mockedResponse;
   StringWriter stringWriter;
   PrintWriter writer;
