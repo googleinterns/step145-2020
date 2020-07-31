@@ -24,13 +24,17 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.collegeplanner.data.Course;
+import com.google.collegeplanner.data.Meeting;
+import com.google.collegeplanner.data.Section;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -87,18 +91,22 @@ public class DatastoreServlet extends BaseServlet {
         // Successful. The default status code response is 200.
         return;
       }
-      addCourses(coursesArray, response);
+
+      try {
+        addCourses(coursesArray);
+      } catch (IllegalArgumentException e) {
+        continue;
+      }
     } while (page++ < PAGE_LIMIT);
   }
 
   /**
    * Creates a Course object from a JSONArray.
    * @param coursesArray The course json from the UMD API.
-   * @param response The HttpServletResponse object.
    */
-  private void addCourses(JSONArray coursesArray, HttpServletResponse response) throws IOException {
+  private void addCourses(JSONArray coursesArray) throws IllegalArgumentException {
     if (coursesArray == null) {
-      return;
+      throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
     // Loop through each page's courses.
@@ -109,9 +117,8 @@ public class DatastoreServlet extends BaseServlet {
       Course course;
       try {
         course = new Course(courseJson);
-      } catch (Exception e) {
-        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+      } catch (ParseException e) {
+        continue;
       }
 
       // Check if the entity already exists in datastore, and modify it if it does.
@@ -134,8 +141,7 @@ public class DatastoreServlet extends BaseServlet {
             + URLEncoder.encode(course.getCourseId(), StandardCharsets.UTF_8.toString())
             + "/sections");
       } catch (URISyntaxException | UnsupportedEncodingException e) {
-        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        continue;
       }
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
       addSectionsToCourse(sectionsArray, course, courseEntity);
@@ -143,24 +149,44 @@ public class DatastoreServlet extends BaseServlet {
   }
 
   /**
-   * Adds the Course and Section to datastore.
+   * Adds the Course, Sections, and Meetings to datastore.
    * @param sectionsArray The section json from the UMD API.
    * @param course The Course object.
    * @param courseEntity The Entity object that we want to add to datastore.
    */
-  private void addSectionsToCourse(JSONArray sectionsArray, Course course, Entity courseEntity) {
+  private void addSectionsToCourse(JSONArray sectionsArray, Course course, Entity courseEntity)
+      throws IllegalArgumentException {
     if (sectionsArray == null || course == null || courseEntity == null) {
-      return;
+      throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
     // Loop through each course's sections.
     ArrayList<EmbeddedEntity> sectionEntities = new ArrayList<EmbeddedEntity>();
     for (Object jsonObject : sectionsArray) {
-      // TODO(savsa): create Section class to handle JSON object parsing.
-      // For now, just store the section id.
       JSONObject sectionJson = (JSONObject) jsonObject;
+      Section section;
+      try {
+        section = new Section(sectionJson);
+      } catch (ParseException e) {
+        continue;
+      }
+
+      // Create a Section embedded entity.
       EmbeddedEntity sectionEntity = new EmbeddedEntity();
-      sectionEntity.setProperty("section_id", (String) sectionJson.get("section_id"));
+      sectionEntity.setProperty("section_id", section.getSectionId());
+      sectionEntity.setProperty("course_id", section.getCourseId());
+      sectionEntity.setProperty("waitlist", section.getWaitlist());
+      sectionEntity.setProperty("open_seats", section.getOpenSeats());
+      sectionEntity.setProperty("seats", section.getSeats());
+      sectionEntity.setProperty("instructors", Arrays.asList(section.getInstructors()));
+
+      // Convert Meetings to Meeting embedded entities.
+      ArrayList<EmbeddedEntity> meetingEntities = new ArrayList<EmbeddedEntity>();
+      addToMeetingEntities(meetingEntities, section.getMeetings());
+
+      // Add the Meeting embedded entities to the Section entity.
+      sectionEntity.setProperty("meetings", meetingEntities);
+      // Add this section entity to the list of all section entities.
       sectionEntities.add(sectionEntity);
     }
 
@@ -178,5 +204,27 @@ public class DatastoreServlet extends BaseServlet {
     courseEntity.setProperty("sections", sectionEntities);
 
     datastore.put(courseEntity);
+  }
+
+  /**
+   * Converts Meeting objects into Meeting entities and then adds them to the meetingEntities array.
+   * @param meetingEntities The ArrayList of Meeting entities.
+   * @param meetings The Array of Meeting objects.
+   */
+  private void addToMeetingEntities(ArrayList<EmbeddedEntity> meetingEntities, Meeting[] meetings)
+      throws IllegalArgumentException {
+    if (meetingEntities == null || meetings == null) {
+      throw new IllegalArgumentException("Null was passed in as an argument.");
+    }
+
+    for (Meeting meeting : meetings) {
+      EmbeddedEntity meetingEntity = new EmbeddedEntity();
+      meetingEntity.setProperty("days", meeting.getDaysAsString());
+      meetingEntity.setProperty("room", meeting.getRoom());
+      meetingEntity.setProperty("building", meeting.getBuilding());
+      meetingEntity.setProperty("start_time", meeting.getStartTime());
+      meetingEntity.setProperty("end_time", meeting.getEndTime());
+      meetingEntities.add(meetingEntity);
+    }
   }
 }

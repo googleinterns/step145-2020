@@ -20,7 +20,10 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -31,6 +34,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -279,5 +284,109 @@ public final class DatastoreServletTest {
     // The course_ids are considered the same, even though their cases are different, so we should
     // only have one entity after the two attempted additions.
     Assert.assertEquals(1, datastore.prepare(new Query("Course")).countEntities());
+  }
+
+  @Test
+  public void nothingInsertedForEmptyResponse() throws Exception {
+    when(apiUtil.getJsonArray(any(URI.class))).thenReturn(emptyJson);
+    DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
+    ds.doPost(null, response);
+
+    Assert.assertEquals(0, datastore.prepare(new Query("Course")).countEntities());
+  }
+
+  @Test
+  public void datastoreHasSection() throws Exception {
+    when(apiUtil.getJsonArray(any(URI.class)))
+        .thenReturn(firstCourseJson, firstSectionJson, emptyJson);
+    DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
+    ds.doPost(null, response);
+
+    // Assert that there's a Course entity.
+    PreparedQuery preparedQuery = datastore.prepare(new Query("Course"));
+    List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withLimit(10));
+    Assert.assertEquals(1, datastore.prepare(new Query("Course")).countEntities());
+
+    // Assert that there's a Section embedded entity.
+    Entity courseEntity = results.get(0);
+    ArrayList<EmbeddedEntity> sectionEntities =
+        (ArrayList<EmbeddedEntity>) courseEntity.getProperty("sections");
+    Assert.assertEquals(1, sectionEntities.size());
+
+    // Assert that the Section embedded entity has the right section_id.
+    EmbeddedEntity sectionEntity = sectionEntities.get(0);
+    Assert.assertEquals("AASP100-0101", sectionEntity.getProperty("section_id"));
+  }
+
+  @Test
+  public void datastoreHasMeeting() throws Exception {
+    when(apiUtil.getJsonArray(any(URI.class)))
+        .thenReturn(firstCourseJson, firstSectionJson, emptyJson);
+    DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
+    ds.doPost(null, response);
+
+    // Assert that there's a Course entity.
+    PreparedQuery preparedQuery = datastore.prepare(new Query("Course"));
+    List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withLimit(10));
+    Assert.assertEquals(1, datastore.prepare(new Query("Course")).countEntities());
+
+    // Assert that there's a Section embedded entity.
+    Entity courseEntity = results.get(0);
+    ArrayList<EmbeddedEntity> sectionEntities =
+        (ArrayList<EmbeddedEntity>) courseEntity.getProperty("sections");
+    Assert.assertEquals(1, sectionEntities.size());
+
+    // Assert that there are meeting entities and that they're the correct ones.
+    ArrayList<EmbeddedEntity> meetingEntities =
+        (ArrayList<EmbeddedEntity>) sectionEntities.get(0).getProperty("meetings");
+    Assert.assertEquals(2, meetingEntities.size());
+    Assert.assertEquals("1101", meetingEntities.get(0).getProperty("room"));
+    Assert.assertEquals("SQH", meetingEntities.get(0).getProperty("building"));
+    Assert.assertEquals("2205", meetingEntities.get(1).getProperty("room"));
+    Assert.assertEquals("LEF", meetingEntities.get(1).getProperty("building"));
+  }
+
+  @Test
+  public void multipleCoursesSectionsAndMeetings() throws Exception {
+    when(apiUtil.getJsonArray(any(URI.class)))
+        .thenReturn(
+            firstCourseJson, firstSectionJson, secondCourseJson, secondSectionJson, emptyJson);
+    DatastoreServlet ds = new DatastoreServlet(datastore, apiUtil);
+    ds.doPost(null, response);
+
+    // Assert that there are Course entities.
+    PreparedQuery preparedQuery = datastore.prepare(new Query("Course"));
+    List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withLimit(10));
+    Assert.assertEquals(2, datastore.prepare(new Query("Course")).countEntities());
+
+    // Assert that there are Section embedded entities.
+    Entity firstCourseEntity = results.get(0);
+    ArrayList<EmbeddedEntity> firstSectionEntities =
+        (ArrayList<EmbeddedEntity>) firstCourseEntity.getProperty("sections");
+    Assert.assertEquals(1, firstSectionEntities.size());
+
+    Entity secondCourseEntity = results.get(1);
+    ArrayList<EmbeddedEntity> secondSectionEntities =
+        (ArrayList<EmbeddedEntity>) secondCourseEntity.getProperty("sections");
+    Assert.assertEquals(1, secondSectionEntities.size());
+
+    // Assert that there are meeting entities and that they're the correct ones.
+    EmbeddedEntity firstSectionEntity = firstSectionEntities.get(0);
+    ArrayList<EmbeddedEntity> firstMeetingEntities =
+        (ArrayList<EmbeddedEntity>) firstSectionEntity.getProperty("meetings");
+    Assert.assertEquals(2, firstMeetingEntities.size());
+    Assert.assertEquals("1101", firstMeetingEntities.get(0).getProperty("room"));
+    Assert.assertEquals("SQH", firstMeetingEntities.get(0).getProperty("building"));
+    Assert.assertEquals("2205", firstMeetingEntities.get(1).getProperty("room"));
+    Assert.assertEquals("LEF", firstMeetingEntities.get(1).getProperty("building"));
+
+    EmbeddedEntity secondSectionEntity = secondSectionEntities.get(0);
+    ArrayList<EmbeddedEntity> secondMeetingEntities =
+        (ArrayList<EmbeddedEntity>) secondSectionEntity.getProperty("meetings");
+    Assert.assertEquals(2, secondMeetingEntities.size());
+    Assert.assertEquals("1103", secondMeetingEntities.get(0).getProperty("room"));
+    Assert.assertEquals("SQH", secondMeetingEntities.get(0).getProperty("building"));
+    Assert.assertEquals("ONLINE", secondMeetingEntities.get(1).getProperty("room"));
+    Assert.assertEquals("", secondMeetingEntities.get(1).getProperty("building"));
   }
 }
