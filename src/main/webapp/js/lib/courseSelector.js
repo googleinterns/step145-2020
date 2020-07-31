@@ -168,7 +168,7 @@ function getCourseInfo() {
   return courseInfo;
 }
 
-export default {
+export const CollegePlanner = {
   getSelected: getSelected,
   getCourses: getCourses,
   getCourseInfo: getCourseInfo,

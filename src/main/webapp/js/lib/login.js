@@ -49,4 +49,7 @@ function signOut() {
  */
 window.onSignIn = onSignIn;
 
-export default {onSignIn: onSignIn, signOut: signOut};
+export const Auth = {
+  onSignIn: onSignIn,
+  signOut: signOut
+};

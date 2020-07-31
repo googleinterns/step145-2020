@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Calendar from '../lib/calendar.js';
-import CollegePlanner from '../lib/courseSelector.js';
-import Auth from '../lib/login.js';
+import {Calendar} from '../lib/calendar.js';
+import {CollegePlanner} from '../lib/courseSelector.js';
+import {Auth} from '../lib/login.js';
 
 const MAX_PAGINATION_SCHEDULES = 15;
 
