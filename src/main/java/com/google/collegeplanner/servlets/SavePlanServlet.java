@@ -53,14 +53,19 @@ public class SavePlanServlet extends BaseServlet {
    * Verifier for Google OAuth that validates tokens and ensures the source of the token is
    * acceptable according to the client ID.
    */
-  final GoogleIdTokenVerifier verifier;
+  GoogleIdTokenVerifier verifier;
   DatastoreService datastore;
+  /**
+   * Public identifier for this app to use Google OAuth 2.0. It is found in cloud console
+   * credentials.
+   */
+  final static String clientId =
+      "267429534228-vvsi2uldmpji3rgs1qd3a41rceciaaaq.apps.googleusercontent.com";
 
   public SavePlanServlet() {
     this(DatastoreServiceFactory.getDatastoreService(),
         new GoogleIdTokenVerifier.Builder(UrlFetchTransport.getDefaultInstance(), new GsonFactory())
-            .setAudience(Collections.singletonList(
-                "267429534228-vvsi2uldmpji3rgs1qd3a41rceciaaaq.apps.googleusercontent.com"))
+            .setAudience(Collections.singletonList(clientId))
             .build());
   }
 
