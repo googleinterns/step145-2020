@@ -132,7 +132,7 @@ public class SavePlanServlet extends BaseServlet {
     String planName;
     JSONObject body;
     try {
-      body = getBody(request);
+      body = getPostRequestBody(request);
       idTokenStr = (String) body.get("idToken");
       planName = (String) body.get("planName");
       plan = ((JSONObject) body.get("plan")).toString();

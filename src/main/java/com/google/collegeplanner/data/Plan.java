@@ -18,9 +18,10 @@ import org.json.simple.JSONObject;
 
 /** This class represents a multi-semester plan. */
 public class Plan {
-  private final long id;
-  private final JSONObject plan;
-  private final String planName;
+  private final long id; // The id of the Plan in Datastore.
+  private final JSONObject
+      plan; // The JSONObject that contains the plan details (courses and credits).
+  private final String planName; // The name the user specified for the plan
 
   public Plan(long id, JSONObject plan, String planName) {
     this.id = id;

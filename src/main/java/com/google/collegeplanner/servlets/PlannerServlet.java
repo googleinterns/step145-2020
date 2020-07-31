@@ -54,7 +54,7 @@ public class PlannerServlet extends BaseServlet {
     int numSemesters;
     JSONArray selectedClasses;
     try {
-      body = getBody(request);
+      body = getPostRequestBody(request);
       numSemesters = Integer.parseInt((String) body.get("semesters"));
       selectedClasses = (JSONArray) body.get("selectedClasses");
     } catch (NumberFormatException | ClassCastException | ParseException | NullPointerException e) {

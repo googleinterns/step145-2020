@@ -90,7 +90,7 @@ public abstract class BaseServlet extends HttpServlet {
   /**
    * Gets the JSON Representation of the body of the POST request
    */
-  public JSONObject getBody(HttpServletRequest request)
+  public JSONObject getPostRequestBody(HttpServletRequest request)
       throws IOException, ParseException, NullPointerException {
     String strBody =
         request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
