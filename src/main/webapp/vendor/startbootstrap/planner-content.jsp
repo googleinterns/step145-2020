@@ -109,7 +109,7 @@
       </div>
       <div class="modal-body">
         <form id="plan-name" onsubmit="return false">
-          <input type="text" class="form-control" placeholder="Type name here" required></input>
+          <input type="text" class="form-control" placeholder="Type name here" id="save-plan-as" required></input>
         </form>
       </div>
       <div class="modal-footer">
@@ -137,3 +137,22 @@
     </div>
   </div>
 </div>
+<!-- Sign in Prompt Modal -->
+<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="signInModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signInModalLabel">Sign in to see your saved schedules.</h5>
+      </div>
+      <div class="modal-body">
+        <center>
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        </center>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Dismiss</button>
+      </div>
+    </div>
+  </div>
+</div>
+
