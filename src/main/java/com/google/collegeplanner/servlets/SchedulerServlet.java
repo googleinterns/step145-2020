@@ -11,17 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
- 
+
 package com.google.collegeplanner.servlets;
- 
+
+import com.google.collegeplanner.data.Schedule;
 import com.google.collegeplanner.data.Section;
 import com.google.collegeplanner.data.SemesterScheduler;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +30,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
- 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 /** Servlet that returns a list of possible schedules containing the given courses.*/
 @WebServlet("/api/scheduler")
-public class SchedulerServlet extends HttpServlet {
+public class SchedulerServlet extends BaseServlet {
   private ArrayList<String> courseList;
   private ArrayList<ArrayList<Section>> courses;
   /**
@@ -50,14 +52,14 @@ public class SchedulerServlet extends HttpServlet {
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
- 
-    prepareLists(selectedClasses);
- 
+
+    prepareLists(selectedClasses, response);
+
     JSONObject schedules = getSchedules();
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(schedules));
   }
- 
+
   /**
    * Gets the JSON Representation of the body of the POST request
    */
@@ -68,23 +70,23 @@ public class SchedulerServlet extends HttpServlet {
     JSONParser parser = new JSONParser();
     return (JSONObject) parser.parse(strBody);
   }
-  
+
   /**
    * This method loads the courses and courseList ArrayLists with correct
    * information. courses is loaded with the lists of sections for each
    * course while courseList is loaded with the courseID's of the selected
    * courses.
    */
-  private void prepareLists(JSONArray classes) {
+  private void prepareLists(JSONArray classes, HttpServletResponse response) throws IOException {
     String courseId;
     URI uri;
     JSONArray jsonArray;
-    ApiUtil apiUtil = new apiUtil();
- 
+    ApiUtil apiUtil = new ApiUtil();
+
     courseList = new ArrayList<String>();
     courses = new ArrayList<ArrayList<Section>>();
-    for(JSONArray obj : (JSONArray) classes.toArray()) {
-      courseId = (String) ((JSONObject) obj).get("course_id");
+    for (Object obj : classes) {
+      courseId = (String) obj;
       courseList.add(courseId);
       try {
         uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
@@ -92,7 +94,7 @@ public class SchedulerServlet extends HttpServlet {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       }
- 
+
       jsonArray = apiUtil.getJsonArray(uri);
       if (jsonArray == null) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
@@ -101,34 +103,40 @@ public class SchedulerServlet extends HttpServlet {
       courses.add(convertJSONArraytoArrayList(jsonArray));
     }
   }
-  
+
   /**
    * Returns a JSONArray representing the schedules the
    * SemesterScheduler returns.
    */
-  private JSONObject getSchedules() { 
+  private JSONObject getSchedules() {
     JSONObject json = new JSONObject();
+    JSONObject temp;
     JSONArray schedulesJson = new JSONArray();
-    SemesterScheduler scheduler = new scheduler(courses);
+    SemesterScheduler scheduler = new SemesterScheduler(courses);
     ArrayList<Schedule> possibleSchedules = scheduler.getPossibleSchedules();
- 
-    for(Schedule schedule : possibleSchedules) {
-      schedulesJson.add(schedule.toJSON());
+
+    for (Schedule schedule : possibleSchedules) {
+      temp = schedule.toJSON();
+      schedulesJson.add(temp);
     }
- 
-    json.put("schedules",  schedulesJson);
- 
-    return schedulesJson;
+
+    json.put("schedules", schedulesJson);
+
+    return json;
   }
- 
+
   /**
    * Converts a given JSONArray of sections into an ArrayList of
    * sections.
    */
   private ArrayList<Section> convertJSONArraytoArrayList(JSONArray json) {
-    ArrayList<Section> list = new ArrayList<Section>(); 
-    for(Object obj : json) {
-      list.add(new Section((JSONObject) obj));
+    ArrayList<Section> list = new ArrayList<Section>();
+    for (Object obj : json) {
+      try {
+        list.add(new Section((JSONObject) obj));
+      } catch (Exception e) {
+        continue;
+      }
     }
     return list;
   }
