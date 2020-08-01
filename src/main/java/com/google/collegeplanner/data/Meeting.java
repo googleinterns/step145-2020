@@ -34,14 +34,25 @@ public class Meeting {
   private int startTime;
   private int endTime;
 
-  public Meeting(String days, String room, String building, int startTime, int endTime)
+  public Meeting(String days, String room, String building, String startTime, String endTime)
       throws ParseException {
-    this.days = new ArrayList<DayOfWeek>();
-    this.room = room;
-    this.building = building;
-    this.startTime = startTime;
-    this.endTime = endTime;
+    if (room != "") {
+      this.room = room;
+    }
+    if (building != "") {
+      this.building = building;
+    }
+    if (startTime != "") {
+      this.startTime = timeInMins(startTime);
+    }
+    if (endTime != "") {
+      this.endTime = timeInMins(endTime);
+    }
 
+    if (days == "") {
+      return;
+    }
+    this.days = new ArrayList<DayOfWeek>();
     if (days.toUpperCase().contains("M")) {
       this.days.add(DayOfWeek.MONDAY);
     }
@@ -65,7 +76,7 @@ public class Meeting {
 
   public Meeting(JSONObject json) throws ParseException {
     this((String) json.get("days"), (String) json.get("room"), (String) json.get("building"),
-        (int) json.get("start_time"), (int) json.get("end_time"));
+        (String) json.get("start_time"), (String) json.get("end_time"));
   }
 
   public boolean conflictsWith(Meeting other) {
@@ -113,8 +124,16 @@ public class Meeting {
     return building;
   }
 
+  public String getReadableStartTime() {
+    return timeInString(startTime);
+  }
+
   public int getStartTime() {
     return startTime;
+  }
+
+  public String getReadableEndTime() {
+    return timeInString(endTime);
   }
 
   public int getEndTime() {
@@ -161,5 +180,39 @@ public class Meeting {
     json.put("start_time", startTime);
     json.put("end_time", endTime);
     return json;
+  }
+
+  /**
+   * Converts user readable time to total minutes after midnight
+   * @param time Time in readable format (2:00pm, 11:00am)
+   */
+  private int timeInMins(String time) {
+    String[] hourMin = time.split(":");
+    int hour = Integer.parseInt(hourMin[0]);
+    int mins = Integer.parseInt(hourMin[1].substring(0, 2));
+    if (hourMin[1].toUpperCase().contains("P") && hour != 12) {
+      hour += 12;
+    }
+    int hoursInMins = hour * 60;
+    return hoursInMins + mins;
+  }
+
+  /**
+   * Converts total minutes after midnight
+   * @param time Total minutes after 00:00
+   */
+  private String timeInString(int time) {
+    String amPm = "am";
+    int hours = time / 60;
+    int minutes = time % 60;
+    if (hours > 12) {
+      hours -= 12;
+    } else if (hours == 0) {
+      hours = 12;
+    }
+    if (hours >= 12) {
+      amPm = "pm";
+    }
+    return (Integer.toString(hours) + ":" + Integer.toString(minutes) + amPm);
   }
 }

@@ -30,26 +30,40 @@ public class Section {
   private String[] instructors;
   private Meeting[] meetings;
 
-  public Section(String sectionId, String courseId, String waitlist, int openSeats, int seats,
+  public Section(String sectionId, String courseId, String waitlist, String openSeats, String seats,
       String[] instructors, Meeting[] meetings) {
-    this.sectionId = sectionId;
-    this.courseId = courseId;
-    this.waitlist = waitlist;
-    this.openSeats = openSeats;
-    this.seats = seats;
+    if (sectionId != "") {
+      this.sectionId = sectionId;
+    }
+    if (courseId != "") {
+      this.courseId = courseId;
+    }
+    if (waitlist != "") {
+      this.waitlist = waitlist;
+    }
+    if (openSeats != "") {
+      this.openSeats = Integer.parseInt(openSeats);
+    }
+    if (seats != "") {
+      this.seats = Integer.parseInt(seats);
+    }
     this.instructors = instructors;
     this.meetings = meetings;
   }
 
   public Section(JSONObject json) throws ParseException {
-    this((String) json.get("section_id"), (String) json.get("course_id"),
-        (String) json.get("waitlist"), (int) json.get("open_seats"), (int) json.get("seats"),
-        (String[]) ((JSONArray) json.get("instructors")).toArray(),
+    this((String) json.get("section_id"), (String) json.get("course"),
+        (String) json.get("waitlist"), (String) json.get("open_seats"), (String) json.get("seats"),
+        new String[((JSONArray) json.get("instructors")).toArray().length],
         new Meeting[((JSONArray) json.get("meetings")).toArray().length]);
-
+    for (int i = 0; i < instructors.length; i++) {
+      instructors[i] = (String) ((JSONArray) json.get("instructors")).toArray()[i];
+    }
     for (int i = 0; i < meetings.length; i++) {
       meetings[i] = new Meeting((JSONObject) ((JSONArray) json.get("meetings")).toArray()[i]);
     }
+
+    // TODO (naaoli): handle duplicate meetings if time allows for it
   }
 
   // This method returns true if the two sections conflict with each other and

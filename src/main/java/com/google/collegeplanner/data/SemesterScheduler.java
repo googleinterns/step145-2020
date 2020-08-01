@@ -26,7 +26,7 @@ public class SemesterScheduler {
    * This variable represents the max number
    * of schedules the scheduler will create.
    */
-  private final int MAX_SCHEDULES = 10;
+  private final int MAX_SCHEDULES = 15;
   private ArrayList<ArrayList<Section>> sections;
   private ArrayList<Schedule> possibleSchedules;
   private Schedule workingSchedule;
