@@ -47,14 +47,14 @@ public final class SemesterSchedulerTest {
 
   @Before
   public void before() throws ParseException {
-    int TIME_0900AM = 60 * 9;
-    int TIME_1000AM = 60 * 10;
-    int TIME_1100AM = 60 * 11;
-    int TIME_1200PM = 60 * 12;
-    int TIME_0100PM = 60 * 13;
-    int TIME_0200PM = 60 * 14;
-    int TIME_0300PM = 60 * 15;
-    int TIME_0400PM = 60 * 16;
+    String TIME_0900AM = "9:00am";
+    String TIME_1000AM = "10:00am";
+    String TIME_1100AM = "11:00am";
+    String TIME_1200PM = "12:00pm";
+    String TIME_0100PM = "1:00pm";
+    String TIME_0200PM = "2:00pm";
+    String TIME_0300PM = "3:00pm";
+    String TIME_0400PM = "4:00pm";
     MWFMorning = new Meeting("MWF", "Room 5", "Building 2", TIME_0900AM, TIME_1000AM);
     TuThuMorning = new Meeting("TuThu", "Room 2", "Building 1", TIME_0900AM, TIME_1000AM);
     MWFLateMorning = new Meeting("MWF", "Room 2", "Building 3", TIME_1100AM, TIME_1200PM);
@@ -80,15 +80,15 @@ public final class SemesterSchedulerTest {
   @Test
   public void oneMeetingPerSectionOnePossibleSchedule() {
     compSciClasses.add(new Section(
-        "CMSC101 (MWF Morning)", "CMSC101", null, 10, 30, null, new Meeting[] {MWFMorning}));
+        "CMSC101 (MWF Morning)", "CMSC101", null, "10", "30", null, new Meeting[] {MWFMorning}));
 
-    englishClasses.add(new Section(
-        "ENGL101 (TuThu Morning)", "ENGL101", null, 10, 30, null, new Meeting[] {TuThuMorning}));
+    englishClasses.add(new Section("ENGL101 (TuThu Morning)", "ENGL101", null, "10", "30", null,
+        new Meeting[] {TuThuMorning}));
 
-    mathClasses.add(new Section(
-        "MATH101 (MWF Afternoon)", "MATH101", null, 10, 30, null, new Meeting[] {MWFAfternoon}));
+    mathClasses.add(new Section("MATH101 (MWF Afternoon)", "MATH101", null, "10", "30", null,
+        new Meeting[] {MWFAfternoon}));
 
-    chemClasses.add(new Section("CHEM101 (TuThu Late Morning)", "CHEM101", null, 10, 30, null,
+    chemClasses.add(new Section("CHEM101 (TuThu Late Morning)", "CHEM101", null, "10", "30", null,
         new Meeting[] {TuThuLateMorning}));
 
     scheduler = new SemesterScheduler(allClasses);
@@ -107,15 +107,15 @@ public final class SemesterSchedulerTest {
   @Test
   public void oneMeetingPerSectionNoPossibleSchedules() {
     compSciClasses.add(new Section(
-        "CMSC101 (MW All Day)", "CMSC101", null, 10, 30, null, new Meeting[] {MWAllDay}));
+        "CMSC101 (MW All Day)", "CMSC101", null, "10", "30", null, new Meeting[] {MWAllDay}));
 
-    englishClasses.add(new Section(
-        "ENGL101 (TuThu Morning)", "ENGL101", null, 10, 30, null, new Meeting[] {TuThuMorning}));
+    englishClasses.add(new Section("ENGL101 (TuThu Morning)", "ENGL101", null, "10", "30", null,
+        new Meeting[] {TuThuMorning}));
 
-    mathClasses.add(new Section(
-        "MATH101 (MWF Afternoon)", "MATH101", null, 10, 30, null, new Meeting[] {MWFAfternoon}));
+    mathClasses.add(new Section("MATH101 (MWF Afternoon)", "MATH101", null, "10", "30", null,
+        new Meeting[] {MWFAfternoon}));
 
-    chemClasses.add(new Section("CHEM101 (TuThu Late Morning)", "CHEM101", null, 10, 30, null,
+    chemClasses.add(new Section("CHEM101 (TuThu Late Morning)", "CHEM101", null, "10", "30", null,
         new Meeting[] {TuThuLateMorning}));
 
     scheduler = new SemesterScheduler(allClasses);
@@ -126,15 +126,15 @@ public final class SemesterSchedulerTest {
   @Test
   public void multipleMeetingsPerSectionOnePossibleSchedule() {
     compSciClasses.add(new Section("CMSC101 (MWF Morning and Friday Afternoon)", "CMSC101", null,
-        10, 30, null, new Meeting[] {MWFMorning, fridayOnlyAfternoon}));
+        "10", "30", null, new Meeting[] {MWFMorning, fridayOnlyAfternoon}));
 
-    englishClasses.add(new Section("ENGL101 (TuThu Morning, TuThuAfternoon)", "ENGL101", null, 10,
-        30, null, new Meeting[] {TuThuMorning, TuThuAfternoon}));
+    englishClasses.add(new Section("ENGL101 (TuThu Morning, TuThuAfternoon)", "ENGL101", null, "10",
+        "30", null, new Meeting[] {TuThuMorning, TuThuAfternoon}));
 
-    mathClasses.add(new Section("MATH101 (MWF Late Morning)", "MATH101", null, 10, 30, null,
+    mathClasses.add(new Section("MATH101 (MWF Late Morning)", "MATH101", null, "10", "30", null,
         new Meeting[] {MWFLateMorning}));
 
-    chemClasses.add(new Section("CHEM101 (TuThu Late Morning)", "CHEM101", null, 10, 30, null,
+    chemClasses.add(new Section("CHEM101 (TuThu Late Morning)", "CHEM101", null, "10", "30", null,
         new Meeting[] {TuThuLateMorning}));
 
     scheduler = new SemesterScheduler(allClasses);
@@ -153,20 +153,20 @@ public final class SemesterSchedulerTest {
   @Test
   public void multipleMeetingsPerSectionMultiplePossibleSchedules() {
     compSciClasses.add(new Section("0CMSC101 (MWF Morning and Friday Afternoon)", "CMSC101", null,
-        10, 30, null, new Meeting[] {MWFMorning, fridayOnlyAfternoon}));
+        "10", "30", null, new Meeting[] {MWFMorning, fridayOnlyAfternoon}));
 
-    compSciClasses.add(new Section("1CMSC101 (TuThuLateAfternoon)", "CMSC101", null, 10, 30, null,
-        new Meeting[] {TuThuLateAfternoon}));
+    compSciClasses.add(new Section("1CMSC101 (TuThuLateAfternoon)", "CMSC101", null, "10", "30",
+        null, new Meeting[] {TuThuLateAfternoon}));
 
-    englishClasses.add(new Section("0ENGL101 (TuThu Morning, TuThuAfternoon)", "ENGL101", null, 10,
-        30, null, new Meeting[] {TuThuMorning, TuThuAfternoon}));
+    englishClasses.add(new Section("0ENGL101 (TuThu Morning, TuThuAfternoon)", "ENGL101", null,
+        "10", "30", null, new Meeting[] {TuThuMorning, TuThuAfternoon}));
 
-    mathClasses.add(new Section("0MATH101 (MWF Late Morning)", "MATH101", null, 10, 30, null,
+    mathClasses.add(new Section("0MATH101 (MWF Late Morning)", "MATH101", null, "10", "30", null,
         new Meeting[] {MWFLateMorning}));
-    mathClasses.add(new Section(
-        "1MATH101 (MWF Afternoon)", "MATH101", null, 10, 30, null, new Meeting[] {MWFAfternoon}));
+    mathClasses.add(new Section("1MATH101 (MWF Afternoon)", "MATH101", null, "10", "30", null,
+        new Meeting[] {MWFAfternoon}));
 
-    chemClasses.add(new Section("0CHEM101 (TuThu Late Morning)", "CHEM101", null, 10, 30, null,
+    chemClasses.add(new Section("0CHEM101 (TuThu Late Morning)", "CHEM101", null, "10", "30", null,
         new Meeting[] {TuThuLateMorning}));
 
     scheduler = new SemesterScheduler(allClasses);
