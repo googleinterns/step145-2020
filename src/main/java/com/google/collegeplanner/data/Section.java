@@ -31,13 +31,13 @@ public class Section {
   private String[] instructors;
   private Meeting[] meetings;
 
-  public Section(String sectionId, String courseId, String waitlist, int openSeats, int seats,
+  public Section(String sectionId, String courseId, String waitlist, String openSeats, String seats,
       String[] instructors, Meeting[] meetings) throws ParseException {
     this.sectionId = sectionId;
     this.courseId = courseId;
     this.waitlist = waitlist;
-    this.openSeats = openSeats;
-    this.seats = seats;
+    this.openSeats = Integer.parseInt(openSeats);
+    this.seats = Integer.parseInt(seats);
     this.instructors = instructors;
     this.meetings = meetings;
 

@@ -40,17 +40,14 @@ public class Meeting {
 
   public Meeting(String days, String room, String building, String startTime, String endTime)
       throws ParseException {
-    if (room != "") {
-      this.room = room;
-    }
-    if (building != "") {
-      this.building = building;
-    }
+    this.days = new ArrayList<DayOfWeek>();
+    this.room = room;
+    this.building = building;
     if (startTime != "") {
-      this.startTime = timeInMins(startTime);
+      this.startTime = parseTime(startTime);
     }
     if (endTime != "") {
-      this.endTime = timeInMins(endTime);
+      this.endTime = parseTime(endTime);
     }
 
     assignDays(days);
@@ -118,10 +115,6 @@ public class Meeting {
     }
   }
 
-  public Meeting(JSONObject json) throws ParseException {
-    this((String) json.get("days"), (String) json.get("room"), (String) json.get("building"),
-        (String) json.get("start_time"), (String) json.get("end_time"));
-  }
 
   public boolean conflictsWith(Meeting other) {
     // Checks to see if the two meetings occur on the same day
