@@ -78,7 +78,7 @@ public final class SemesterSchedulerTest {
   }
 
   @Test
-  public void oneMeetingPerSectionOnePossibleSchedule() {
+  public void oneMeetingPerSectionOnePossibleSchedule() throws Exception {
     compSciClasses.add(new Section(
         "CMSC101 (MWF Morning)", "CMSC101", null, "10", "30", null, new Meeting[] {MWFMorning}));
 
@@ -105,7 +105,7 @@ public final class SemesterSchedulerTest {
   }
 
   @Test
-  public void oneMeetingPerSectionNoPossibleSchedules() {
+  public void oneMeetingPerSectionNoPossibleSchedules() throws Exception {
     compSciClasses.add(new Section(
         "CMSC101 (MW All Day)", "CMSC101", null, "10", "30", null, new Meeting[] {MWAllDay}));
 
@@ -124,7 +124,7 @@ public final class SemesterSchedulerTest {
   }
 
   @Test
-  public void multipleMeetingsPerSectionOnePossibleSchedule() {
+  public void multipleMeetingsPerSectionOnePossibleSchedule() throws Exception {
     compSciClasses.add(new Section("CMSC101 (MWF Morning and Friday Afternoon)", "CMSC101", null,
         "10", "30", null, new Meeting[] {MWFMorning, fridayOnlyAfternoon}));
 
@@ -151,7 +151,7 @@ public final class SemesterSchedulerTest {
   }
 
   @Test
-  public void multipleMeetingsPerSectionMultiplePossibleSchedules() {
+  public void multipleMeetingsPerSectionMultiplePossibleSchedules() throws Exception {
     compSciClasses.add(new Section("0CMSC101 (MWF Morning and Friday Afternoon)", "CMSC101", null,
         "10", "30", null, new Meeting[] {MWFMorning, fridayOnlyAfternoon}));
 

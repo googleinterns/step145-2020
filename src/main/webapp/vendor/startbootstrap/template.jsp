@@ -26,7 +26,7 @@
     <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css">
 
     <!-- Our styles -->
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="${param.directory}style.css">
   </head>
 
   <body id="page-top">
@@ -52,14 +52,14 @@
         </div>
 
         <!-- Nav Item - Scheduler -->
-        <li class="nav-item">
+        <li class="nav-item ${param.activeScheduler}">
           <a class="nav-link" href="/">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Scheduler</span></a>
         </li>
 
         <!-- Nav Item - 4 Year Planner -->
-        <li class="nav-item">
+        <li class="nav-item ${param.activePlanner}">
           <a class="nav-link" href="/planner">
             <i class="fas fa-fw fa-book"></i>
             <span>Planner</span></a>
@@ -188,7 +188,7 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <!-- Our scripts -->
-    <script type="module" src="js/${param.scriptFile}.js"></script>
+    <script type="module" src="${param.directory}js/${param.scriptFile}.js"></script>
 
   </body>
 

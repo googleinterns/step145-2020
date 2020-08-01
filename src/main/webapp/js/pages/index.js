@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Calendar from '../lib/calendar.js';
-import CollegePlanner from '../lib/courseSelector.js';
-import Auth from '../lib/login.js';
+import {Auth} from '../lib/auth.js';
+import {Calendar} from '../lib/calendar.js';
+import {CourseSelector} from '../lib/courseSelector.js';
 
 const MAX_PAGINATION_SCHEDULES = 15;
 
 window.addEventListener('load', () => {
   Calendar.initCalendar();
-  CollegePlanner.getDepartmentOptions();
+  CourseSelector.getDepartmentOptions();
 });
 
 /**
@@ -113,11 +113,11 @@ document.querySelector('.course-list').addEventListener('click', async () => {
 });
 
 document.getElementById('add-selected').addEventListener('click', () => {
-  CollegePlanner.addToSelected();
+  CourseSelector.addToSelected();
 });
 
 document.getElementById('departments').addEventListener('change', () => {
-  CollegePlanner.getCourseOptions();
+  CourseSelector.getCourseOptions();
 });
 
 document.getElementById('signout-button').addEventListener('click', () => {

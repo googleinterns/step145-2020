@@ -15,6 +15,7 @@
 package com.google.collegeplanner.data;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -50,11 +51,6 @@ public class Course {
    */
   private String description;
   /*
-   * gradingMethod represents the list of possible grading
-   * methods students can opt for. Example, regular, pass-fail.
-   */
-  private String[] gradingMethod;
-  /*
    * corequisites represents the corequisite classes for this
    * course. Example, BIO106 is the lab for BIO101 and
    * must be taken together
@@ -84,31 +80,63 @@ public class Course {
   private String creditGrantedFor;
 
   public Course(String courseId, String name, String semester, int credits, String departmentId,
-      String description, String[] gradingMethod, String corequisites, String prerequisites,
-      String restrictions, String additionalInfo, String creditGrantedFor) {
+      String description, String corequisites, String prerequisites, String restrictions,
+      String additionalInfo, String creditGrantedFor) throws Exception {
     this.courseId = courseId;
     this.name = name;
     this.semester = semester;
     this.credits = credits;
     this.departmentId = departmentId;
     this.description = description;
-    this.gradingMethod = gradingMethod;
     this.corequisites = corequisites;
     this.prerequisites = prerequisites;
     this.restrictions = restrictions;
     this.additionalInfo = additionalInfo;
     this.creditGrantedFor = creditGrantedFor;
+
+    validate();
   }
 
-  public Course(JSONObject json) {
-    this((String) json.get("course_id"), (String) json.get("name"), (String) json.get("semester"),
-        (int) json.get("credits"), (String) json.get("dept_id"), (String) json.get("description"),
-        (String[]) ((JSONArray) json.get("grading_method")).toArray(),
-        (String) ((JSONObject) json.get("relationships")).get("coreqs"),
-        (String) ((JSONObject) json.get("relationships")).get("prereqs"),
-        (String) ((JSONObject) json.get("relationships")).get("restrictions"),
-        (String) ((JSONObject) json.get("relationships")).get("additional_info"),
-        (String) ((JSONObject) json.get("relationships")).get("credit_granted_for"));
+  public Course(JSONObject json) throws ParseException {
+    try {
+      this.credits = Integer.parseInt((String) json.get("credits"));
+    } catch (NumberFormatException e) {
+      this.credits = 0;
+    }
+
+    this.courseId = (String) json.get("course_id");
+    this.name = (String) json.get("name");
+    this.semester = (String) json.get("semester");
+    this.departmentId = (String) json.get("department_id");
+    this.description = (String) json.get("description");
+
+    JSONObject relationships = (JSONObject) json.get("relationships");
+    if (relationships == null) {
+      this.corequisites = null;
+      this.prerequisites = null;
+      this.restrictions = null;
+      this.additionalInfo = null;
+      this.creditGrantedFor = null;
+      return;
+    }
+
+    this.corequisites = (String) relationships.get("coreqs");
+    this.prerequisites = (String) relationships.get("prereqs");
+    this.restrictions = (String) relationships.get("restrictions");
+    this.additionalInfo = (String) relationships.get("additional_info");
+    this.creditGrantedFor = (String) relationships.get("credit_granted_for");
+
+    validate();
+  }
+
+  /*
+   * Validates the courseId parameter that is passed into the constructors.
+   */
+  private void validate() throws ParseException {
+    if (this.courseId == null) {
+      throw new ParseException("Null course_id.", 0);
+    }
+    this.courseId = this.courseId.toUpperCase();
   }
 
   /*
@@ -194,10 +222,6 @@ public class Course {
 
   public String getDescription() {
     return description;
-  }
-
-  public String[] getGradingMethod() {
-    return gradingMethod;
   }
 
   public String getCorequisites() {

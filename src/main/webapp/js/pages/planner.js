@@ -12,18 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import CollegePlanner from '../lib/courseSelector.js';
-import Auth from '../lib/login.js';
+import {Auth} from '../lib/auth.js';
+import {CourseSelector} from '../lib/courseSelector.js';
+import {Util} from '../lib/util.js';
 
 /**
  * Gets results from /planner servlet to results
  */
 async function getPlan() {
   const courseContainer = document.getElementById('order-area');
-  attachNewSpinner(courseContainer);
+  Util.attachNewSpinner(courseContainer);
   const selectedClasses = []
-  CollegePlanner.getSelected().forEach(
-      course => selectedClasses.push(CollegePlanner.getCourseInfo()[course]));
+  CourseSelector.getSelected().forEach(
+      course => selectedClasses.push(CourseSelector.getCourseInfo()[course]));
   const data = {
     selectedClasses: selectedClasses,
     semesters: document.getElementById('semesters').value
@@ -44,28 +45,28 @@ async function getPlan() {
     });
     courseList = await response.json();
   } catch (err) {
-    CollegePlanner.createAlert('An error occurred', 'danger', courseContainer);
+    Util.createAlert('An error occurred', 'danger', courseContainer);
     return;
   }
   if (response.ok) {
     const courseData = courseList.semester_plan;
     const creditsData = courseList.semester_credits;
     if (!courseData.length) {
-      CollegePlanner.createAlert(
+      Util.createAlert(
           'These courses did not fit in the given number of semesters.',
           'primary', courseContainer);
     } else if (courseData.length == creditsData.length) {
-      createTable(courseData, creditsData, courseContainer);
+      Util.createPlanTable(courseData, creditsData, courseContainer);
       attachSaveButton(document.getElementById('plan-header'));
       document.getElementById('plan-name').addEventListener('submit', () => {
         savePlan(courseList);
       });
     } else {
-      CollegePlanner.createAlert(
+      Util.createAlert(
           'An invalid response was recieved.', 'warning', courseContainer);
     }
   } else {
-    CollegePlanner.createAlert(courseList.message, 'warning', courseContainer);
+    Util.createAlert(courseList.message, 'warning', courseContainer);
   }
 }
 
@@ -74,9 +75,30 @@ async function getPlan() {
  * @param {Object} courseList JSON Object containing the courseplan returned by
  *     the servlet.
  */
-function savePlan(courseList) {
-  // TODO(#77): Send tokens to servlet to save plans in Datastore.
-  console.log(courseList);
+async function savePlan(courseList) {
+  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    return;
+  }
+  const data = {
+    idToken: gapi.auth2.getAuthInstance()
+                 .currentUser.get()
+                 .getAuthResponse()
+                 .id_token,
+    plan: courseList,
+    planName: document.getElementById('save-plan-as').value
+  };
+  try {
+    await fetch('/api/planner/save', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    $('#savePlanModal').modal('hide');
+  } catch (err) {
+    CourseSelector.createAlert(
+        'Could not save this plan', 'warning',
+        document.getElementById('plan-name'));
+    return;
+  }
 }
 
 /**
@@ -110,63 +132,36 @@ function attachSaveButton(headerContainer) {
   headerContainer.appendChild(button);
 }
 
-/**
- * Creates spinner to signify loading and adds to the courseContainer
- * @param {Element} courseContainer container for course list
- */
-function attachNewSpinner(courseContainer) {
-  const spinner = document.createElement('i');
-  spinner.setAttribute('class', 'fas fa-sync fa-spin');
-  courseContainer.innerText = '';
-  courseContainer.appendChild(spinner);
-}
-
-/**
- * Creates table from a 2D array
- * @param {Object} tableData 2D array with separation of courses
- * @param {Object} creditsData Array with credits for each semester
- * @param {Element} courseContainer container for course list
- */
-function createTable(tableData, creditsData, courseContainer) {
-  courseContainer.innerText = '';
-  const table = document.createElement('table');
-  const tableBody = document.createElement('tbody');
-  table.setAttribute('class', 'table table-hover mb-0;');
-  tableData.forEach((rowData, i) => {
-    const row = document.createElement('tr');
-    const cell = document.createElement('td');
-    const semesterLabel = document.createElement('b');
-    semesterLabel.innerText = `Semester ${i + 1} (${creditsData[i]} Credits):`;
-    cell.appendChild(semesterLabel);
-    row.appendChild(cell);
-
-    rowData.forEach((cellData) => {
-      const cell = document.createElement('td');
-      cell.appendChild(document.createTextNode(cellData));
-      row.appendChild(cell);
-    });
-
-    tableBody.appendChild(row);
-  });
-
-  table.appendChild(tableBody);
-  courseContainer.appendChild(table);
-}
-
 document.getElementById('submit-plan').addEventListener('submit', () => {
   getPlan();
 });
 
 window.addEventListener('load', () => {
-  CollegePlanner.getDepartmentOptions();
+  CourseSelector.getDepartmentOptions();
 });
 
 document.getElementById('add-selected').addEventListener('click', () => {
-  CollegePlanner.addToSelected();
+  CourseSelector.addToSelected();
 });
 
 document.getElementById('departments').addEventListener('change', () => {
-  CollegePlanner.getCourseOptions();
+  CourseSelector.getCourseOptions();
+});
+
+document.getElementById('see-saved').addEventListener('click', () => {
+  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    window.location.href = 'planner/saved';
+  } else {
+    $('#signInModal').modal();
+  }
+});
+
+document.getElementById('see-saved').addEventListener('click', () => {
+  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    window.location.href = 'planner/saved';
+  } else {
+    $('#signInModal').modal();
+  }
 });
 
 document.getElementById('signout-button').addEventListener('click', () => {

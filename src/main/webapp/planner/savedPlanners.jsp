@@ -13,8 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. 
 --%>
+
 <jsp:include page="/vendor/startbootstrap/template.jsp">
-  <jsp:param name="activeScheduler" value="active"/>
-  <jsp:param name="content" value="index-content"/>
-  <jsp:param name="scriptFile" value="pages/index"/>
+  <jsp:param name="directory" value="../"/>
+  <jsp:param name="activePlanner" value="active"/>
+  <jsp:param name="content" value="saved-planner-content"/>
+  <jsp:param name="scriptFile" value="pages/savedPlanners"/>
 </jsp:include>
