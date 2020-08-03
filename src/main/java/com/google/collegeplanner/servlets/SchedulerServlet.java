@@ -68,7 +68,7 @@ public class SchedulerServlet extends BaseServlet {
    * course while courseList is loaded with the courseID's of the selected
    * courses.
    * @param classes The JSONArray of courseIds of the selected classes
-   * @param response The HttpServletResponse object.
+   * @param response The HttpServletResponse object
    */
   private void prepareLists(JSONArray classes, HttpServletResponse response) throws IOException {
     String courseId;
@@ -85,7 +85,7 @@ public class SchedulerServlet extends BaseServlet {
         uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
       } catch (URISyntaxException e) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        throw new IOException()
       }
 
       jsonArray = apiUtil.getJsonArray(uri);
@@ -93,7 +93,7 @@ public class SchedulerServlet extends BaseServlet {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       }
-      courses.add(convertSectionJSONToSectionArrayList(jsonArray));
+      courses.add(convertSectionJsonToSectionArrayList(jsonArray));
     }
   }
 
@@ -103,14 +103,12 @@ public class SchedulerServlet extends BaseServlet {
    */
   private JSONObject getSchedules() {
     JSONObject json = new JSONObject();
-    JSONObject temp;
     JSONArray schedulesJson = new JSONArray();
     SemesterScheduler scheduler = new SemesterScheduler(courses);
     ArrayList<Schedule> possibleSchedules = scheduler.getPossibleSchedules();
 
     for (Schedule schedule : possibleSchedules) {
-      temp = schedule.toJSON();
-      schedulesJson.add(temp);
+      schedulesJson.add(schedule.toJSON());
     }
 
     json.put("schedules", schedulesJson);
@@ -124,7 +122,7 @@ public class SchedulerServlet extends BaseServlet {
    * @param json The JSONArray of Sections that will be converted into an
    * ArrayList of Sections
    */
-  private ArrayList<Section> convertSectionJSONToSectionArrayList(JSONArray json) {
+  private ArrayList<Section> convertSectionJsonToSectionArrayList(JSONArray json) {
     ArrayList<Section> list = new ArrayList<Section>();
     for (Object obj : json) {
       try {
