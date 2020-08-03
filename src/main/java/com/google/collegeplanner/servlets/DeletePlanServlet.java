@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.collegeplanner.servlets.BaseServlet;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,13 +27,18 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet responsible for deleting plans. */
 @WebServlet("/delete-plan")
-public class DeletePlanServlet extends HttpServlet {
+public class DeletePlanServlet extends BaseServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("id"));
+    try {
+      long id = Long.parseLong(request.getParameter("id"));
 
-    Key commentEntityKey = KeyFactory.createKey("Plan", id);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(commentEntityKey);
+      Key planEntityKey = KeyFactory.createKey("Plan", id);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.delete(planEntityKey);
+    } catch (NumberFormatException e) {
+      respondWithError(
+          "Invalid id for datastore deletion.", HttpServletResponse.SC_BAD_REQUEST, response);
+    }
   }
 }

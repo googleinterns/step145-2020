@@ -62,7 +62,7 @@ function createCard(planId, planName, tableData, creditsData) {
   deleteButtonElement.innerHTML =
       '<i class="fas fa-trash-alt" id="modeicon"></i>';
   deleteButtonElement.setAttribute(
-      'class', 'rounded-circle border-0 btn-lg float:right');
+      'class', 'rounded-circle border-0 btn-lg float-right');
   deleteButtonElement.addEventListener('click', () => {
     $('#deleteModal').modal();
     document.getElementById('plan-name').innerText = planName;
@@ -91,7 +91,13 @@ function createCard(planId, planName, tableData, creditsData) {
 function deletePlan(id) {
   const params = new URLSearchParams();
   params.append('id', id);
-  fetch('/delete-plan', {method: 'POST', body: params});
+  try {
+    fetch('/delete-plan', {method: 'POST', body: params});
+  } catch (err) {
+    Util.createAlert(
+        'Could not delete element.', 'danger',
+        document.getElementById('plan-name'));
+  }
 }
 
 Auth.registerPostSignInHandler(getSavedPlans);

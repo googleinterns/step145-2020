@@ -31,6 +31,8 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.collegeplanner.servlets.DeletePlanServlet;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,13 +42,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /** Test DeletePlanServlet */
 @RunWith(JUnit4.class)
 public final class DeletePlanServletTest {
   HttpServletRequest request;
+  HttpServletResponse response;
   DatastoreService datastore;
   DeletePlanServlet servlet;
+  StringWriter stringWriter;
+  PrintWriter writer;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -54,7 +61,11 @@ public final class DeletePlanServletTest {
   @Before
   public void before() throws Exception {
     datastore = DatastoreServiceFactory.getDatastoreService();
+    stringWriter = new StringWriter();
+    writer = new PrintWriter(stringWriter);
     request = mock(HttpServletRequest.class);
+    response = mock(HttpServletResponse.class);
+    when(response.getWriter()).thenReturn(writer);
     servlet = new DeletePlanServlet();
     helper.setUp();
   }
@@ -66,7 +77,7 @@ public final class DeletePlanServletTest {
 
   @Test
   public void servletDeletesDatastoreObjects() throws Exception {
-    // Put 2 entities in datastore. 
+    // Put 2 entities in datastore.
     Entity planEntity1 = new Entity("Plan");
     datastore.put(planEntity1);
 
@@ -75,13 +86,16 @@ public final class DeletePlanServletTest {
 
     // Delete an element and check that there is only 1 element in datastore.
     when(request.getParameter("id")).thenReturn("1");
-    servlet.doPost(request, null);
+    servlet.doPost(request, response);
+
+    verify(response, never()).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    verify(response, never()).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     Assert.assertEquals(1, datastore.prepare(new Query("Plan")).countEntities());
   }
 
   @Test
   public void servletDoesntDeleteInvalidIds() throws Exception {
-    // Put 2 entities in datastore. 
+    // Put 2 entities in datastore.
     Entity planEntity1 = new Entity("Plan");
     datastore.put(planEntity1);
 
@@ -90,8 +104,30 @@ public final class DeletePlanServletTest {
 
     // Delete an element and check that there are still 2 elements in datastore.
     when(request.getParameter("id")).thenReturn("3");
-    servlet.doPost(request, null);
+    servlet.doPost(request, response);
+
+    verify(response, never()).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    verify(response, never()).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     Assert.assertEquals(2, datastore.prepare(new Query("Plan")).countEntities());
   }
 
+  @Test
+  public void servletReturnsErrorWhenNullParam() throws Exception {
+    // Put 2 entities in datastore.
+    Entity planEntity1 = new Entity("Plan");
+    datastore.put(planEntity1);
+
+    Entity planEntity2 = new Entity("Plan");
+    datastore.put(planEntity2);
+
+    // Delete an element and check that there are still 2 elements in datastore.
+    when(request.getParameter("id")).thenReturn(null);
+    servlet.doPost(request, response);
+
+    verify(response, times(1)).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    verify(response, never()).setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
+    String expectedJson =
+        "{\"message\":\"Invalid id for datastore deletion.\",\"status\":\"error\"}";
+    JSONAssert.assertEquals(expectedJson, stringWriter.toString(), JSONCompareMode.STRICT);
+  }
 }
