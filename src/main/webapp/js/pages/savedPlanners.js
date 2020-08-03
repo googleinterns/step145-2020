@@ -98,6 +98,7 @@ async function deletePlan(id) {
     Util.createAlert(
         'Could not delete element.', 'danger',
         document.getElementById('plan-name'));
+    return;
   }
   if (response.ok) {
     $('#deleteModal').modal('hide');
