@@ -49,7 +49,6 @@ public class SectionServlet extends BaseServlet {
   }
 
   public SectionServlet(DatastoreService datastore) {
-    // super(apiUtil);
     this.datastore = datastore;
   }
 
