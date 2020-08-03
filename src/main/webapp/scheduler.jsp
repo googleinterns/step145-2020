@@ -15,6 +15,6 @@ limitations under the License.
 --%>
 <jsp:include page="/vendor/startbootstrap/template.jsp">
   <jsp:param name="activeScheduler" value="active"/>
-  <jsp:param name="content" value="index-content"/>
-  <jsp:param name="scriptFile" value="pages/index"/>
+  <jsp:param name="content" value="scheduler-content"/>
+  <jsp:param name="scriptFile" value="pages/scheduler"/>
 </jsp:include>

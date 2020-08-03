@@ -23,15 +23,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that renders the / page.*/
-@WebServlet("/")
-public class IndexPageServlet extends HttpServlet {
+@WebServlet("/scheduler")
+public class SchedulerPageServlet extends HttpServlet {
   /**
    * Renders index.jsp
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    RequestDispatcher view = request.getRequestDispatcher("index.jsp");
+    RequestDispatcher view = request.getRequestDispatcher("scheduler.jsp");
     view.forward(request, response);
   }
 }

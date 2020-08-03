@@ -17,7 +17,7 @@ package com.google.collegeplanner;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.collegeplanner.servlets.IndexPageServlet;
+import com.google.collegeplanner.servlets.SchedulerPageServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,16 +31,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests IndexPageServlet */
+/** Tests SchedulerPageServlet */
 @RunWith(JUnit4.class)
-public final class IndexPageServletTest {
+public final class SchedulerPageServletTest {
   @Test
   public void servletResponseIsCorrect() throws IOException, ServletException {
     RequestDispatcher mockRequestDispatcher = mock(RequestDispatcher.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
-    when(mockedRequest.getRequestDispatcher("index.jsp")).thenReturn(mockRequestDispatcher);
+    when(mockedRequest.getRequestDispatcher("scheduler.jsp")).thenReturn(mockRequestDispatcher);
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
-    IndexPageServlet servlet = new IndexPageServlet();
+    SchedulerPageServlet servlet = new SchedulerPageServlet();
     servlet.doGet(mockedRequest, mockedResponse);
   }
 }
