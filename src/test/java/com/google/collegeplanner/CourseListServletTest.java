@@ -29,8 +29,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.collegeplanner.servlets.ApiUtil;
 import com.google.collegeplanner.servlets.CourseListServlet;
 import com.google.collegeplanner.servlets.DatastoreServlet;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;

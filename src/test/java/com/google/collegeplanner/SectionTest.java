@@ -30,8 +30,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.collegeplanner.servlets.ApiUtil;
 import com.google.collegeplanner.servlets.DatastoreServlet;
 import com.google.collegeplanner.servlets.SectionServlet;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
@@ -175,7 +173,7 @@ public final class SectionTest {
   }
 
   @Test
-  public void oneSectionMultipleMeetings() throws Exception {
+  public void servletResponseHasSections() throws Exception {
     String expectedJson = "[{"
         + "\"course_id\": \"AASP100\","
         + "\"section_id\": \"AASP100-0101\","
