@@ -85,7 +85,7 @@ public class SchedulerServlet extends BaseServlet {
         uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
       } catch (URISyntaxException e) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        throw new IOException()
+        throw new IOException(courseId + " cannot be found in the umd.io database");
       }
 
       jsonArray = apiUtil.getJsonArray(uri);
