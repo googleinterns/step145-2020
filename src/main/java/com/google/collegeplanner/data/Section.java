@@ -14,6 +14,8 @@
 
 package com.google.collegeplanner.data;
 
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.gson.annotations.SerializedName;
 import java.text.ParseException;
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
@@ -23,13 +25,13 @@ import org.json.simple.JSONObject;
  * This class represents a section of a course.
  */
 public class Section {
-  private String sectionId;
-  private String courseId;
-  private String waitlist;
-  private int openSeats;
-  private int seats;
-  private String[] instructors;
-  private Meeting[] meetings;
+  @SerializedName("section_id") private String sectionId;
+  @SerializedName("course_id") private String courseId;
+  @SerializedName("waitlist") private String waitlist;
+  @SerializedName("open_seats") private int openSeats;
+  @SerializedName("seats") private int seats;
+  @SerializedName("instructors") private String[] instructors;
+  @SerializedName("meetings") private Meeting[] meetings;
 
   public Section(String sectionId, String courseId, String waitlist, String openSeats, String seats,
       String[] instructors, Meeting[] meetings) throws ParseException {
@@ -59,6 +61,7 @@ public class Section {
     this.courseId = (String) json.get("course");
     this.sectionId = (String) json.get("section_id");
     this.waitlist = (String) json.get("waitlist");
+    this.courseId = (String) json.get("course");
 
     JSONArray instructorsArray = (JSONArray) json.get("instructors");
     ArrayList<String> instructors = new ArrayList<String>();
@@ -77,6 +80,26 @@ public class Section {
     this.meetings = meetings.toArray(new Meeting[0]);
     // TODO (naaoli): handle duplicate meetings if time allows for it
     validate();
+  }
+
+  public Section(EmbeddedEntity sectionEntity) throws ParseException {
+    this.sectionId = (String) sectionEntity.getProperty("section_id");
+    this.courseId = (String) sectionEntity.getProperty("course_id");
+    this.waitlist = (String) sectionEntity.getProperty("waitlist");
+    this.seats = ((Long) sectionEntity.getProperty("seats")).intValue();
+    this.openSeats = ((Long) sectionEntity.getProperty("open_seats")).intValue();
+    ArrayList<String> instructorsProp =
+        (ArrayList<String>) sectionEntity.getProperty("instructors");
+    this.instructors = instructorsProp.toArray(new String[0]);
+
+    ArrayList<EmbeddedEntity> meetingEntities =
+        (ArrayList<EmbeddedEntity>) sectionEntity.getProperty("meetings");
+    ArrayList<Meeting> meetings = new ArrayList<Meeting>();
+    for (EmbeddedEntity meetingEntity : meetingEntities) {
+      Meeting meeting = new Meeting(meetingEntity);
+      meetings.add(meeting);
+    }
+    this.meetings = meetings.toArray(new Meeting[0]);
   }
 
   /*
