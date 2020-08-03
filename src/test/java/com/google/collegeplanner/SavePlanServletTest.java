@@ -178,7 +178,6 @@ public final class SavePlanServletTest {
     // Execute get request for PERSON_B.
     when(request.getParameter("idToken")).thenReturn("PERSON_B");
     servlet.doGet(request, response);
-    System.out.println(stringWriter.toString());
     JSONAssert.assertEquals(stringWriter.toString(),
         "{\"plans\":\"[{\\\"id\\\":2,"
             + "\\\"plan\\\":{\\\"semester_credits\\\":[4],"
