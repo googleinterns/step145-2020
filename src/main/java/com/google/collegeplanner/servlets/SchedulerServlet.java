@@ -54,8 +54,12 @@ public class SchedulerServlet extends BaseServlet {
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
-
-    prepareLists(selectedClasses, response);
+    
+    try {
+      prepareLists(selectedClasses, response);
+    } catch (IOException e ) {
+      return;
+    }
 
     JSONObject schedules = getSchedules();
     response.setContentType("application/json;");
