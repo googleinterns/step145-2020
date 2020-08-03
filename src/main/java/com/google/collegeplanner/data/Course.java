@@ -147,18 +147,6 @@ public class Course {
         (String) courseEntity.getProperty("restrictions"),
         (String) courseEntity.getProperty("additional_info"),
         (String) courseEntity.getProperty("credit_granted_for"));
-    // Datastore stores ints as longs.
-    // this.credits = ((Long) courseEntity.getProperty("credits")).intValue();
-    // this.courseId = (String) courseEntity.getProperty("course_id");
-    // this.name = (String) courseEntity.getProperty("name");
-    // this.semester = (String) courseEntity.getProperty("semester");
-    // this.departmentId = (String) courseEntity.getProperty("dept_id");
-    // this.description = (String) courseEntity.getProperty("description");
-    // this.corequisites = (String) courseEntity.getProperty("coreqs");
-    // this.prerequisites = (String) courseEntity.getProperty("prereqs");
-    // this.restrictions = (String) courseEntity.getProperty("restrictions");
-    // this.additionalInfo = (String) courseEntity.getProperty("additional_info");
-    // this.creditGrantedFor = (String) courseEntity.getProperty("credit_granted_for");
   }
 
   public Course(Entity courseEntity, ArrayList<EmbeddedEntity> sections) {}

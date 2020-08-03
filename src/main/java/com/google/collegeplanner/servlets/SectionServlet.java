@@ -71,65 +71,34 @@ public class SectionServlet extends BaseServlet {
       return;
     }
 
-    // Filter filter = new CompositeFilter(CompositeFilterOperator.AND, Arrays.asList(
-    //  new FilterPredicate("a", FilterOperator.EQUAL, 1),
-    //  new CompositeFilter(CompositeFilterOperator.OR, Arrays.<Filter>asList(
-    //      new FilterPredicate("b", FilterOperator.EQUAL, 2),
-    //      new FilterPredicate("c", FilterOperator.EQUAL, 3)))));
-
-    System.out.println("BEFORE QUERY");
     Query query = new Query("Course").setFilter(
         new FilterPredicate("course_id", FilterOperator.EQUAL, courseId));
     PreparedQuery preparedQuery = datastore.prepare(query);
     List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 
     if (results.size() == 0) {
-      System.out.println("Empty query results");
       respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
-    System.out.println("BEFORE FINDING SECTION");
-
+    // Convert Section entities to Section objects to serialize into json.
+    ArrayList<Section> sections = new ArrayList<Section>();
     Entity courseEntity = results.get(0);
     ArrayList<EmbeddedEntity> sectionEntities =
         (ArrayList<EmbeddedEntity>) courseEntity.getProperty("sections");
-    ArrayList<Section> sections = new ArrayList<Section>();
     for (EmbeddedEntity sectionEntity : sectionEntities) {
-      System.out.println("SECTION");
       String section_id = (String) sectionEntity.getProperty("section_id");
-      System.out.println(section_id);
-      System.out.println(sectionId);
       if (section_id.equals(sectionId)) {
-        System.out.println("FOUND");
         Section section;
         try {
           section = new Section(sectionEntity);
         } catch (ParseException e) {
-          System.out.println("PARSE EXCEPTION");
-          System.out.println(e.getMessage());
           respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
           return;
         }
         sections.add(section);
-      } else {
-        System.out.println("not found");
       }
     }
-
-    // URI uri;
-    // try {
-    //   uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections/" + sectionId);
-    // } catch (URISyntaxException e) {
-    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-    //   return;
-    // }
-
-    // JSONArray jsonArray = apiUtil.getJsonArray(uri);
-    // if (jsonArray == null) {
-    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-    //   return;
-    // }
 
     JSONObject sectionsInfo = new JSONObject();
     sectionsInfo.put("sections", sections);

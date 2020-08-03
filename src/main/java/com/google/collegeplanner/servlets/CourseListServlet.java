@@ -50,7 +50,6 @@ public class CourseListServlet extends BaseServlet {
   }
 
   public CourseListServlet(DatastoreService datastore) {
-    // super(apiUtil);
     this.datastore = datastore;
   }
 
@@ -83,23 +82,6 @@ public class CourseListServlet extends BaseServlet {
       }
       courses.add(course);
     }
-
-    // URI uri;
-    // try {
-    //   URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
-    //   builder.setParameter("semester", "202008");
-    //   builder.setParameter("dept_id", department);
-    //   uri = builder.build();
-    // } catch (URISyntaxException e) {
-    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-    //   return;
-    // }
-
-    // JSONArray jsonArray = apiUtil.getJsonArray(uri);
-    // if (jsonArray == null) {
-    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-    //   return;
-    // }
 
     JSONObject schoolCourseInfo = new JSONObject();
     schoolCourseInfo.put("courses", courses);

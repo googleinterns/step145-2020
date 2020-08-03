@@ -34,7 +34,9 @@ import org.json.simple.JSONObject;
  * discussion, are two separate meetings for the same class.
  */
 public class Meeting {
+  // days is for use on the back end.
   private transient ArrayList<DayOfWeek> days;
+  // daysString gets serialized into json and is in the correct format to be rendered on the front end.
   @SerializedName("days") private String daysString;
   @SerializedName("room") private String room;
   @SerializedName("building") private String building;
@@ -72,6 +74,7 @@ public class Meeting {
 
     this.days = new ArrayList<DayOfWeek>();
     this.daysString = (String) meetingEntity.getProperty("days");
+
     assignDays((String) meetingEntity.getProperty("days"));
   }
 

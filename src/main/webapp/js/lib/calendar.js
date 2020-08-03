@@ -119,8 +119,6 @@ async function addCourse(course, section) {
   if (course == null || section == null) {
     return;
   }
-  console.log('addCourse in calendar.js');
-  console.log(section);
   const response = await fetch(`/api/sections?course_id=${
       encodeURIComponent(
           course.course_id)}&section_id=${encodeURIComponent(section)}`);

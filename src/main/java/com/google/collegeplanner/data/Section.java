@@ -15,12 +15,9 @@
 package com.google.collegeplanner.data;
 
 import com.google.appengine.api.datastore.EmbeddedEntity;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -86,39 +83,17 @@ public class Section {
   }
 
   public Section(EmbeddedEntity sectionEntity) throws ParseException {
-    // this(
-    //   sectionEntity.getProperty("section_id"),
-    //   sectionEntity.getProperty("course_id"),
-    //   sectionEntity.getProperty("waitlist"),
-    //   sectionEntity.getProperty("open_seats"),
-    //   sectionEntity.getProperty("seats"),
-    //   sectionEntity.getProperty("instructors"),
-    // )
     this.sectionId = (String) sectionEntity.getProperty("section_id");
     this.courseId = (String) sectionEntity.getProperty("course_id");
     this.waitlist = (String) sectionEntity.getProperty("waitlist");
-    // try {
-    //   this.openSeats = Integer.parseInt((String) sectionEntity.getProperty("open_seats"));
-    // } catch (NumberFormatException e) {
-    //   this.openSeats = 0;
-    // }
-
     this.seats = ((Long) sectionEntity.getProperty("seats")).intValue();
     this.openSeats = ((Long) sectionEntity.getProperty("open_seats")).intValue();
-    // try {
-    //   this.seats = Integer.parseInt((String) sectionEntity.getProperty("seats"));
-    // } catch (NumberFormatException e) {
-    //   this.seats = 0;
-    // }
-
-    // List<String> instructors = sectionEntity.getProperty("instructors")
     ArrayList<String> instructorsProp =
         (ArrayList<String>) sectionEntity.getProperty("instructors");
     this.instructors = instructorsProp.toArray(new String[0]);
 
     ArrayList<EmbeddedEntity> meetingEntities =
         (ArrayList<EmbeddedEntity>) sectionEntity.getProperty("meetings");
-    System.out.println(meetingEntities.size());
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
     for (EmbeddedEntity meetingEntity : meetingEntities) {
       System.out.println("MEETING");
