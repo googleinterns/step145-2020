@@ -149,8 +149,6 @@ public class Course {
         (String) courseEntity.getProperty("credit_granted_for"));
   }
 
-  public Course(Entity courseEntity, ArrayList<EmbeddedEntity> sections) {}
-
   /*
    * Validates the courseId parameter that is passed into the constructors.
    */
