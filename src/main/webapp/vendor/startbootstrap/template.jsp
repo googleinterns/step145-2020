@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <meta name="google-signin-client_id" content="267429534228-vvsi2uldmpji3rgs1qd3a41rceciaaaq.apps.googleusercontent.com">
 
-    <title>schEDUli</title>
+    <title>scheduli</title>
     <link rel="icon" href="${param.directory}img/favicon.ico">
 
     <!-- Custom fonts for this template-->
@@ -132,7 +132,7 @@
         <footer class="sticky-footer bg-white">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright &copy; schEDUli</span>
+              <span>Copyright &copy; scheduli</span>
             </div>
           </div>
         </footer>
