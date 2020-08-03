@@ -238,10 +238,10 @@ public class Meeting {
     DecimalFormat formatter = new DecimalFormat("00");
     if (hours > 12) {
       hours -= 12;
+      amPm = "pm";
     } else if (hours == 0) {
       hours = 12;
-    }
-    if (hours >= 12) {
+    } else if (hours == 12) {
       amPm = "pm";
     }
     return (formatter.format(hours) + ":" + formatter.format(minutes) + amPm);
