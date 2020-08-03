@@ -14,6 +14,7 @@
 
 package com.google.collegeplanner.data;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -217,8 +218,8 @@ public class Meeting {
     if (days.contains(DayOfWeek.FRIDAY)) {
       daysString += "F";
     }
-    // Do not need to check for Saturday or Sunday as the constructor throws an error
-    // if user tries to add those days into the list.
+    // Do not need to check for Saturday or Sunday as the constructor 
+    // throws an error if user tries to add those days into the list.
     return daysString;
   }
 
@@ -227,9 +228,14 @@ public class Meeting {
    * @param time Total minutes after 00:00
    */
   private String timeInString(int time) {
+    String timeString = "";
     String amPm = "am";
     int hours = time / 60;
     int minutes = time % 60;
+    // This formatter has a format() function that takes in an integer 
+    // and returns a string of the number represented in two digits. 
+    // Examples: 1 -> "01"      12 -> "12"
+    DecimalFormat formatter = new DecimalFormat("00");
     if (hours > 12) {
       hours -= 12;
     } else if (hours == 0) {
@@ -238,6 +244,6 @@ public class Meeting {
     if (hours >= 12) {
       amPm = "pm";
     }
-    return (Integer.toString(hours) + ":" + Integer.toString(minutes) + amPm);
+    return (formatter.format(hours) + ":" + formatter.format(minutes) + amPm);
   }
 }
