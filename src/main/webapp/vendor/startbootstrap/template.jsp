@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <meta name="google-signin-client_id" content="267429534228-vvsi2uldmpji3rgs1qd3a41rceciaaaq.apps.googleusercontent.com">
 
-    <title>Capstone-Filler</title>
+    <title>schEDUli</title>
 
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet" type="text/css">
@@ -39,21 +39,32 @@
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.jsp">
           <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <i class="fas fa-calendar"></i>
           </div>
-          <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+          <img src="${param.directory}img/Logo-light.png" class="logo-image-sidebar">
         </a>
 
         <!-- Divider -->
         <hr class="sidebar-divider my-0">
-         <!-- Heading -->
+
+        <!-- Nav Item - About -->
+        <li class="nav-item ${param.activeIndex}">
+          <a class="nav-link" href="/">
+            <i class="fas fa-fw fa-question-circle"></i>
+            <span>About</span>
+          </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+        <!-- Heading -->
         <div class="sidebar-heading">
           My Pages
         </div>
 
         <!-- Nav Item - Scheduler -->
         <li class="nav-item ${param.activeScheduler}">
-          <a class="nav-link" href="/">
+          <a class="nav-link" href="/scheduler">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Scheduler</span></a>
         </li>
@@ -63,17 +74,6 @@
           <a class="nav-link" href="/planner">
             <i class="fas fa-fw fa-book"></i>
             <span>Planner</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Nav Item - About -->
-        <li class="nav-item">
-          <a class="nav-link" href="/">
-            <i class="fas fa-fw fa-question-circle"></i>
-            <span>About</span>
-          </a>
         </li>
 
         <!-- Divider -->
@@ -131,7 +131,7 @@
         <footer class="sticky-footer bg-white">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright &copy; Capstone-Filler</span>
+              <span>Copyright &copy; schEDUli</span>
             </div>
           </div>
         </footer>

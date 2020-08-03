@@ -25,3 +25,22 @@
 .pagination li:hover:not(.active) {
   background-color: #ddd;
 }
+
+.logo-image-sidebar {
+  width: 150px;
+  padding: 8px 16px;
+  max-width:90%;
+}
+
+.logo-image {
+  max-width:90%;
+}
+
+.large-icon {
+  font-size: 100px;
+}
+
+.index-text {
+  font-size: 20px;
+}
+
