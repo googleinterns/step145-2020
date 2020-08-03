@@ -77,7 +77,7 @@ public class SectionServlet extends BaseServlet {
     List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 
     if (results.size() == 0) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+      respondWithError(HttpServletResponse.SC_NOT_FOUND, response);
       return;
     }
 

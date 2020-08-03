@@ -77,7 +77,7 @@ public class CourseListServlet extends BaseServlet {
       try {
         course = new Course(courseEntity);
       } catch (ParseException e) {
-        respondWithError(HttpServletResponse.SC_BAD_REQUEST, response);
+        respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       }
       courses.add(course);

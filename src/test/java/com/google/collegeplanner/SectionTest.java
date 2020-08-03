@@ -251,11 +251,6 @@ public final class SectionTest {
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
     JSONArray sections = (JSONArray) responseObj.get("sections");
 
-    // Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-    // System.out.println(gson.toJson(sections));
-    // JSONArray expected = (JSONArray) parser.parse(expectedJson);
-    // System.out.println(gson.toJson(expected));
-
     // Tests that response["sections"] exists
     Assert.assertNotNull(sections);
     // Checks that the correct number of JSON Objects are contained
@@ -264,19 +259,30 @@ public final class SectionTest {
     JSONAssert.assertEquals(expectedJson, sections.toString(), JSONCompareMode.STRICT);
   }
 
-  // @Test
-  // public void returnsErrorJson() throws Exception {
-  //   ApiUtil apiUtil = mock(ApiUtil.class);
-  //   when(apiUtil.getJsonArray(any(URI.class))).thenReturn(null);
-  //   SectionServlet servlet = new SectionServlet(apiUtil);
-  //   servlet.doGet(mockedRequest, mockedResponse);
-  //   // Verifies whether status was set to SC_INTERNAL_SERVER_ERROR
-  //   verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-  //   verify(mockedResponse, never())
-  //       .setStatus(not(eq(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)));
-  //   JSONParser parser = new JSONParser();
-  //   JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
-  //   String expectedJson = "{\"message\":\"Internal server error.\",\"status\":\"error\"}";
-  //   JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
-  // }
+  @Test
+  public void returnsError400() throws Exception {
+    when(mockedRequest.getParameter("course_id")).thenReturn(null);
+    SectionServlet servlet = new SectionServlet(datastore);
+    servlet.doGet(mockedRequest, mockedResponse);
+    // Verifies whether status was set to SC_BAD_REQUEST
+    verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    verify(mockedResponse, never())
+        .setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
+    JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
+    String expectedJson = "{\"message\":\"Invalid or missing course id.\",\"status\":\"error\"}";
+    JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
+  }
+
+  @Test
+  public void returnsError404() throws Exception {
+    SectionServlet servlet = new SectionServlet(datastore);
+    servlet.doGet(mockedRequest, mockedResponse);
+    // Verifies whether status was set to SC_NOT_FOUND when the query returns no results
+    verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_NOT_FOUND);
+    verify(mockedResponse, never())
+        .setStatus(not(eq(HttpServletResponse.SC_NOT_FOUND)));
+    JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
+    String expectedJson = "{\"message\":\"Not found.\",\"status\":\"error\"}";
+    JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
+  }
 }
