@@ -26,7 +26,7 @@
     <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css">
 
     <!-- Our styles -->
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="${param.directory}style.css">
   </head>
 
   <body id="page-top">
@@ -188,7 +188,7 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <!-- Our scripts -->
-    <script type="module" src="js/${param.scriptFile}.js"></script>
+    <script type="module" src="${param.directory}js/${param.scriptFile}.js"></script>
 
   </body>
 
