@@ -13,6 +13,7 @@
     <meta name="google-signin-client_id" content="267429534228-vvsi2uldmpji3rgs1qd3a41rceciaaaq.apps.googleusercontent.com">
 
     <title>schEDUli</title>
+    <link rel="icon" href="${param.directory}img/favicon.ico">
 
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet" type="text/css">
