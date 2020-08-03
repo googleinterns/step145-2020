@@ -47,7 +47,7 @@ public class SchedulerServlet extends BaseServlet {
     JSONObject body;
     JSONArray selectedClasses;
     try {
-      body = getBody(request);
+      body = getPostRequestBody(request);
       selectedClasses = (JSONArray) body.get("selectedClasses");
     } catch (NumberFormatException | ClassCastException | ParseException | NullPointerException e) {
       respondWithError(
