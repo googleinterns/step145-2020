@@ -72,6 +72,7 @@ public final class DeletePlanServletTest {
 
   @After
   public void after() {
+    writer.flush();
     helper.tearDown();
   }
 
@@ -91,6 +92,8 @@ public final class DeletePlanServletTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     verify(response, never()).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     Assert.assertEquals(1, datastore.prepare(new Query("Plan")).countEntities());
+    String expectedJson = "{\"message\":\"Deletion was successful.\",\"status\":\"ok\"}";
+    JSONAssert.assertEquals(expectedJson, stringWriter.toString(), JSONCompareMode.STRICT);
   }
 
   @Test
@@ -109,6 +112,8 @@ public final class DeletePlanServletTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     verify(response, never()).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     Assert.assertEquals(2, datastore.prepare(new Query("Plan")).countEntities());
+    String expectedJson = "{\"message\":\"Deletion was successful.\",\"status\":\"ok\"}";
+    JSONAssert.assertEquals(expectedJson, stringWriter.toString(), JSONCompareMode.STRICT);
   }
 
   @Test

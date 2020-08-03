@@ -68,7 +68,6 @@ function createCard(planId, planName, tableData, creditsData) {
     document.getElementById('plan-name').innerText = planName;
     document.getElementById('confirm-delete').addEventListener('click', () => {
       deletePlan(planId);
-      $('#deleteModal').modal('hide');
       // Remove the plan from the DOM.
       card.remove();
     });
@@ -88,14 +87,23 @@ function createCard(planId, planName, tableData, creditsData) {
  * Tells the server to delete the plan.
  * @param {Number} id The id of the plan to delete.
  */
-function deletePlan(id) {
+async function deletePlan(id) {
   const params = new URLSearchParams();
   params.append('id', id);
+  let response;
   try {
-    fetch('/delete-plan', {method: 'POST', body: params});
+    response =
+        await fetch('/api/planner/delete', {method: 'POST', body: params});
   } catch (err) {
     Util.createAlert(
         'Could not delete element.', 'danger',
+        document.getElementById('plan-name'));
+  }
+  if (response.ok) {
+    $('#deleteModal').modal('hide');
+  } else {
+    Util.createAlert(
+        'Could not delete element.', 'warning',
         document.getElementById('plan-name'));
   }
 }

@@ -19,14 +19,16 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.collegeplanner.servlets.BaseServlet;
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONObject;
 
 /** Servlet responsible for deleting plans. */
-@WebServlet("/delete-plan")
+@WebServlet("/api/planner/delete")
 public class DeletePlanServlet extends BaseServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -36,6 +38,12 @@ public class DeletePlanServlet extends BaseServlet {
       Key planEntityKey = KeyFactory.createKey("Plan", id);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.delete(planEntityKey);
+      // Write success message to response.
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("message", "Deletion was successful.");
+      jsonObject.put("status", "ok");
+      response.setContentType("application/json;");
+      response.getWriter().println(new Gson().toJson(jsonObject));
     } catch (NumberFormatException e) {
       respondWithError(
           "Invalid id for datastore deletion.", HttpServletResponse.SC_BAD_REQUEST, response);
