@@ -14,10 +14,24 @@
 
 package com.google.collegeplanner.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.collegeplanner.data.Course;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +43,15 @@ import org.json.simple.JSONObject;
 /** Servlet that returns list of courses.*/
 @WebServlet("/api/courses")
 public class CourseListServlet extends BaseServlet {
+  DatastoreService datastore;
+
   public CourseListServlet() {
-    super(new ApiUtil());
+    this(DatastoreServiceFactory.getDatastoreService());
   }
 
-  public CourseListServlet(ApiUtil apiUtil) {
-    super(apiUtil);
+  public CourseListServlet(DatastoreService datastore) {
+    // super(apiUtil);
+    this.datastore = datastore;
   }
 
   /**
@@ -49,27 +66,46 @@ public class CourseListServlet extends BaseServlet {
           "Invalid or missing department.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
-    URI uri;
-    try {
-      URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
-      builder.setParameter("semester", "202008");
-      builder.setParameter("dept_id", department);
-      uri = builder.build();
-    } catch (URISyntaxException e) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
+
+    Query query = new Query("Course").setFilter(
+        new FilterPredicate("dept_id", FilterOperator.EQUAL, department));
+    PreparedQuery preparedQuery = datastore.prepare(query);
+    List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
+
+    ArrayList<Course> courses = new ArrayList<Course>();
+    for (Entity courseEntity : results) {
+      Course course;
+      try {
+        course = new Course(courseEntity);
+      } catch (ParseException e) {
+        respondWithError(HttpServletResponse.SC_BAD_REQUEST, response);
+        return;
+      }
+      courses.add(course);
     }
 
-    JSONArray jsonArray = apiUtil.getJsonArray(uri);
-    if (jsonArray == null) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
-    }
+    // URI uri;
+    // try {
+    //   URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
+    //   builder.setParameter("semester", "202008");
+    //   builder.setParameter("dept_id", department);
+    //   uri = builder.build();
+    // } catch (URISyntaxException e) {
+    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+    //   return;
+    // }
+
+    // JSONArray jsonArray = apiUtil.getJsonArray(uri);
+    // if (jsonArray == null) {
+    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+    //   return;
+    // }
 
     JSONObject schoolCourseInfo = new JSONObject();
-    schoolCourseInfo.put("courses", jsonArray);
+    schoolCourseInfo.put("courses", courses);
 
     response.setContentType("application/json;");
-    response.getWriter().println(schoolCourseInfo);
+    Gson gson = new GsonBuilder().serializeNulls().create();
+    response.getWriter().println(gson.toJson(schoolCourseInfo));
   }
 }

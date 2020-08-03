@@ -14,10 +14,25 @@
 
 package com.google.collegeplanner.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.collegeplanner.data.Course;
+import com.google.collegeplanner.data.Section;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,12 +43,14 @@ import org.json.simple.JSONObject;
 /** Servlet that returns list of course sections.*/
 @WebServlet("/api/sections")
 public class SectionServlet extends BaseServlet {
+  DatastoreService datastore;
   public SectionServlet() {
-    super(new ApiUtil());
+    this(DatastoreServiceFactory.getDatastoreService());
   }
 
-  public SectionServlet(ApiUtil apiUtil) {
-    super(apiUtil);
+  public SectionServlet(DatastoreService datastore) {
+    // super(apiUtil);
+    this.datastore = datastore;
   }
 
   /**
@@ -54,24 +71,71 @@ public class SectionServlet extends BaseServlet {
       return;
     }
 
-    URI uri;
-    try {
-      uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections/" + sectionId);
-    } catch (URISyntaxException e) {
+    // Filter filter = new CompositeFilter(CompositeFilterOperator.AND, Arrays.asList(
+    //  new FilterPredicate("a", FilterOperator.EQUAL, 1),
+    //  new CompositeFilter(CompositeFilterOperator.OR, Arrays.<Filter>asList(
+    //      new FilterPredicate("b", FilterOperator.EQUAL, 2),
+    //      new FilterPredicate("c", FilterOperator.EQUAL, 3)))));
+
+    System.out.println("BEFORE QUERY");
+    Query query = new Query("Course").setFilter(
+        new FilterPredicate("course_id", FilterOperator.EQUAL, courseId));
+    PreparedQuery preparedQuery = datastore.prepare(query);
+    List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
+
+    if (results.size() == 0) {
+      System.out.println("Empty query results");
       respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
       return;
     }
 
-    JSONArray jsonArray = apiUtil.getJsonArray(uri);
-    if (jsonArray == null) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
+    System.out.println("BEFORE FINDING SECTION");
+
+    Entity courseEntity = results.get(0);
+    ArrayList<EmbeddedEntity> sectionEntities =
+        (ArrayList<EmbeddedEntity>) courseEntity.getProperty("sections");
+    ArrayList<Section> sections = new ArrayList<Section>();
+    for (EmbeddedEntity sectionEntity : sectionEntities) {
+      System.out.println("SECTION");
+      String section_id = (String) sectionEntity.getProperty("section_id");
+      System.out.println(section_id);
+      System.out.println(sectionId);
+      if (section_id.equals(sectionId)) {
+        System.out.println("FOUND");
+        Section section;
+        try {
+          section = new Section(sectionEntity);
+        } catch (ParseException e) {
+          System.out.println("PARSE EXCEPTION");
+          System.out.println(e.getMessage());
+          respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+          return;
+        }
+        sections.add(section);
+      } else {
+        System.out.println("not found");
+      }
     }
+
+    // URI uri;
+    // try {
+    //   uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections/" + sectionId);
+    // } catch (URISyntaxException e) {
+    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+    //   return;
+    // }
+
+    // JSONArray jsonArray = apiUtil.getJsonArray(uri);
+    // if (jsonArray == null) {
+    //   respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+    //   return;
+    // }
 
     JSONObject sectionsInfo = new JSONObject();
-    sectionsInfo.put("sections", jsonArray);
+    sectionsInfo.put("sections", sections);
 
     response.setContentType("application/json;");
-    response.getWriter().println(sectionsInfo);
+    Gson gson = new GsonBuilder().serializeNulls().create();
+    response.getWriter().println(gson.toJson(sectionsInfo));
   }
 }

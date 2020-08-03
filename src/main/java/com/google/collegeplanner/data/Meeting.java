@@ -14,16 +14,18 @@
 
 package com.google.collegeplanner.data;
 
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.gson.annotations.SerializedName;
 import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import java.time.format.DateTimeParseException;
 
 /*
  * This Meeting class depicts a session a class takes place during. For example, a
@@ -32,15 +34,17 @@ import java.time.format.DateTimeParseException;
  * discussion, are two separate meetings for the same class.
  */
 public class Meeting {
-  private ArrayList<DayOfWeek> days;
-  private String room;
-  private String building;
-  private int startTime;
-  private int endTime;
+  private transient ArrayList<DayOfWeek> days;
+  @SerializedName("days") private String daysString;
+  @SerializedName("room") private String room;
+  @SerializedName("building") private String building;
+  @SerializedName("start_time") private int startTime;
+  @SerializedName("end_time") private int endTime;
 
   public Meeting(String days, String room, String building, int startTime, int endTime)
       throws ParseException {
     this.days = new ArrayList<DayOfWeek>();
+    this.daysString = days;
     this.room = room;
     this.building = building;
     this.startTime = startTime;
@@ -51,12 +55,24 @@ public class Meeting {
 
   public Meeting(JSONObject json) throws ParseException {
     this.days = new ArrayList<DayOfWeek>();
+    this.daysString = (String) json.get("days");
     this.startTime = parseTime((String) json.get("start_time"));
     this.endTime = parseTime((String) json.get("end_time"));
     this.room = (String) json.get("room");
     this.building = (String) json.get("building");
 
     assignDays((String) json.get("days"));
+  }
+
+  public Meeting(EmbeddedEntity meetingEntity) throws ParseException {
+    this.startTime = ((Long) meetingEntity.getProperty("start_time")).intValue();
+    this.endTime = ((Long) meetingEntity.getProperty("end_time")).intValue();
+    this.room = (String) meetingEntity.getProperty("room");
+    this.building = (String) meetingEntity.getProperty("building");
+
+    this.days = new ArrayList<DayOfWeek>();
+    this.daysString = (String) meetingEntity.getProperty("days");
+    assignDays((String) meetingEntity.getProperty("days"));
   }
 
   /**
@@ -162,6 +178,10 @@ public class Meeting {
 
   public int getEndTime() {
     return endTime;
+  }
+
+  public String getDaysString() {
+    return daysString;
   }
 
   @Override

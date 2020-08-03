@@ -14,6 +14,9 @@
 
 package com.google.collegeplanner.data;
 
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.Entity;
+import com.google.gson.annotations.SerializedName;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -25,63 +28,68 @@ public class Course {
    * courseId represents the name of the course that
    * can be found on the course catalog. Example, ENGL101
    */
-  private String courseId;
+  @SerializedName("course_id") private String courseId;
   /*
    * name represents the full name of the course.
    * Example, Academic Writing
    */
-  private String name;
+  @SerializedName("name") private String name;
   /*
    * semester represents the 4 digit year followed by
    * the two digit month when the course starts. Example, 202008
    */
-  private String semester;
+  @SerializedName("semester") private String semester;
   /*
    * credits represents the number of credits the course is worth.
    */
-  private int credits;
+  @SerializedName("credits") private int credits;
   /*
    * departmentId represents the 4 character ID of the
    * department that the class falls into. Example, ENGL
    */
-  private String departmentId;
+  @SerializedName("dept_id") private String departmentId;
   /*
    * description represents the description of
    * the class found on the course catalog.
    */
-  private String description;
+  @SerializedName("description") private String description;
   /*
    * corequisites represents the corequisite classes for this
    * course. Example, BIO106 is the lab for BIO101 and
    * must be taken together
    */
-  private String corequisites;
+  @SerializedName("coreqs") private String corequisites;
   /*
    * prerequisites represents the prerequisite classes for
    * this course. Example, MATH101, MATH201, and
    * either MATH105 or MATH115.
    */
-  private String prerequisites;
+  @SerializedName("prereqs") private String prerequisites;
   /*
    * restrictions represents the restrictions placed on the
    * registration of this course. Example, This
    * class is only avaiable to incoming Freshman.
    */
-  private String restrictions;
+  @SerializedName("restrictions") private String restrictions;
   /*
    * additionalInfo represents the additional information
    * for this course found on the course catalog.
    */
-  private String additionalInfo;
+  @SerializedName("additional_info") private String additionalInfo;
   /*
    *creditGrantedFor represents the classes this course
    * grants credit for. Example, THET285 grants credit for COMM107
    */
-  private String creditGrantedFor;
+  @SerializedName("credit_granted_for") private String creditGrantedFor;
+
+  /*
+   * sections used for deserializing datastore Entities to be converted into JSON.
+   */
+  @SerializedName("sections") private Section[] sections;
 
   public Course(String courseId, String name, String semester, int credits, String departmentId,
       String description, String corequisites, String prerequisites, String restrictions,
-      String additionalInfo, String creditGrantedFor) throws Exception {
+      String additionalInfo, String creditGrantedFor) throws ParseException {
     this.courseId = courseId;
     this.name = name;
     this.semester = semester;
@@ -107,7 +115,7 @@ public class Course {
     this.courseId = (String) json.get("course_id");
     this.name = (String) json.get("name");
     this.semester = (String) json.get("semester");
-    this.departmentId = (String) json.get("department_id");
+    this.departmentId = (String) json.get("dept_id");
     this.description = (String) json.get("description");
 
     JSONObject relationships = (JSONObject) json.get("relationships");
@@ -128,6 +136,32 @@ public class Course {
 
     validate();
   }
+
+  public Course(Entity courseEntity) throws ParseException {
+    this((String) courseEntity.getProperty("course_id"), (String) courseEntity.getProperty("name"),
+        (String) courseEntity.getProperty("semester"),
+        ((Long) courseEntity.getProperty("credits")).intValue(),
+        (String) courseEntity.getProperty("dept_id"),
+        (String) courseEntity.getProperty("description"),
+        (String) courseEntity.getProperty("coreqs"), (String) courseEntity.getProperty("prereqs"),
+        (String) courseEntity.getProperty("restrictions"),
+        (String) courseEntity.getProperty("additional_info"),
+        (String) courseEntity.getProperty("credit_granted_for"));
+    // Datastore stores ints as longs.
+    // this.credits = ((Long) courseEntity.getProperty("credits")).intValue();
+    // this.courseId = (String) courseEntity.getProperty("course_id");
+    // this.name = (String) courseEntity.getProperty("name");
+    // this.semester = (String) courseEntity.getProperty("semester");
+    // this.departmentId = (String) courseEntity.getProperty("dept_id");
+    // this.description = (String) courseEntity.getProperty("description");
+    // this.corequisites = (String) courseEntity.getProperty("coreqs");
+    // this.prerequisites = (String) courseEntity.getProperty("prereqs");
+    // this.restrictions = (String) courseEntity.getProperty("restrictions");
+    // this.additionalInfo = (String) courseEntity.getProperty("additional_info");
+    // this.creditGrantedFor = (String) courseEntity.getProperty("credit_granted_for");
+  }
+
+  public Course(Entity courseEntity, ArrayList<EmbeddedEntity> sections) {}
 
   /*
    * Validates the courseId parameter that is passed into the constructors.
