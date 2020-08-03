@@ -217,7 +217,6 @@ public final class CourseListServletTest {
     firstCoursesJson = (JSONArray) parser.parse(firstCourses);
     firstCourseJson = (JSONArray) parser.parse(firstCourse);
     firstSectionJson = (JSONArray) parser.parse(firstSection);
-    // secondCourseJson = (JSONArray) parser.parse(secondCourse);
     secondSectionJson = (JSONArray) parser.parse(secondSection);
     emptyJson = (JSONArray) parser.parse("[]");
 

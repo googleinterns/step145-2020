@@ -60,10 +60,8 @@ public final class SectionTest {
   LocalServiceTestHelper helper;
   ApiUtil apiUtil;
 
-  // JSONArray firstCoursesJson;
   JSONArray firstCourseJson;
   JSONArray firstSectionJson;
-  // JSONArray secondSectionJson;
   JSONArray emptyJson;
   JSONArray multipleMeetingsJson;
 
