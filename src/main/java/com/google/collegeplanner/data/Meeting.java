@@ -14,6 +14,8 @@
 
 package com.google.collegeplanner.data;
 
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.gson.annotations.SerializedName;
 import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -32,15 +34,22 @@ import org.json.simple.JSONObject;
  * discussion, are two separate meetings for the same class.
  */
 public class Meeting {
-  private ArrayList<DayOfWeek> days;
-  private String room;
-  private String building;
-  private int startTime;
-  private int endTime;
+  // days is the list of DayOfWeek objects used for the algorithm. It's not in the format that we
+  // want to be serialized into json to get sent into the front end however. The 'transient' keyword
+  // keeps this variable from getting serialized by Gson.
+  private transient ArrayList<DayOfWeek> days;
+  // daysString gets serialized into json and is in the correct format to be rendered on the front
+  // end. It doesn't get used by the algorithm. Example, 'MThF'.
+  @SerializedName("days") private String daysString;
+  @SerializedName("room") private String room;
+  @SerializedName("building") private String building;
+  @SerializedName("start_time") private int startTime;
+  @SerializedName("end_time") private int endTime;
 
   public Meeting(String days, String room, String building, int startTime, int endTime)
       throws ParseException {
     this.days = new ArrayList<DayOfWeek>();
+    this.daysString = days;
     this.room = room;
     this.building = building;
     this.startTime = startTime;
@@ -51,12 +60,25 @@ public class Meeting {
 
   public Meeting(JSONObject json) throws ParseException {
     this.days = new ArrayList<DayOfWeek>();
+    this.daysString = (String) json.get("days");
     this.startTime = parseTime((String) json.get("start_time"));
     this.endTime = parseTime((String) json.get("end_time"));
     this.room = (String) json.get("room");
     this.building = (String) json.get("building");
 
     assignDays((String) json.get("days"));
+  }
+
+  public Meeting(EmbeddedEntity meetingEntity) throws ParseException {
+    this.startTime = ((Long) meetingEntity.getProperty("start_time")).intValue();
+    this.endTime = ((Long) meetingEntity.getProperty("end_time")).intValue();
+    this.room = (String) meetingEntity.getProperty("room");
+    this.building = (String) meetingEntity.getProperty("building");
+
+    this.days = new ArrayList<DayOfWeek>();
+    this.daysString = (String) meetingEntity.getProperty("days");
+
+    assignDays((String) meetingEntity.getProperty("days"));
   }
 
   /**
@@ -162,6 +184,10 @@ public class Meeting {
 
   public int getEndTime() {
     return endTime;
+  }
+
+  public String getDaysString() {
+    return daysString;
   }
 
   @Override
