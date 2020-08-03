@@ -120,8 +120,8 @@ async function addCourse(course, section) {
     return;
   }
   const response = await fetch(`/api/sections?course_id=${
-      encodeURIComponent(course.course_id)}&section_id=${
-      encodeURIComponent(section.substr(section.length - 4))}`);
+      encodeURIComponent(
+          course.course_id)}&section_id=${encodeURIComponent(section)}`);
   const json = await response.json();
   if (json.sections == null) {
     return;
