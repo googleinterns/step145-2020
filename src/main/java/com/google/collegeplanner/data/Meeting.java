@@ -34,10 +34,12 @@ import org.json.simple.JSONObject;
  * discussion, are two separate meetings for the same class.
  */
 public class Meeting {
-  // days is for use on the back end.
+  // days is the list of DayOfWeek objects used for the algorithm. It's not in the format that we
+  // want to be serialized into json to get sent into the front end however. The 'transient' keyword
+  // keeps this variable from getting serialized by Gson.
   private transient ArrayList<DayOfWeek> days;
   // daysString gets serialized into json and is in the correct format to be rendered on the front
-  // end.
+  // end. It doesn't get used by the algorithm. Example, 'MThF'.
   @SerializedName("days") private String daysString;
   @SerializedName("room") private String room;
   @SerializedName("building") private String building;
