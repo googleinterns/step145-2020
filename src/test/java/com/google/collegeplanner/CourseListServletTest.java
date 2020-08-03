@@ -223,8 +223,6 @@ public final class CourseListServletTest {
     secondSectionJson = (JSONArray) parser.parse(secondSection);
     emptyJson = (JSONArray) parser.parse("[]");
 
-    
-
     helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     helper.setUp();
   }
@@ -251,8 +249,6 @@ public final class CourseListServletTest {
         + "\"dept_id\":\"AASP\","
         + "\"sections\":null"
         + "}]";
-
-        
 
     // Add course to datastore.
     when(apiUtil.getJsonArray(any(URI.class)))
@@ -338,8 +334,7 @@ public final class CourseListServletTest {
     servlet.doGet(mockedRequest, mockedResponse);
     // Verifies whether status was set to SC_BAD_REQUEST
     verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    verify(mockedResponse, never())
-        .setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
+    verify(mockedResponse, never()).setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Invalid or missing department.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);

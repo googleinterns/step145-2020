@@ -266,8 +266,7 @@ public final class SectionTest {
     servlet.doGet(mockedRequest, mockedResponse);
     // Verifies whether status was set to SC_BAD_REQUEST
     verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    verify(mockedResponse, never())
-        .setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
+    verify(mockedResponse, never()).setStatus(not(eq(HttpServletResponse.SC_BAD_REQUEST)));
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Invalid or missing course id.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);
@@ -279,8 +278,7 @@ public final class SectionTest {
     servlet.doGet(mockedRequest, mockedResponse);
     // Verifies whether status was set to SC_NOT_FOUND when the query returns no results
     verify(mockedResponse, times(1)).setStatus(HttpServletResponse.SC_NOT_FOUND);
-    verify(mockedResponse, never())
-        .setStatus(not(eq(HttpServletResponse.SC_NOT_FOUND)));
+    verify(mockedResponse, never()).setStatus(not(eq(HttpServletResponse.SC_NOT_FOUND)));
     JSONObject responseJson = (JSONObject) parser.parse(stringWriter.toString());
     String expectedJson = "{\"message\":\"Not found.\",\"status\":\"error\"}";
     JSONAssert.assertEquals(expectedJson, responseJson.toString(), JSONCompareMode.STRICT);

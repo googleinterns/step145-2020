@@ -36,7 +36,8 @@ import org.json.simple.JSONObject;
 public class Meeting {
   // days is for use on the back end.
   private transient ArrayList<DayOfWeek> days;
-  // daysString gets serialized into json and is in the correct format to be rendered on the front end.
+  // daysString gets serialized into json and is in the correct format to be rendered on the front
+  // end.
   @SerializedName("days") private String daysString;
   @SerializedName("room") private String room;
   @SerializedName("building") private String building;
