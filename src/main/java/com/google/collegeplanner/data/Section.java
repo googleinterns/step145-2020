@@ -96,7 +96,6 @@ public class Section {
         (ArrayList<EmbeddedEntity>) sectionEntity.getProperty("meetings");
     ArrayList<Meeting> meetings = new ArrayList<Meeting>();
     for (EmbeddedEntity meetingEntity : meetingEntities) {
-      System.out.println("MEETING");
       Meeting meeting = new Meeting(meetingEntity);
       meetings.add(meeting);
     }

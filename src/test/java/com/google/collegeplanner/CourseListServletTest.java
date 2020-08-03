@@ -261,9 +261,6 @@ public final class CourseListServletTest {
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
     JSONArray coursesDetailed = (JSONArray) responseObj.get("courses");
 
-    // Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-    // System.out.println(gson.toJson(coursesDetailed));
-
     // Tests that response[courses] exists
     Assert.assertNotNull(coursesDetailed);
     // Checks that the correct number of JSON Objects are contained
@@ -313,9 +310,6 @@ public final class CourseListServletTest {
     servlet.doGet(mockedRequest, mockedResponse);
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
     JSONArray coursesDetailed = (JSONArray) responseObj.get("courses");
-
-    // Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-    // System.out.println(gson.toJson(coursesDetailed));
 
     // Tests that response[courses] exists
     Assert.assertNotNull(coursesDetailed);

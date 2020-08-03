@@ -209,11 +209,6 @@ public final class SectionTest {
     JSONObject responseObj = (JSONObject) parser.parse(stringWriter.toString());
     JSONArray sections = (JSONArray) responseObj.get("sections");
 
-    // Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-    // System.out.println(gson.toJson(sections));
-    // JSONArray expected = (JSONArray) parser.parse(expectedJson);
-    // System.out.println(gson.toJson(expected));
-
     // Tests that response["sections"] exists
     Assert.assertNotNull(sections);
     // Checks that the correct number of JSON Objects are contained
