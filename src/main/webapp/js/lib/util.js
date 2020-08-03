@@ -61,8 +61,7 @@ function createPlanTable(tableData, creditsData, courseContainer) {
  * @param {Object} data The 2d array to rectangularize
  */
 function rectangularize2dMatrix(data) {
-  const longestRow =
-      Math.max.apply(Math, $.map(data, (arr) => {return arr.length}));
+  const longestRow = Math.max(...data.map(arr => arr.length));
   data.forEach((row) => {
     const numElementsToAdd = longestRow - row.length;
     for (let i = 0; i < numElementsToAdd; i++) {
