@@ -58,7 +58,7 @@ async function getSchedules(selected) {
       return null;
     }
   } catch (err) {
-    CollegePlanner.createAlert('An error occurred', 'danger', courseContainer);
+    CourseSelector.createAlert('An error occurred', 'danger', courseContainer);
     return null;
   }
 }
@@ -67,18 +67,12 @@ document.querySelector('.course-list').addEventListener('click', async () => {
   const selected = CollegePlanner.getSelected();
   const courseInfo = CollegePlanner.getCourseInfo();
   const schedules = await getSchedules(selected);
+
+  // If there are no schedules returned or
+  // there was an error in getSchedules(), then exit the function.
   if (schedules == null || schedules.length == 0) {
     return;
   }
-  // Hard code return from algorithm servlet.
-  /*
-  const sections1 = {};
-  selected.forEach(
-      course => {sections1[course] = courseInfo[course].sections[0]});
-  const sections2 = {};
-  selected.forEach(
-      course => {sections2[course] = courseInfo[course].sections[1]});
-  const schedules = [sections1, sections2];*/
 
   // By default, add the first schedule to the calendar after response is
   // received.

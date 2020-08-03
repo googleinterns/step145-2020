@@ -32,11 +32,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 /** Servlet that returns a list of possible schedules containing the given courses.*/
 @WebServlet("/api/scheduler")
 public class SchedulerServlet extends BaseServlet {
   private ArrayList<String> courseList;
   private ArrayList<ArrayList<Section>> courses;
+
   /**
    * Organizes courses from POST request into a given number of semesters
    */
@@ -61,21 +63,11 @@ public class SchedulerServlet extends BaseServlet {
   }
 
   /**
-   * Gets the JSON Representation of the body of the POST request
-   */
-  private JSONObject getBody(HttpServletRequest request)
-      throws IOException, ParseException, NullPointerException {
-    String strBody =
-        request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-    JSONParser parser = new JSONParser();
-    return (JSONObject) parser.parse(strBody);
-  }
-
-  /**
    * This method loads the courses and courseList ArrayLists with correct
    * information. courses is loaded with the lists of sections for each
    * course while courseList is loaded with the courseID's of the selected
    * courses.
+   * @param classes The JSONArray of courseIds of the selected classes
    */
   private void prepareLists(JSONArray classes, HttpServletResponse response) throws IOException {
     String courseId;
@@ -100,7 +92,7 @@ public class SchedulerServlet extends BaseServlet {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return;
       }
-      courses.add(convertJSONArraytoArrayList(jsonArray));
+      courses.add(convertSectionJSONToSectionArrayList(jsonArray));
     }
   }
 
@@ -128,8 +120,10 @@ public class SchedulerServlet extends BaseServlet {
   /**
    * Converts a given JSONArray of sections into an ArrayList of
    * sections.
+   * @param json The JSONArray of Sections that will be converted into an
+   * ArrayList of Sections
    */
-  private ArrayList<Section> convertJSONArraytoArrayList(JSONArray json) {
+  private ArrayList<Section> convertSectionJSONToSectionArrayList(JSONArray json) {
     ArrayList<Section> list = new ArrayList<Section>();
     for (Object obj : json) {
       try {
