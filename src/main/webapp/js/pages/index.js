@@ -18,6 +18,22 @@ import {CourseSelector} from '../lib/courseSelector.js';
 
 const MAX_PAGINATION_SCHEDULES = 15;
 
+async function getSchedules() {
+  const courseContainer = document.getElementById('order-area');
+  let response;
+  let courseList;
+  try {
+    response = await fetch('/api/scheduler', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    courseList = await response.json();
+  } catch (err) {
+    CourseSelector.createAlert('An error occurred', 'danger', courseContainer);
+    return;
+  }
+}
+
 window.addEventListener('load', () => {
   Calendar.initCalendar();
   CourseSelector.getDepartmentOptions();
@@ -40,15 +56,10 @@ function addScheduleToCalendar(schedule, courseInfo, selected) {
 document.querySelector('.course-list').addEventListener('click', () => {
   const selected = CourseSelector.getSelected();
   const courseInfo = CourseSelector.getCourseInfo();
-  // TODO(naaoli): Connect to algorithm servlet.
-  // Hard code return from algorithm servlet.
-  const sections1 = {};
-  selected.forEach(
-      course => {sections1[course] = courseInfo[course].sections[0]});
-  const sections2 = {};
-  selected.forEach(
-      course => {sections2[course] = courseInfo[course].sections[1]});
-  const schedules = [sections1, sections2];
+  const schedules = await getSchedules(selected);
+  if (schedules == null || schedules.length == 0) {
+    return;
+  }
 
   // By default, add the first schedule to the calendar after response is
   // received.
