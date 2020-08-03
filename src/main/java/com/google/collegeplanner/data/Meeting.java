@@ -18,12 +18,12 @@ import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import java.time.format.DateTimeParseException;
 
 /*
  * This Meeting class depicts a session a class takes place during. For example, a
