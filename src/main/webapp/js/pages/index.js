@@ -64,8 +64,8 @@ async function getSchedules(selected) {
 }
 
 document.querySelector('.course-list').addEventListener('click', async () => {
-  const selected = CollegePlanner.getSelected();
-  const courseInfo = CollegePlanner.getCourseInfo();
+  const selected = CourseSelector.getSelected();
+  const courseInfo = CourseSelector.getCourseInfo();
   const schedules = await getSchedules(selected);
 
   // If there are no schedules returned or

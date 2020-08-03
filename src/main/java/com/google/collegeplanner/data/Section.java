@@ -56,7 +56,7 @@ public class Section {
     } catch (NumberFormatException e) {
       this.seats = 0;
     }
-
+    this.courseId = (String) json.get("course");
     this.sectionId = (String) json.get("section_id");
     this.waitlist = (String) json.get("waitlist");
 
