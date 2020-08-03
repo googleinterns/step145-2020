@@ -68,6 +68,7 @@ public class SchedulerServlet extends BaseServlet {
    * course while courseList is loaded with the courseID's of the selected
    * courses.
    * @param classes The JSONArray of courseIds of the selected classes
+   * @param response The HttpServletResponse object.
    */
   private void prepareLists(JSONArray classes, HttpServletResponse response) throws IOException {
     String courseId;
