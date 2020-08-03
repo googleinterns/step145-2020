@@ -30,6 +30,7 @@ function attachNewSpinner(courseContainer) {
  * @param {Element} courseContainer container for course list
  */
 function createPlanTable(tableData, creditsData, courseContainer) {
+  rectangularize2dMatrix(tableData);
   courseContainer.innerText = '';
   const table = document.createElement('table');
   const tableBody = document.createElement('tbody');
@@ -53,6 +54,21 @@ function createPlanTable(tableData, creditsData, courseContainer) {
 
   table.appendChild(tableBody);
   courseContainer.appendChild(table);
+}
+
+/**
+ * Rectangularizes matrix by ensuring each row has an equal number of elements.
+ * @param {Object} data The 2d array to rectangularize
+ */
+function rectangularize2dMatrix(data) {
+  const longestRow =
+      Math.max.apply(Math, $.map(data, (arr) => {return arr.length}));
+  data.forEach((row) => {
+    const numElementsToAdd = longestRow - row.length;
+    for (let i = 0; i < numElementsToAdd; i++) {
+      row.push('');
+    }
+  });
 }
 
 /**
