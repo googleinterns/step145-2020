@@ -145,7 +145,7 @@ public class Course {
       }
       this.sectionIds = sectionIds;
     }
-    
+
     validate();
   }
 

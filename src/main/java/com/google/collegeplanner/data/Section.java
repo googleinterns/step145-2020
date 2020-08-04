@@ -88,7 +88,7 @@ public class Section {
     this.waitlist = (String) sectionEntity.getProperty("waitlist");
     this.seats = ((Long) sectionEntity.getProperty("seats")).intValue();
     this.openSeats = ((Long) sectionEntity.getProperty("open_seats")).intValue();
-    
+
     ArrayList<EmbeddedEntity> meetingEntities =
         (ArrayList<EmbeddedEntity>) sectionEntity.getProperty("meetings");
     if (meetingEntities == null) {
@@ -102,8 +102,7 @@ public class Section {
       this.meetings = meetings.toArray(new Meeting[0]);
     }
 
-    ArrayList<String> instructors =
-        (ArrayList<String>) sectionEntity.getProperty("instructors");
+    ArrayList<String> instructors = (ArrayList<String>) sectionEntity.getProperty("instructors");
     if (instructors == null) {
       this.instructors = null;
     } else {
