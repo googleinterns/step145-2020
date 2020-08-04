@@ -144,7 +144,6 @@ public class Course {
       sectionIds.add((String) jsonObject);
     }
     this.sectionIds = sectionIds;
-    // this.sections = sections.toArray(new String[0]);
 
     validate();
   }
