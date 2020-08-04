@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -55,9 +56,7 @@ public class SchedulerServlet extends BaseServlet {
       return;
     }
     
-    try {
-      prepareLists(selectedClasses, response);
-    } catch (ParseException e) {
+    if(!prepareLists(selectedClasses, response)) {
       return;
     }
 
@@ -70,12 +69,12 @@ public class SchedulerServlet extends BaseServlet {
    * This method loads the courses and courseList ArrayLists with correct
    * information. courses is loaded with the lists of sections for each
    * course while courseList is loaded with the courseID's of the selected
-   * courses.
+   * courses. Returns true if lists were prepared correctly, false otherwise.
    * @param classes The JSONArray of courseIds of the selected classes
    * @param response The HttpServletResponse object
    */
-  private void prepareLists(JSONArray classes, HttpServletResponse response) 
-  throws IOException, ParseException {
+  private boolean prepareLists(JSONArray classes, HttpServletResponse response) 
+  throws IOException {
     String courseId;
     URI uri;
     JSONArray jsonArray;
@@ -90,16 +89,17 @@ public class SchedulerServlet extends BaseServlet {
         uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
       } catch (URISyntaxException e) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        return false;
       }
 
       jsonArray = apiUtil.getJsonArray(uri);
       if (jsonArray == null) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        throw new ParseException(0);
+        return false;
       }
       courses.add(convertSectionJsonToSectionArrayList(jsonArray));
     }
+    return true;
   }
 
   /**
@@ -132,7 +132,7 @@ public class SchedulerServlet extends BaseServlet {
     for (Object obj : json) {
       try {
         list.add(new Section((JSONObject) obj));
-      } catch (Exception e) {
+      } catch (text.ParseException e) {
         continue;
       }
     }
