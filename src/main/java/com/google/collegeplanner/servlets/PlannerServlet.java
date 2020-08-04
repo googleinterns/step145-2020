@@ -168,7 +168,7 @@ public class PlannerServlet extends BaseServlet {
     for (Object course : selectedClasses) {
       JSONObject courseJson = (JSONObject) course;
       String key = (String) courseJson.get("course_id");
-      int creditVal = Integer.parseInt((String) courseJson.get("credits"));
+      int creditVal = ((Long) courseJson.get("credits")).intValue();
       credits.put(key, creditVal);
       totalCredits += creditVal;
 
