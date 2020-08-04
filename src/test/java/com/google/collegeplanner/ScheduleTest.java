@@ -36,13 +36,13 @@ public final class ScheduleTest {
 
   @Before
   public void before() throws ParseException {
-    int TIME_0900AM = 60 * 9;
-    int TIME_1000AM = 60 * 10;
-    int TIME_1030AM = 60 * 10 + 30;
-    int TIME_1100AM = 60 * 11;
-    int TIME_1200PM = 60 * 12;
-    int TIME_0100PM = 60 * 13;
-    int TIME_0200PM = 60 * 14;
+    String TIME_0900AM = "9:00am";
+    String TIME_1000AM = "10:00am";
+    String TIME_1030AM = "10:30am";
+    String TIME_1100AM = "11:00am";
+    String TIME_1200PM = "12:00pm";
+    String TIME_0100PM = "1:00pm";
+    String TIME_0200PM = "2:00pm";
     Meeting MWFMorning = new Meeting("MWF", "Room 5", "Building 2", TIME_1000AM, TIME_1100AM);
     Meeting TuThuMorning = new Meeting("TuThu", "Room 2", "Building 1", TIME_1000AM, TIME_1100AM);
     Meeting MWFAfternoon = new Meeting("MWF", "Room 1", "Building 1", TIME_1200PM, TIME_0100PM);
@@ -50,22 +50,22 @@ public final class ScheduleTest {
     Meeting fridayLateMorning = new Meeting("F", "Room 8", "Building 3", TIME_1030AM, TIME_1200PM);
     Meeting TuThuAllDay = new Meeting("TuThu", "Room 4", "Building 5", TIME_0900AM, TIME_0200PM);
     Meeting MWFLateAfternoon = new Meeting("MWF", "Room 7", "Building 8", TIME_0100PM, TIME_0200PM);
-    compSciClass =
-        new Section("CMSC101-0101", "CMSC101", null, 10, 30, null, new Meeting[] {MWFAfternoon});
+    compSciClass = new Section(
+        "CMSC101-0101", "CMSC101", null, "10", "30", null, new Meeting[] {MWFAfternoon});
     compSciClass2 = new Section(
-        "CMSC101-0201", "CMSC101", null, 14, 30, null, new Meeting[] {fridayLateMorning});
-    mathClass =
-        new Section("MATH140-0101", "MATH140", null, 15, 20, null, new Meeting[] {TuThuAfternoon});
+        "CMSC101-0201", "CMSC101", null, "14", "30", null, new Meeting[] {fridayLateMorning});
+    mathClass = new Section(
+        "MATH140-0101", "MATH140", null, "15", "20", null, new Meeting[] {TuThuAfternoon});
     mathClass2 =
-        new Section("MATH140-0201", "MATH140", null, 4, 20, null, new Meeting[] {TuThuMorning});
-    chemClass =
-        new Section("CHEM135-0101", "CHEM135", null, 130, 200, null, new Meeting[] {MWFMorning});
-    chemClass2 =
-        new Section("CHEM135-0201", "CHEM135", null, 73, 200, null, new Meeting[] {TuThuAllDay});
-    englishClass =
-        new Section("ENGL101-0101", "ENGL101", null, 5, 20, null, new Meeting[] {TuThuAfternoon});
+        new Section("MATH140-0201", "MATH140", null, "4", "20", null, new Meeting[] {TuThuMorning});
+    chemClass = new Section(
+        "CHEM135-0101", "CHEM135", null, "130", "200", null, new Meeting[] {MWFMorning});
+    chemClass2 = new Section(
+        "CHEM135-0201", "CHEM135", null, "73", "200", null, new Meeting[] {TuThuAllDay});
+    englishClass = new Section(
+        "ENGL101-0101", "ENGL101", null, "5", "20", null, new Meeting[] {TuThuAfternoon});
     englishClass2 = new Section(
-        "ENGL101-0201", "ENGL101", null, 19, 20, null, new Meeting[] {MWFLateAfternoon});
+        "ENGL101-0201", "ENGL101", null, "19", "20", null, new Meeting[] {MWFLateAfternoon});
   }
 
   @Test

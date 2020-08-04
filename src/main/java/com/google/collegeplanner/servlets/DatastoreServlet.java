@@ -144,6 +144,9 @@ public class DatastoreServlet extends BaseServlet {
         continue;
       }
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
+      if (sectionsArray == null) {
+        continue;
+      }
       addSectionsToCourse(sectionsArray, course, courseEntity);
     }
   }
@@ -156,7 +159,7 @@ public class DatastoreServlet extends BaseServlet {
    */
   private void addSectionsToCourse(JSONArray sectionsArray, Course course, Entity courseEntity)
       throws IllegalArgumentException {
-    if (sectionsArray == null || course == null || courseEntity == null) {
+    if (course == null || courseEntity == null) {
       throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
@@ -190,6 +193,12 @@ public class DatastoreServlet extends BaseServlet {
       sectionEntities.add(sectionEntity);
     }
 
+    if (sectionEntities.size() == 0) {
+      // If the course has no sections, then we shouldn't add it to datastore because the algorithm
+      // among other things will try to use it an fail.
+      return;
+    }
+
     courseEntity.setProperty("course_id", course.getCourseId());
     courseEntity.setProperty("name", course.getName());
     courseEntity.setProperty("semester", course.getSemester());
@@ -201,6 +210,7 @@ public class DatastoreServlet extends BaseServlet {
     courseEntity.setProperty("restrictions", course.getRestrictions());
     courseEntity.setProperty("additional_info", course.getAdditionalInfo());
     courseEntity.setProperty("credit_granted_for", course.getCreditGrantedFor());
+    courseEntity.setProperty("section_ids", course.getSectionIds());
     courseEntity.setProperty("sections", sectionEntities);
 
     datastore.put(courseEntity);

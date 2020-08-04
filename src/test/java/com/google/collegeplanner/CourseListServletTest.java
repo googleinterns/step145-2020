@@ -244,7 +244,15 @@ public final class CourseListServletTest {
         + "\"description\":\"Significant aspects of the history of African Americans.\","
         + "\"semester\":\"202008\","
         + "\"dept_id\":\"AASP\","
-        + "\"sections\":null"
+        + "\"section_ids\":["
+        + "  \"AASP100-0101\","
+        + "  \"AASP100-0201\","
+        + "  \"AASP100-0301\","
+        + "  \"AASP100-0401\","
+        + "  \"AASP100-0501\","
+        + "  \"AASP100-0601\","
+        + "  \"AASP100-0701\""
+        + "]"
         + "}]";
 
     // Add course to datastore.
@@ -281,7 +289,15 @@ public final class CourseListServletTest {
         + "\"description\":\"Significant aspects of the history of African Americans.\","
         + "\"semester\":\"202008\","
         + "\"dept_id\":\"AASP\","
-        + "\"sections\":null"
+        + "\"section_ids\":["
+        + "  \"AASP100-0101\","
+        + "  \"AASP100-0201\","
+        + "  \"AASP100-0301\","
+        + "  \"AASP100-0401\","
+        + "  \"AASP100-0501\","
+        + "  \"AASP100-0601\","
+        + "  \"AASP100-0701\""
+        + "]"
         + "},{"
         + "\"course_id\":\"AASP100H\","
         + "\"coreqs\":null,"
@@ -294,7 +310,9 @@ public final class CourseListServletTest {
         + "\"description\":\"Significant aspects of the history of African Americans.\","
         + "\"semester\":\"202008\","
         + "\"dept_id\":\"AASP\","
-        + "\"sections\":null"
+        + "\"section_ids\":["
+        + "  \"AASP100H-0101\""
+        + "]"
         + "}]";
 
     // Add course to datastore.
