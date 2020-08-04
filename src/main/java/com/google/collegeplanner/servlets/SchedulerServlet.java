@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -132,7 +131,7 @@ public class SchedulerServlet extends BaseServlet {
     for (Object obj : json) {
       try {
         list.add(new Section((JSONObject) obj));
-      } catch (text.ParseException e) {
+      } catch (java.text.ParseException e) {
         continue;
       }
     }
