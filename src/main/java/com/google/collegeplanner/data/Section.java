@@ -33,13 +33,13 @@ public class Section {
   @SerializedName("instructors") private String[] instructors;
   @SerializedName("meetings") private Meeting[] meetings;
 
-  public Section(String sectionId, String courseId, String waitlist, int openSeats, int seats,
+  public Section(String sectionId, String courseId, String waitlist, String openSeats, String seats,
       String[] instructors, Meeting[] meetings) throws ParseException {
     this.sectionId = sectionId;
     this.courseId = courseId;
     this.waitlist = waitlist;
-    this.openSeats = openSeats;
-    this.seats = seats;
+    this.openSeats = Integer.parseInt(openSeats);
+    this.seats = Integer.parseInt(seats);
     this.instructors = instructors;
     this.meetings = meetings;
 
@@ -58,7 +58,7 @@ public class Section {
     } catch (NumberFormatException e) {
       this.seats = 0;
     }
-
+    this.courseId = (String) json.get("course");
     this.sectionId = (String) json.get("section_id");
     this.waitlist = (String) json.get("waitlist");
     this.courseId = (String) json.get("course");
@@ -78,7 +78,7 @@ public class Section {
       meetings.add(meeting);
     }
     this.meetings = meetings.toArray(new Meeting[0]);
-
+    // TODO (naaoli): handle duplicate meetings if time allows for it
     validate();
   }
 
