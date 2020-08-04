@@ -193,7 +193,7 @@ public class DatastoreServlet extends BaseServlet {
       sectionEntities.add(sectionEntity);
     }
 
-    if (sectionEntities == null) {
+    if (sectionEntities.size() == 0) {
       // If the course has no sections, then we shouldn't add it to datastore because the algorithm
       // among other things will try to use it an fail.
       return;

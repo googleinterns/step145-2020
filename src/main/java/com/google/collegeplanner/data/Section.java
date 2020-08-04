@@ -88,18 +88,27 @@ public class Section {
     this.waitlist = (String) sectionEntity.getProperty("waitlist");
     this.seats = ((Long) sectionEntity.getProperty("seats")).intValue();
     this.openSeats = ((Long) sectionEntity.getProperty("open_seats")).intValue();
-    ArrayList<String> instructorsProp =
-        (ArrayList<String>) sectionEntity.getProperty("instructors");
-    this.instructors = instructorsProp.toArray(new String[0]);
-
+    
     ArrayList<EmbeddedEntity> meetingEntities =
         (ArrayList<EmbeddedEntity>) sectionEntity.getProperty("meetings");
-    ArrayList<Meeting> meetings = new ArrayList<Meeting>();
-    for (EmbeddedEntity meetingEntity : meetingEntities) {
-      Meeting meeting = new Meeting(meetingEntity);
-      meetings.add(meeting);
+    if (meetingEntities == null) {
+      this.meetings = null;
+    } else {
+      ArrayList<Meeting> meetings = new ArrayList<Meeting>();
+      for (EmbeddedEntity meetingEntity : meetingEntities) {
+        Meeting meeting = new Meeting(meetingEntity);
+        meetings.add(meeting);
+      }
+      this.meetings = meetings.toArray(new Meeting[0]);
     }
-    this.meetings = meetings.toArray(new Meeting[0]);
+
+    ArrayList<String> instructors =
+        (ArrayList<String>) sectionEntity.getProperty("instructors");
+    if (instructors == null) {
+      this.instructors = null;
+    } else {
+      this.instructors = instructors.toArray(new String[0]);
+    }
   }
 
   /*

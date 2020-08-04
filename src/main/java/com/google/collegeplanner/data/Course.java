@@ -138,13 +138,14 @@ public class Course {
     JSONArray sectionsArray = (JSONArray) json.get("sections");
     if (sectionsArray == null) {
       return;
+    } else {
+      ArrayList<String> sectionIds = new ArrayList<String>();
+      for (Object jsonObject : sectionsArray) {
+        sectionIds.add((String) jsonObject);
+      }
+      this.sectionIds = sectionIds;
     }
-    ArrayList<String> sectionIds = new ArrayList<String>();
-    for (Object jsonObject : sectionsArray) {
-      sectionIds.add((String) jsonObject);
-    }
-    this.sectionIds = sectionIds;
-
+    
     validate();
   }
 

@@ -140,14 +140,14 @@ async function addCourse(course, section) {
  * @param {Object} course The JSON Object for the course.
  */
 function decodeDayAndAddToCalendar(meeting, course) {
-  const meetingDays = meeting.days;
+  const meetingDays = meeting.days.toUpperCase();
 
   const startTime = meeting.start_time;
   const endTime = meeting.end_time;
 
   const color = scheduleColors.pop();
 
-  if (meetingDays.includes('Su')) {
+  if (meetingDays.includes('SU')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_SUNDAY, color);
   }
@@ -155,7 +155,7 @@ function decodeDayAndAddToCalendar(meeting, course) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_MONDAY, color);
   }
-  if (meetingDays.includes('Tu')) {
+  if (meetingDays.includes('TU')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_TUESDAY, color);
   }
@@ -163,7 +163,7 @@ function decodeDayAndAddToCalendar(meeting, course) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_WEDNESDAY, color);
   }
-  if (meetingDays.includes('Th')) {
+  if (meetingDays.includes('TH')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_THURSDAY, color);
   }
@@ -171,7 +171,7 @@ function decodeDayAndAddToCalendar(meeting, course) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_FRIDAY, color);
   }
-  if (meetingDays.includes('Sa')) {
+  if (meetingDays.includes('SA')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_SATURDAY, color);
   }
