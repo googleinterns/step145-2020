@@ -55,7 +55,8 @@ async function getSchedules(selected) {
     if (response.ok) {
       return scheduleObject.schedules;
     } else {
-      CourseSelector.createAlert('An error occurred', 'danger', courseContainer);
+      CourseSelector.createAlert(
+          'An error occurred', 'danger', courseContainer);
       return null;
     }
   } catch (err) {

@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -54,8 +56,8 @@ public class SchedulerServlet extends BaseServlet {
           "Invalid body for POST request.", HttpServletResponse.SC_BAD_REQUEST, response);
       return;
     }
-    
-    if(!prepareLists(selectedClasses, response)) {
+
+    if (!prepareLists(selectedClasses, response)) {
       return;
     }
 
@@ -72,8 +74,7 @@ public class SchedulerServlet extends BaseServlet {
    * @param classes The JSONArray of courseIds of the selected classes
    * @param response The HttpServletResponse object
    */
-  private boolean prepareLists(JSONArray classes, HttpServletResponse response) 
-  throws IOException {
+  private boolean prepareLists(JSONArray classes, HttpServletResponse response) throws IOException {
     String courseId;
     URI uri;
     JSONArray jsonArray;
@@ -85,7 +86,8 @@ public class SchedulerServlet extends BaseServlet {
       courseId = (String) obj;
       courseList.add(courseId);
       try {
-        uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
+        uri = new URI("https://api.umd.io/v1/courses/"
+            + URLEncoder.encode(courseId, StandardCharsets.UTF_8.toString()) + "/sections");
       } catch (URISyntaxException e) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         return false;
