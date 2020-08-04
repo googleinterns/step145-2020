@@ -14,7 +14,6 @@
 
 package com.google.collegeplanner.data;
 
-import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.annotations.SerializedName;
 import java.text.ParseException;
@@ -83,13 +82,14 @@ public class Course {
   @SerializedName("credit_granted_for") private String creditGrantedFor;
 
   /*
-   * sections used for deserializing datastore Entities to be converted into JSON.
+   * sectionIds represents the ids of the sections that the course has.
    */
-  @SerializedName("sections") private Section[] sections;
+  @SerializedName("section_ids") private ArrayList<String> sectionIds;
 
   public Course(String courseId, String name, String semester, int credits, String departmentId,
       String description, String corequisites, String prerequisites, String restrictions,
-      String additionalInfo, String creditGrantedFor) throws ParseException {
+      String additionalInfo, String creditGrantedFor, ArrayList<String> sectionIds)
+      throws ParseException {
     this.courseId = courseId;
     this.name = name;
     this.semester = semester;
@@ -101,6 +101,7 @@ public class Course {
     this.restrictions = restrictions;
     this.additionalInfo = additionalInfo;
     this.creditGrantedFor = creditGrantedFor;
+    this.sectionIds = sectionIds;
 
     validate();
   }
@@ -134,19 +135,51 @@ public class Course {
     this.additionalInfo = (String) relationships.get("additional_info");
     this.creditGrantedFor = (String) relationships.get("credit_granted_for");
 
+    JSONArray sectionsArray = (JSONArray) json.get("sections");
+    if (sectionsArray == null) {
+      return;
+    }
+    ArrayList<String> sectionIds = new ArrayList<String>();
+    for (Object jsonObject : sectionsArray) {
+      sectionIds.add((String) jsonObject);
+    }
+    this.sectionIds = sectionIds;
+    // this.sections = sections.toArray(new String[0]);
+
     validate();
   }
 
   public Course(Entity courseEntity) throws ParseException {
-    this((String) courseEntity.getProperty("course_id"), (String) courseEntity.getProperty("name"),
-        (String) courseEntity.getProperty("semester"),
-        ((Long) courseEntity.getProperty("credits")).intValue(),
-        (String) courseEntity.getProperty("dept_id"),
-        (String) courseEntity.getProperty("description"),
-        (String) courseEntity.getProperty("coreqs"), (String) courseEntity.getProperty("prereqs"),
-        (String) courseEntity.getProperty("restrictions"),
-        (String) courseEntity.getProperty("additional_info"),
-        (String) courseEntity.getProperty("credit_granted_for"));
+    // this((String) courseEntity.getProperty("course_id"), (String)
+    // courseEntity.getProperty("name"),
+    //     (String) courseEntity.getProperty("semester"),
+    //     ((Long) courseEntity.getProperty("credits")).intValue(),
+    //     (String) courseEntity.getProperty("dept_id"),
+    //     (String) courseEntity.getProperty("description"),
+    //     (String) courseEntity.getProperty("coreqs"), (String)
+    //     courseEntity.getProperty("prereqs"), (String) courseEntity.getProperty("restrictions"),
+    //     (String) courseEntity.getProperty("additional_info"),
+    //     (String) courseEntity.getProperty("credit_granted_for"),
+    //     ((ArrayList<String>) courseEntity.getProperty("sections")).toArray(new String[0]));
+
+    this.courseId = (String) courseEntity.getProperty("course_id");
+    this.name = (String) courseEntity.getProperty("name");
+    this.semester = (String) courseEntity.getProperty("semester");
+    this.credits = ((Long) courseEntity.getProperty("credits")).intValue();
+    this.departmentId = (String) courseEntity.getProperty("dept_id");
+    this.description = (String) courseEntity.getProperty("description");
+    this.corequisites = (String) courseEntity.getProperty("coreqs");
+    this.prerequisites = (String) courseEntity.getProperty("prereqs");
+    this.restrictions = (String) courseEntity.getProperty("restrictions");
+    this.additionalInfo = (String) courseEntity.getProperty("additional_info");
+    this.creditGrantedFor = (String) courseEntity.getProperty("credit_granted_for");
+    ArrayList<String> sectionIds = (ArrayList<String>) courseEntity.getProperty("section_ids");
+    this.sectionIds = sectionIds;
+
+    // if (sections == null) {
+    //   this.sections = null;
+    // }
+    // this.sections = sections.toArray(new String[0]);
   }
 
   /*
@@ -262,5 +295,9 @@ public class Course {
 
   public String getCreditGrantedFor() {
     return creditGrantedFor;
+  }
+
+  public ArrayList<String> getSectionIds() {
+    return sectionIds;
   }
 }

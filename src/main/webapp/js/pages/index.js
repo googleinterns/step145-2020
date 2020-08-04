@@ -44,10 +44,10 @@ document.querySelector('.course-list').addEventListener('click', () => {
   // Hard code return from algorithm servlet.
   const sections1 = {};
   selected.forEach(
-      course => {sections1[course] = courseInfo[course].sections[0]});
+      course => {sections1[course] = courseInfo[course].section_ids[0]});
   const sections2 = {};
   selected.forEach(
-      course => {sections2[course] = courseInfo[course].sections[1]});
+      course => {sections2[course] = courseInfo[course].section_ids[1]});
   const schedules = [sections1, sections2];
 
   // By default, add the first schedule to the calendar after response is
@@ -93,3 +93,16 @@ document.getElementById('departments').addEventListener('change', () => {
 document.getElementById('signout-button').addEventListener('click', () => {
   Auth.signOut();
 });
+
+
+
+document.querySelector('.navbar').addEventListener('click', () => {
+  console.log('awef');
+  download();
+})
+
+async function download() {
+  console.log('working');
+  let a = await fetch('/api/download', {method: 'POST'});
+  console.log('done');
+}
