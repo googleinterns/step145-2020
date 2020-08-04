@@ -57,7 +57,7 @@ public class SchedulerServlet extends BaseServlet {
     
     try {
       prepareLists(selectedClasses, response);
-    } catch (IOException e ) {
+    } catch (ParseException e) {
       return;
     }
 
@@ -74,7 +74,8 @@ public class SchedulerServlet extends BaseServlet {
    * @param classes The JSONArray of courseIds of the selected classes
    * @param response The HttpServletResponse object
    */
-  private void prepareLists(JSONArray classes, HttpServletResponse response) throws IOException {
+  private void prepareLists(JSONArray classes, HttpServletResponse response) 
+  throws IOException, ParseException {
     String courseId;
     URI uri;
     JSONArray jsonArray;
@@ -89,13 +90,13 @@ public class SchedulerServlet extends BaseServlet {
         uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections");
       } catch (URISyntaxException e) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        throw new IOException(courseId + " cannot be found in the umd.io database");
+        return;
       }
 
       jsonArray = apiUtil.getJsonArray(uri);
       if (jsonArray == null) {
         respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-        return;
+        throw new ParseException(0);
       }
       courses.add(convertSectionJsonToSectionArrayList(jsonArray));
     }
