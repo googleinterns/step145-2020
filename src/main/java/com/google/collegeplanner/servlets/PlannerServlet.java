@@ -172,12 +172,10 @@ public class PlannerServlet extends BaseServlet {
       credits.put(key, creditVal);
       totalCredits += creditVal;
 
-      HashSet<String> prereqs = getCoursesFromString(
-          (String) ((JSONObject) courseJson.get("relationships")).get("prereqs"));
+      HashSet<String> prereqs = getCoursesFromString((String) (courseJson.get("prereqs")));
       indegree.put(key, prereqs.size());
 
-      HashSet<String> coreqs = getCoursesFromString(
-          (String) ((JSONObject) courseJson.get("relationships")).get("coreqs"));
+      HashSet<String> coreqs = getCoursesFromString((String) (courseJson.get("coreqs")));
       corequisites.put(key, coreqs);
 
       for (String prereq : prereqs) {
