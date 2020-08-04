@@ -14,10 +14,25 @@
 
 package com.google.collegeplanner.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.collegeplanner.data.Course;
+import com.google.collegeplanner.data.Section;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,12 +43,13 @@ import org.json.simple.JSONObject;
 /** Servlet that returns list of course sections.*/
 @WebServlet("/api/sections")
 public class SectionServlet extends BaseServlet {
+  DatastoreService datastore;
   public SectionServlet() {
-    super(new ApiUtil());
+    this(DatastoreServiceFactory.getDatastoreService());
   }
 
-  public SectionServlet(ApiUtil apiUtil) {
-    super(apiUtil);
+  public SectionServlet(DatastoreService datastore) {
+    this.datastore = datastore;
   }
 
   /**
@@ -54,24 +70,40 @@ public class SectionServlet extends BaseServlet {
       return;
     }
 
-    URI uri;
-    try {
-      uri = new URI("https://api.umd.io/v1/courses/" + courseId + "/sections/" + sectionId);
-    } catch (URISyntaxException e) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+    Query query = new Query("Course").setFilter(
+        new FilterPredicate("course_id", FilterOperator.EQUAL, courseId));
+    PreparedQuery preparedQuery = datastore.prepare(query);
+    List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
+
+    if (results.size() == 0) {
+      respondWithError(HttpServletResponse.SC_NOT_FOUND, response);
       return;
     }
 
-    JSONArray jsonArray = apiUtil.getJsonArray(uri);
-    if (jsonArray == null) {
-      respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
-      return;
+    // Convert Section entities to Section objects to serialize into json.
+    ArrayList<Section> sections = new ArrayList<Section>();
+    Entity courseEntity = results.get(0);
+    ArrayList<EmbeddedEntity> sectionEntities =
+        (ArrayList<EmbeddedEntity>) courseEntity.getProperty("sections");
+    for (EmbeddedEntity sectionEntity : sectionEntities) {
+      String section_id = (String) sectionEntity.getProperty("section_id");
+      if (section_id.equals(sectionId)) {
+        Section section;
+        try {
+          section = new Section(sectionEntity);
+        } catch (ParseException e) {
+          respondWithError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
+          return;
+        }
+        sections.add(section);
+      }
     }
 
     JSONObject sectionsInfo = new JSONObject();
-    sectionsInfo.put("sections", jsonArray);
+    sectionsInfo.put("sections", sections);
 
     response.setContentType("application/json;");
-    response.getWriter().println(sectionsInfo);
+    Gson gson = new GsonBuilder().serializeNulls().create();
+    response.getWriter().println(gson.toJson(sectionsInfo));
   }
 }

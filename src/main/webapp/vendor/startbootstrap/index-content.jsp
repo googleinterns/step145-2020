@@ -41,6 +41,18 @@
           </form>
         </div>
       </div>
+      <div class="card shadow mb-4">
+        <div
+          class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+        >
+          <h6 class="m-0 font-weight-bold text-primary">Calendar:</h6>
+          <ul class="pagination" id="calendar-pagination">
+          </ul>
+        </div>
+        <div class="card-body">
+          <div id="calendar"></div>
+        </div>
+      </div>
     </div>
     <!-- Pie Chart -->
     <div class="col-xl-4 col-lg-5">
@@ -63,23 +75,6 @@
               <span class="text">Get Schedule</span>
             </a>
           </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Calendar -->
-  <div class="row">
-    <div class="container-fluid">
-      <div class="card shadow mb-4">
-        <div
-          class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
-        >
-          <h6 class="m-0 font-weight-bold text-primary">Calendar:</h6>
-          <ul class="pagination" id="calendar-pagination">
-          </ul>
-        </div>
-        <div class="card-body">
-          <div id="calendar"></div>
         </div>
       </div>
     </div>

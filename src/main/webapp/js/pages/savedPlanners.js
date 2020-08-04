@@ -34,18 +34,19 @@ async function getSavedPlans(googleUser) {
         '';  // Clear the sign in prompt.
     planList.forEach(
         planInfo => createCard(
-            planInfo.planName, planInfo.plan.semester_plan,
+            planInfo.id, planInfo.planName, planInfo.plan.semester_plan,
             planInfo.plan.semester_credits));
   }
 }
 
 /**
  * Creates card for the plan and appends it to the page
+ * @param {String} planId The id of the plan in datastore
  * @param {String} planName the name of the plan
  * @param {Object} tableData 2D array with separation of courses
  * @param {Object} creditsData Array with credits for each semester
  */
-function createCard(planName, tableData, creditsData) {
+function createCard(planId, planName, tableData, creditsData) {
   const card = document.createElement('div');
   card.setAttribute('class', 'card shadow mb-4');
   const header = document.createElement('div');
@@ -56,6 +57,22 @@ function createCard(planName, tableData, creditsData) {
   title.setAttribute('class', 'm-0 font-weight-bold text-primary');
   title.innerText = planName;
   header.appendChild(title);
+  // Create delete button.
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerHTML =
+      '<i class="fas fa-trash-alt" id="modeicon"></i>';
+  deleteButtonElement.setAttribute(
+      'class', 'rounded-circle border-0 btn-lg float-right');
+  deleteButtonElement.addEventListener('click', () => {
+    $('#deleteModal').modal();
+    document.getElementById('plan-name').innerText = planName;
+    document.getElementById('confirm-delete').addEventListener('click', () => {
+      deletePlan(planId);
+      // Remove the plan from the DOM.
+      card.remove();
+    });
+  });
+  header.appendChild(deleteButtonElement);
   card.appendChild(header);
   const body = document.createElement('div');
   body.setAttribute('class', 'card-body');
@@ -64,6 +81,32 @@ function createCard(planName, tableData, creditsData) {
   body.appendChild(table);
   card.appendChild(body);
   document.getElementById('plan-column').appendChild(card);
+}
+
+/**
+ * Tells the server to delete the plan.
+ * @param {Number} id The id of the plan to delete.
+ */
+async function deletePlan(id) {
+  const params = new URLSearchParams();
+  params.append('id', id);
+  let response;
+  try {
+    response =
+        await fetch('/api/planner/delete', {method: 'POST', body: params});
+  } catch (err) {
+    Util.createAlert(
+        'Could not delete element.', 'danger',
+        document.getElementById('plan-name'));
+    return;
+  }
+  if (response.ok) {
+    $('#deleteModal').modal('hide');
+  } else {
+    Util.createAlert(
+        'Could not delete element.', 'warning',
+        document.getElementById('plan-name'));
+  }
 }
 
 Auth.registerPostSignInHandler(getSavedPlans);
