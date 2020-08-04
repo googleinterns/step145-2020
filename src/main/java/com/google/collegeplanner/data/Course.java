@@ -150,18 +150,6 @@ public class Course {
   }
 
   public Course(Entity courseEntity) throws ParseException {
-    // this((String) courseEntity.getProperty("course_id"), (String)
-    // courseEntity.getProperty("name"),
-    //     (String) courseEntity.getProperty("semester"),
-    //     ((Long) courseEntity.getProperty("credits")).intValue(),
-    //     (String) courseEntity.getProperty("dept_id"),
-    //     (String) courseEntity.getProperty("description"),
-    //     (String) courseEntity.getProperty("coreqs"), (String)
-    //     courseEntity.getProperty("prereqs"), (String) courseEntity.getProperty("restrictions"),
-    //     (String) courseEntity.getProperty("additional_info"),
-    //     (String) courseEntity.getProperty("credit_granted_for"),
-    //     ((ArrayList<String>) courseEntity.getProperty("sections")).toArray(new String[0]));
-
     this.courseId = (String) courseEntity.getProperty("course_id");
     this.name = (String) courseEntity.getProperty("name");
     this.semester = (String) courseEntity.getProperty("semester");
@@ -173,13 +161,7 @@ public class Course {
     this.restrictions = (String) courseEntity.getProperty("restrictions");
     this.additionalInfo = (String) courseEntity.getProperty("additional_info");
     this.creditGrantedFor = (String) courseEntity.getProperty("credit_granted_for");
-    ArrayList<String> sectionIds = (ArrayList<String>) courseEntity.getProperty("section_ids");
-    this.sectionIds = sectionIds;
-
-    // if (sections == null) {
-    //   this.sections = null;
-    // }
-    // this.sections = sections.toArray(new String[0]);
+    this.sectionIds = (ArrayList<String>) courseEntity.getProperty("section_ids");
   }
 
   /*

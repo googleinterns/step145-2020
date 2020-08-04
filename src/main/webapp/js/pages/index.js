@@ -93,16 +93,3 @@ document.getElementById('departments').addEventListener('change', () => {
 document.getElementById('signout-button').addEventListener('click', () => {
   Auth.signOut();
 });
-
-
-
-document.querySelector('.navbar').addEventListener('click', () => {
-  console.log('awef');
-  download();
-})
-
-async function download() {
-  console.log('working');
-  let a = await fetch('/api/download', {method: 'POST'});
-  console.log('done');
-}

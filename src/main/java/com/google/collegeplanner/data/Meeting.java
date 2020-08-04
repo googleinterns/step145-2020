@@ -87,7 +87,6 @@ public class Meeting {
    */
   private int parseTime(String time) throws ParseException {
     if (time == null || time == "") {
-      System.out.println("Time parse exception");
       throw new ParseException("Invalid time format.", 0);
     }
     time = time.toUpperCase();

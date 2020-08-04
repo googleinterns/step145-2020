@@ -74,7 +74,6 @@ public class DatastoreServlet extends BaseServlet {
     // doesn't have any results.
     int page = 1;
     do {
-      System.out.println("PAGE: " + page);
       URI uri;
       try {
         URIBuilder builder = new URIBuilder("https://api.umd.io/v1/courses");
@@ -107,7 +106,6 @@ public class DatastoreServlet extends BaseServlet {
    */
   private void addCourses(JSONArray coursesArray) throws IllegalArgumentException {
     if (coursesArray == null) {
-      System.out.println("Illegal argument in addCourses, stop");
       throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
@@ -120,7 +118,6 @@ public class DatastoreServlet extends BaseServlet {
       try {
         course = new Course(courseJson);
       } catch (ParseException e) {
-        System.out.println("course parse exception, continue");
         continue;
       }
 
@@ -135,7 +132,6 @@ public class DatastoreServlet extends BaseServlet {
         courseEntity = new Entity("Course", course.getCourseId());
       } else {
         // The entity already exists - modify it instead.
-        System.out.println("Already exists, edit");
         courseEntity = limitedResults.get(0);
       }
 
@@ -145,12 +141,10 @@ public class DatastoreServlet extends BaseServlet {
             + URLEncoder.encode(course.getCourseId(), StandardCharsets.UTF_8.toString())
             + "/sections");
       } catch (URISyntaxException | UnsupportedEncodingException e) {
-        System.out.println("URI exception, continue");
         continue;
       }
       JSONArray sectionsArray = apiUtil.getJsonArray(uri);
       if (sectionsArray == null) {
-        // System.out.println("NULL SECTIONS ARRAY @ " + uri.toString());
         continue;
       }
       addSectionsToCourse(sectionsArray, course, courseEntity);
@@ -166,7 +160,6 @@ public class DatastoreServlet extends BaseServlet {
   private void addSectionsToCourse(JSONArray sectionsArray, Course course, Entity courseEntity)
       throws IllegalArgumentException {
     if (course == null || courseEntity == null) {
-      System.out.println("Illegal argument in addSectionsToCourse, stop");
       throw new IllegalArgumentException("Null was passed in as an argument.");
     }
 
@@ -178,7 +171,6 @@ public class DatastoreServlet extends BaseServlet {
       try {
         section = new Section(sectionJson);
       } catch (ParseException e) {
-        System.out.println("section parse exception, continue");
         continue;
       }
 
@@ -201,6 +193,12 @@ public class DatastoreServlet extends BaseServlet {
       sectionEntities.add(sectionEntity);
     }
 
+    if (sectionEntities == null) {
+      // If the course has no sections, then we shouldn't add it to datastore because the algorithm
+      // among other things will try to use it an fail.
+      return;
+    }
+
     courseEntity.setProperty("course_id", course.getCourseId());
     courseEntity.setProperty("name", course.getName());
     courseEntity.setProperty("semester", course.getSemester());
@@ -215,7 +213,6 @@ public class DatastoreServlet extends BaseServlet {
     courseEntity.setProperty("section_ids", course.getSectionIds());
     courseEntity.setProperty("sections", sectionEntities);
 
-    System.out.println("Entity put.");
     datastore.put(courseEntity);
   }
 
