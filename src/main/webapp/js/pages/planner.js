@@ -92,6 +92,11 @@ async function savePlan(courseList) {
       method: 'POST',
       body: JSON.stringify(data),
     });
+    document.getElementById('save-button-text').innerText = 'Saved!';
+    document.getElementById('save-plan-prompt')
+        .classList.remove('btn-secondary');
+    document.getElementById('save-plan-prompt').classList.add('btn-primary');
+
     $('#savePlanModal').modal('hide');
   } catch (err) {
     CourseSelector.createAlert(
@@ -109,7 +114,7 @@ function attachSaveButton(headerContainer) {
   const button = document.createElement('button');
   button.setAttribute('type', 'submit');
   button.setAttribute('href', '#');
-  button.setAttribute('class', 'btn btn-secondary btn-icon-split float:right');
+  button.setAttribute('class', 'btn btn-secondary btn-icon-split float-right');
   button.setAttribute('id', 'save-plan-prompt');
   const icon = document.createElement('span');
   icon.setAttribute('class', 'icon text-white-50')
@@ -120,6 +125,7 @@ function attachSaveButton(headerContainer) {
   const text = document.createElement('span');
   text.setAttribute('class', 'text');
   text.innerText = 'Save Plan';
+  text.setAttribute('id', 'save-button-text');
   button.appendChild(text);
   // If user isn't signed in, prompt them to sign in.
   button.addEventListener('click', () => {

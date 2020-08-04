@@ -104,14 +104,11 @@ public class Schedule {
   }
 
   public JSONObject toJSON() {
-    JSONArray sectionsArray = new JSONArray();
     JSONObject output = new JSONObject();
 
     for (Section section : sections) {
-      sectionsArray.add(section.toJSON());
+      output.put(section.getCourseId(), section.getSectionId());
     }
-
-    output.put("sections", sectionsArray);
 
     return output;
   }

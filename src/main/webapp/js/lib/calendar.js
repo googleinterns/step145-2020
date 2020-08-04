@@ -130,22 +130,24 @@ async function addCourse(course, section) {
   if (firstSection.meetings == null) {
     return;
   }
+
+  const color = scheduleColors.pop();
   firstSection.meetings.forEach(
-      meeting => decodeDayAndAddToCalendar(meeting, course));
+      meeting => decodeDayAndAddToCalendar(meeting, course, color));
 }
 
 /**
  * Adds a course meeting to the calendar
  * @param {Object} meeting The JSON Object for the meeting.
  * @param {Object} course The JSON Object for the course.
+ * @param {string} color The color that the calendar event should be.
  */
-function decodeDayAndAddToCalendar(meeting, course) {
-  const meetingDays = meeting.days.toUpperCase();
+
+function decodeDayAndAddToCalendar(meeting, course, color) {
+  const meetingDays = meeting.days;
 
   const startTime = meeting.start_time;
   const endTime = meeting.end_time;
-
-  const color = scheduleColors.pop();
 
   if (meetingDays.includes('SU')) {
     addCourseToCalendar(

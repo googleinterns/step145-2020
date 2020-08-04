@@ -37,18 +37,44 @@ function addScheduleToCalendar(schedule, courseInfo, selected) {
   });
 }
 
-document.querySelector('.course-list').addEventListener('click', () => {
+/**
+ * Returns a list of schedules with the selected courses
+ * @param {Array.<string>} selected JSON Array of the selected classes to
+ *     schedule
+ */
+async function getSchedules(selected) {
+  let response;
+  let scheduleObject;
+  const data = {selectedClasses: selected};
+  try {
+    response = await fetch('/api/scheduler', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    scheduleObject = await response.json();
+    if (response.ok) {
+      return scheduleObject.schedules;
+    } else {
+      CourseSelector.createAlert(
+          'An error occurred', 'danger', courseContainer);
+      return null;
+    }
+  } catch (err) {
+    CourseSelector.createAlert('An error occurred', 'danger', courseContainer);
+    return null;
+  }
+}
+
+document.querySelector('.course-list').addEventListener('click', async () => {
   const selected = CourseSelector.getSelected();
   const courseInfo = CourseSelector.getCourseInfo();
-  // TODO(naaoli): Connect to algorithm servlet.
-  // Hard code return from algorithm servlet.
-  const sections1 = {};
-  selected.forEach(
-      course => {sections1[course] = courseInfo[course].section_ids[0]});
-  const sections2 = {};
-  selected.forEach(
-      course => {sections2[course] = courseInfo[course].section_ids[1]});
-  const schedules = [sections1, sections2];
+  const schedules = await getSchedules(selected);
+
+  // If there are no schedules returned or
+  // there was an error in getSchedules(), then exit the function.
+  if (schedules == null || schedules.length == 0) {
+    return;
+  }
 
   // By default, add the first schedule to the calendar after response is
   // received.
