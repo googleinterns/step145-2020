@@ -142,13 +142,14 @@ async function addCourse(course, section) {
  * @param {Object} course The JSON Object for the course.
  * @param {string} color The color that the calendar event should be.
  */
+
 function decodeDayAndAddToCalendar(meeting, course, color) {
   const meetingDays = meeting.days;
 
   const startTime = meeting.start_time;
   const endTime = meeting.end_time;
 
-  if (meetingDays.includes('Su')) {
+  if (meetingDays.includes('SU')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_SUNDAY, color);
   }
@@ -156,7 +157,7 @@ function decodeDayAndAddToCalendar(meeting, course, color) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_MONDAY, color);
   }
-  if (meetingDays.includes('Tu')) {
+  if (meetingDays.includes('TU')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_TUESDAY, color);
   }
@@ -164,7 +165,7 @@ function decodeDayAndAddToCalendar(meeting, course, color) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_WEDNESDAY, color);
   }
-  if (meetingDays.includes('Th')) {
+  if (meetingDays.includes('TH')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_THURSDAY, color);
   }
@@ -172,7 +173,7 @@ function decodeDayAndAddToCalendar(meeting, course, color) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_FRIDAY, color);
   }
-  if (meetingDays.includes('Sa')) {
+  if (meetingDays.includes('SA')) {
     addCourseToCalendar(
         course, startTime, endTime, enumDays.DATE_SATURDAY, color);
   }
@@ -188,8 +189,8 @@ function decodeDayAndAddToCalendar(meeting, course, color) {
  * @param {enumDays} day The day that the course falls on.
  */
 function addCourseToCalendar(course, startTime, endTime, day, color) {
-  const startDate = createDateFromTimeString(startTime, day);
-  const endDate = createDateFromTimeString(endTime, day);
+  const startDate = createDate(day, startTime);
+  const endDate = createDate(day, endTime);
   createSchedule(course, startDate, endDate, color);
 }
 
@@ -224,13 +225,11 @@ function createSchedule(course, startDate, endDate, color) {
 /**
  * Creates a schedule on the calendar using the toast API.
  * @param {enumDays} day The day that the course falls on.
- * @param {number} hour The army-time hour portion of the time/date we want
- *     to create.
  * @param {hour} min The army-time minute portion of the time/date we want
  *     to create.
  * @return {DateTime} The new DateTime object.
  */
-function createDate(day, hour, min) {
+function createDate(day, min) {
   const sunday = DateTime.fromObject({
     month: 1,
     day: 2,
@@ -239,21 +238,7 @@ function createDate(day, hour, min) {
     second: 0,
     zone: 'America/New_York',
   });
-  return sunday.plus({days: day, hours: hour, minutes: min});
-}
-
-/**
- * Creates a Date object from the string representation of a time.
- * @param {string} time The string representation of a 12-hour clock time eg.
- *     8:30pm.
- * @param {enumDays} day The day that the course falls on.
- * @return {DateTime} The new DateTime object.
- */
-function createDateFromTimeString(time, day) {
-  const dt = DateTime.fromFormat(time, 'h:mma');
-  const hour = dt.hour;
-  const minutes = dt.minute;
-  return createDate(day, hour, minutes);
+  return sunday.plus({days: day, minutes: min});
 }
 
 /**
