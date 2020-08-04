@@ -206,7 +206,7 @@ public class DatastoreServlet extends BaseServlet {
     courseEntity.setProperty("dept_id", course.getDepartmentId());
     courseEntity.setProperty("description", course.getDescription());
     courseEntity.setProperty("coreqs", course.getCorequisites());
-    courseEntity.setProperty("prereqs", course.getCorequisites());
+    courseEntity.setProperty("prereqs", course.getPrerequisites());
     courseEntity.setProperty("restrictions", course.getRestrictions());
     courseEntity.setProperty("additional_info", course.getAdditionalInfo());
     courseEntity.setProperty("credit_granted_for", course.getCreditGrantedFor());
